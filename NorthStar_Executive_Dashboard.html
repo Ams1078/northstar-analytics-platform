@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Executive Dashboard — NorthStar Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0D1B2A; --secondary:#18263B; --accent:#2563EB;
+    --success:#16A34A; --warning:#F59E0B; --info:#0EA5E9; --muted:#64748B;
+    --surface:#FFFFFF; --bg:#F8FAFC;
+    --line:#E2E8F0; --line-2:#CBD5E1; --ink:#0D1B2A; --ink-2:#475569;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+    --sidebar:280px; --topnav:72px; --maxw:1440px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  h1,h2,h3,h4{color:var(--primary);font-weight:600;line-height:1.3}
+
+  .topnav{position:sticky;top:0;z-index:30;height:var(--topnav);background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:28px}
+  .topnav .logo{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;color:var(--primary)}
+  .topnav .logo .mark{width:26px;height:26px;flex:none}
+  .topnav .logo small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);font-weight:400;margin-top:1px}
+  .topnav nav{display:flex;gap:22px;margin-left:8px;font-size:13.5px}
+  .topnav nav a{color:var(--ink-2)}
+  .topnav nav a[aria-current]{color:var(--primary);font-weight:500}
+  .topnav .right{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  .shell{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) 1fr}
+  aside{border-right:1px solid var(--line);background:var(--surface);position:sticky;top:var(--topnav);height:calc(100vh - var(--topnav));overflow-y:auto;padding:28px 0}
+  aside .grp{padding:0 24px;margin-bottom:22px}
+  aside .grp h5{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+  aside a{display:block;color:var(--ink-2);font-size:13.5px;padding:5px 0}
+  aside a:hover{color:var(--primary);text-decoration:none}
+  aside a[aria-current]{color:var(--accent);font-weight:500}
+  aside .search{padding:0 24px 22px}
+  aside .search input{width:100%;padding:8px 11px;border:1px solid var(--line-2);border-radius:6px;font-family:var(--sans);font-size:13px;background:var(--bg);color:var(--ink)}
+
+  main{background:var(--surface);min-width:0}
+  .doc{max-width:860px;padding:34px clamp(28px,4vw,56px) 90px}
+
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:26px}
+  .crumb a{color:var(--muted)} .crumb span{margin:0 7px;color:var(--line-2)}
+
+  .page-head{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+  .page-head .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  h1{font-size:32px;margin:0 0 14px}
+  .subtitle{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0;font-weight:400;line-height:1.5}
+
+  /* category jump bar */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px}
+  .jump a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 12px;border:1px solid var(--line-2);border-radius:20px;color:var(--ink-2)}
+  .jump a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+  section.cat{margin:40px 0;scroll-margin-top:90px}
+  .cat-head{border-bottom:2px solid var(--primary);padding-bottom:8px;margin-bottom:6px}
+  .cat-head h2{font-size:22px;margin:0}
+  .cat-intro{color:var(--ink-2);font-size:14.5px;margin:12px 0 8px;max-width:80ch}
+
+  /* term entry */
+  .term{border-bottom:1px solid var(--line);padding:24px 0;scroll-margin-top:90px}
+  .term:last-child{border-bottom:none}
+  .term h3{font-size:17px;margin:0 0 3px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .term h3 .also{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
+  .term .def{font-size:15px;color:var(--ink);margin:6px 0 0;max-width:82ch}
+  .term .row{margin-top:12px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:baseline}
+  .term .row .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+  .term .row .val{font-size:14px;color:var(--ink-2);max-width:72ch}
+  .term .row .val a{font-weight:500}
+  .term .formula{font-family:var(--mono);font-size:13px;color:var(--secondary);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:8px 12px;display:inline-block;margin-top:2px}
+  .term code{font-family:var(--mono);font-size:.88em;color:var(--secondary);background:var(--bg);padding:1px 5px;border-radius:2px}
+
+  .callout{border:1px solid var(--line);border-left:3px solid var(--info);background:var(--bg);border-radius:6px;padding:16px 20px;margin:20px 0}
+  .callout .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--info);margin-bottom:6px;font-weight:500}
+  .callout p{margin:0;color:var(--ink-2);font-size:13.5px}
+
+  .pagenav{display:flex;justify-content:space-between;margin-top:56px;padding-top:24px;border-top:1px solid var(--line);gap:16px}
+  .pagenav a{display:block;max-width:48%}
+  .pagenav .dir{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .pagenav .lbl{font-weight:600;color:var(--primary)}
+  .pagenav .next{text-align:right;margin-left:auto}
+  footer{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:var(--mono);font-size:11px;padding:22px 32px;text-align:center}
+  /* layers of business truth */
+  .lifecycle{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:24px 20px;margin:22px 0}
+  .lifecycle svg{display:block;width:100%;height:auto;max-width:820px;margin:0 auto}
+  .truth-note{border:1px solid var(--warning);border-left:3px solid var(--warning);background:#fffbeb;border-radius:6px;padding:14px 18px;margin:18px 0}
+  .truth-note .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#B45309;margin-bottom:5px;font-weight:500}
+  .truth-note p{margin:0;color:#78350F;font-size:13.5px}
+  .term .layer-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;font-weight:500}
+  .lt-mkt{background:#EFF4FB;color:#2563EB}
+  .lt-lease{background:#F0FDF4;color:#16A34A}
+  .lt-ops{background:#FEF3C7;color:#B45309}
+
+  /* cross-reference card: points to canonical definition elsewhere */
+  .xref{border:1px solid var(--line);border-left:3px solid var(--line-2);background:var(--bg);border-radius:6px;padding:14px 18px;margin:0}
+  .xref .xt{font-size:15px;font-weight:600;color:var(--primary);margin:0 0 3px}
+  .xref p{margin:0;color:var(--ink-2);font-size:13.5px}
+  .xref .goto{font-family:var(--mono);font-size:11px;margin-top:6px;display:inline-block}
+
+
+  /* parent term with nested views */
+  .parent{border-bottom:2px solid var(--primary);padding:26px 0 10px;margin-top:8px}
+  .parent h3{font-size:19px;margin:0 0 5px}
+  .parent .def{font-size:15px;color:var(--ink);margin:0;max-width:82ch}
+  .views{margin:0 0 8px}
+  .view{border-bottom:1px solid var(--line);padding:16px 0 16px 22px;border-left:2px solid var(--line-2);margin-left:2px;padding-left:20px}
+  .view h4{font-size:15px;margin:0 0 3px;color:var(--primary);display:flex;align-items:baseline;gap:10px}
+  .view h4 .layer-tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500}
+  .view p{margin:0;color:var(--ink-2);font-size:14px;max-width:78ch}
+  .view .sa{font-size:12.5px;margin-top:5px}
+  /* boxed thesis */
+  .thesis{border:2px solid var(--primary);border-radius:8px;padding:20px 24px;margin:24px 0;background:var(--bg)}
+  .thesis p{margin:0;font-size:17px;font-weight:500;color:var(--primary);max-width:none;text-align:center}
+  /* subgroup heading within a category */
+  .subgroup{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 4px;font-weight:500}
+
+
+  /* ============ executive dashboard (whitepaper + operating-interface) ============ */
+  .wp-head{margin-bottom:14px}
+  .wp-head .subtitle{font-size:17px;line-height:1.6;max-width:64ch;color:var(--ink)}
+  .wp{display:grid;grid-template-columns:64px 1fr;gap:8px;margin:48px 0 0;align-items:start}
+  .wp-num{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600;padding-top:6px}
+  .wp-body{max-width:66ch}
+  .wp-body h2{font-size:23px;font-weight:700;color:var(--primary);margin:0 0 16px;letter-spacing:-0.01em}
+  .wp-body p{font-size:15.5px;line-height:1.72;color:var(--ink);margin:0 0 16px}
+  .wp-body p.lead{font-size:19px;line-height:1.55;color:var(--primary);font-weight:500;margin-bottom:18px}
+  .wp-body p em{font-style:italic;color:var(--primary)}
+  @media(max-width:680px){.wp{grid-template-columns:1fr;gap:4px}.wp-num{padding-top:0}}
+
+  /* stack diagram */
+  .stackwrap{padding-left:72px;margin:16px 0 0}
+  @media(max-width:680px){.stackwrap{padding-left:0}}
+  .stack{display:flex;flex-direction:column;align-items:center}
+  .stack .sl{border:1px solid var(--line);border-radius:6px;padding:10px 26px;background:var(--surface);font-family:var(--mono);font-size:13px;color:var(--ink);min-width:280px;text-align:center}
+  .stack .sl-focus{border-color:var(--accent);background:#F4F8FE;color:var(--accent);font-weight:600}
+  .stack .sla{color:var(--muted);font-size:13px;margin:5px 0}
+  @media(max-width:640px){.stack .sl{min-width:0;width:100%}}
+
+  /* visual-job cards */
+  .vjset{padding-left:72px;margin:14px 0 0;display:grid;gap:12px}
+  @media(max-width:680px){.vjset{padding-left:0}}
+  .vjob{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:16px 18px;background:var(--surface)}
+  .vj-name{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:10px}
+  .vj-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px}
+  .vj-cell{display:flex;flex-direction:column;gap:2px}
+  .vjl{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .vjv{font-size:13.5px;color:var(--ink-2);line-height:1.4}
+  .vjv.mono{font-family:var(--mono);font-size:12px;color:var(--accent)}
+  @media(max-width:520px){.vj-grid{grid-template-columns:1fr}}
+
+  /* methodology table */
+  .methset{padding-left:72px;margin:16px 0 0}
+  @media(max-width:680px){.methset{padding-left:0}}
+  .meth{display:grid;grid-template-columns:150px 1fr 1.4fr;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);align-items:baseline}
+  .meth.methhead{border-bottom:2px solid var(--primary)}
+  .meth.methhead div{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .meth-v{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--primary)}
+  .meth-q{font-size:14px;font-weight:500;color:var(--accent)}
+  .meth-d{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+  @media(max-width:640px){.meth{grid-template-columns:1fr;gap:3px}.meth.methhead{display:none}.meth-q{color:var(--accent)}}
+
+  /* workflow flow */
+  .flowwrap{padding-left:72px;margin:16px 0 0}
+  @media(max-width:680px){.flowwrap{padding-left:0}}
+  .flow{display:flex;flex-direction:column;align-items:flex-start}
+  .fstep{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:6px;padding:9px 16px;background:var(--surface);min-width:320px}
+  .fs-n{font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;background:var(--accent);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .fs-t{font-size:14px;color:var(--ink);font-weight:500}
+  .fs-arrow{color:var(--muted);font-size:12px;margin:4px 0 4px 24px}
+  .fstep:last-child{border-color:var(--accent);background:#F4F8FE}
+  @media(max-width:640px){.fstep{min-width:0;width:100%}}
+
+  /* UX grid */
+  .uxset{padding-left:72px;margin:14px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:680px){.uxset{padding-left:0}}
+  @media(max-width:640px){.uxset{grid-template-columns:1fr}}
+  .ux{border:1px solid var(--line);border-radius:8px;padding:14px 16px;background:var(--surface)}
+  .ux-t{font-size:14px;font-weight:700;color:var(--primary);margin-bottom:3px}
+  .ux-d{font-size:13px;color:var(--ink-2);line-height:1.55;margin:0}
+
+  /* closing */
+  .wp-close{margin:60px 0 0;padding:44px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .wpc-label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:20px}
+  .wpc-statement{font-size:24px;line-height:1.5;font-weight:600;color:var(--primary);letter-spacing:-0.01em;max-width:36ch;margin:0 0 18px}
+  .wpc-statement em{font-style:italic;color:var(--accent)}
+  .wpc-final{font-size:16px;line-height:1.7;color:var(--ink-2);margin:0;max-width:64ch}
+  .wpc-coda-final{font-size:19px;line-height:1.5;font-weight:600;color:var(--primary);margin:24px 0 0;letter-spacing:-0.01em}
+  @media(max-width:640px){.wpc-statement{font-size:20px;max-width:none}}
+
+  .navcards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin:20px 0}
+  .navc{border:1px solid var(--line);border-radius:8px;padding:14px 17px;text-decoration:none;background:var(--surface);transition:all .15s;display:block}
+  .navc:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(37,99,235,0.08)}
+  .navc .nvt{display:block;font-size:14px;font-weight:600;color:var(--accent)}
+  .navc .nvd{display:block;font-size:12px;color:var(--ink-2);margin-top:2px}
+  @media(max-width:640px){.navcards{grid-template-columns:1fr}}
+  .cat{margin:52px 0 0}.cat-head h2{font-size:19px}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+  @media(max-width:1000px){
+    .shell{grid-template-columns:1fr}
+    aside{display:none}
+    .term .row{grid-template-columns:1fr;gap:2px}
+    .term .row .lbl{padding-top:8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <a class="logo" href="index.html" aria-label="NorthStar home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19 13 L30 16 L19 19 L16 30 L13 19 L2 16 L13 13 Z" fill="#0D1B2A"/></svg>
+    <span>NORTHSTAR<small>METADATA PORTAL</small></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="NorthStar_About.html">About</a>
+    <a href="index.html" aria-current="page">Business</a>
+    <a href="NorthStar_Data_Model_Dictionary.html">Data</a>
+    <a href="NorthStar_Executive_Index_Framework.html">Analytics</a>
+    <a href="NorthStar_Pipeline_Architecture.html">Technical</a>
+  </nav>
+  <div class="right">v1.0</div>
+</header>
+
+<div class="shell">
+<aside aria-label="Documentation navigation">
+  <div class="search"><input type="search" placeholder="Search the metadata portal…" aria-label="Search documentation"></div>
+<div class="grp"><h5>Overview</h5>
+<a href="NorthStar_About.html">About NorthStar</a>
+<a href="NorthStar_Platform_Overview.html">Platform Overview</a>
+</div>
+<div class="grp"><h5>Business</h5>
+<a href="NorthStar_Business_Glossary.html">Business Glossary</a>
+<a href="NorthStar_Business_Rules.html">Business Rules</a>
+<a href="NorthStar_Data_Generation_Engine.html">Data Generation Engine</a>
+</div>
+<div class="grp"><h5>Executive</h5>
+<a href="NorthStar_Executive_Index_Framework.html">Decision Framework</a>
+<a href="NorthStar_GPI.html">GPI</a>
+<a href="NorthStar_OPI.html">OPI</a>
+<a href="NorthStar_VPI.html">VPI</a>
+<a href="NorthStar_PHI.html">PHI</a>
+<a href="NorthStar_Executive_Dashboard.html" aria-current="page">Executive Dashboard</a>
+<a href="NorthStar_Attribution_Lab.html">Attribution Lab</a>
+</div>
+<div class="grp"><h5>Technical</h5>
+<a href="NorthStar_Pipeline_Architecture.html">Pipeline Architecture</a>
+<a href="NorthStar_Pipeline_Dashboard.html">Pipeline Dashboard</a>
+<a href="NorthStar_Pipeline_Reliability.html">Pipeline Reliability</a>
+<a href="NorthStar_Data_Flow.html">Data Flow</a>
+<a href="NorthStar_Data_Model_Dictionary.html">Data Dictionary</a>
+<a href="NorthStar_Measures_Reference.html">Measure Catalog</a>
+<a href="NorthStar_Semantic_Model.html">Semantic Model</a>
+<a href="NorthStar_Platform_Specifications.html">Platform Specifications</a>
+</div>
+</aside>
+
+<main>
+<div class="doc">
+
+  <div class="crumb"><a href="index.html">Home</a><span>›</span><a href="index.html">Analytics</a><span>›</span>Executive Dashboard</div>
+  <div class="page-head wp-head">
+    <div class="eyebrow">Analytics · The Executive Operating Interface</div>
+    <h1>Executive Dashboard</h1>
+    <p class="subtitle">When this page says dashboard, it means the screen leadership actually uses. Not a page of reports, but the last layer of everything else in this portal: the data, the semantic model, and the Executive Decision Framework, all arriving as something an executive can read in a glance.</p>
+  </div>
+  <section class="wp">
+    <div class="wp-num">01</div>
+    <div class="wp-body">
+      <h2>A different starting point</h2>
+      <p class="lead">Most executive dashboards focus on presenting information. NorthStar focuses on helping executives make decisions.</p><p>Most executive reporting struggles with the same problems. Metrics become disconnected. Priorities get lost. Reports explain what already happened instead of what needs attention next. Adding more charts to that pile does not help. It just adds more to read.</p><p>NorthStar starts from a different assumption. A screen for executives should be judged by the decisions it leads to, not the data it shows. Everything else follows from that. Metrics roll up into indexes. Reporting points forward, not just backward. Priority is stated, not implied. And when signals disagree, the page resolves them into one read you can defend.</p>
+    </div>
+  </section>
+  <section class="wp">
+    <div class="wp-num">02</div>
+    <div class="wp-body">
+      <h2>Start with the decision</h2>
+      <p class="lead">Visualization is not the design objective. Decision support is. Every visual therefore exists only where it advances a specific executive judgment.</p><p>Most dashboards get built from the chart menu outward. A card here, a map there, a table because there was room. It looks thorough and decides nothing.</p><p>NorthStar works the other way. It starts with the decision that needs to be made, then works backward to the visual. Every element on the page is there because it helps answer a specific executive question. The bullet comparing portfolio health to its target is there because someone has to decide whether the portfolio is on plan. The occupancy and cost-per-lease trends are there because the direction of travel changes the call. If a visual does not improve a decision, it does not belong.</p>
+    </div>
+  </section>
+  <section class="wp" id="lastlayer">
+    <div class="wp-num">03</div>
+    <div class="wp-body">
+      <h2>The last layer</h2>
+      <p>What executives see is only the final layer of NorthStar. Behind every score is a semantic model. Behind the semantic model is a warehouse. Behind the warehouse is the synthetic operating environment. The screen is simple on purpose, because everything complicated has already happened before the page loads.</p>
+      <p>Every other document in this portal describes one of those layers. This one describes the only layer built to be used every day.</p>
+    </div>
+  </section>
+  <div class="stackwrap">
+    <div class="stack">
+      <div class="sl">Business Reality</div><div class="sla">&#8595;</div>
+      <div class="sl">Data Generation Engine</div><div class="sla">&#8595;</div>
+      <div class="sl">Data Warehouse</div><div class="sla">&#8595;</div>
+      <div class="sl">Semantic Model</div><div class="sla">&#8595;</div>
+      <div class="sl">Executive Framework</div><div class="sla">&#8595;</div>
+      <div class="sl sl-focus">Executive Dashboard</div>
+    </div>
+  </div>
+  <section class="wp" id="jobs">
+    <div class="wp-num">04</div>
+    <div class="wp-body">
+      <h2>Every visual has one job</h2>
+      <p>On most dashboards, you describe a visual by its shape. A card, a map, a scatter. Here you describe it by the decision it carries. The summary page is almost all cards and short statements rather than charts, because reading it is a series of quick calls, not an exploration. Here is what each one is actually for.</p>
+    </div>
+  </section>
+  <div class="vjset">    <div class="vjob">
+      <div class="vj-name">Portfolio Health card</div>
+      <div class="vj-grid">
+        <div class="vj-cell"><span class="vjl">Purpose</span><span class="vjv">Tells you how the portfolio is doing, in one number, right now.</span></div>
+        <div class="vj-cell"><span class="vjl">Decision supported</span><span class="vjv">Look closer, or move on.</span></div>
+        <div class="vj-cell"><span class="vjl">Related index</span><span class="vjv">PHI</span></div>
+        <div class="vj-cell"><span class="vjl">Drill path</span><span class="vjv mono">PHI → GPI · OPI · VPI</span></div>
+      </div>
+    </div>    <div class="vjob">
+      <div class="vj-name">Index statement cards</div>
+      <div class="vj-grid">
+        <div class="vj-cell"><span class="vjl">Purpose</span><span class="vjv">Say how each discipline is doing in a plain sentence, not a score.</span></div>
+        <div class="vj-cell"><span class="vjl">Decision supported</span><span class="vjv">Which one is dragging things down?</span></div>
+        <div class="vj-cell"><span class="vjl">Related index</span><span class="vjv">GPI · OPI · VPI</span></div>
+        <div class="vj-cell"><span class="vjl">Drill path</span><span class="vjv mono">Open the weakest index</span></div>
+      </div>
+    </div>    <div class="vjob">
+      <div class="vj-name">Action Signal card</div>
+      <div class="vj-grid">
+        <div class="vj-cell"><span class="vjl">Purpose</span><span class="vjv">Points at the single most important thing to look at.</span></div>
+        <div class="vj-cell"><span class="vjl">Decision supported</span><span class="vjv">What gets attention first?</span></div>
+        <div class="vj-cell"><span class="vjl">Related index</span><span class="vjv">PHI</span></div>
+        <div class="vj-cell"><span class="vjl">Drill path</span><span class="vjv mono">Follow it to its index</span></div>
+      </div>
+    </div>    <div class="vjob">
+      <div class="vj-name">Trend areas</div>
+      <div class="vj-grid">
+        <div class="vj-cell"><span class="vjl">Purpose</span><span class="vjv">Show which way occupancy, leases, and cost per lease are heading.</span></div>
+        <div class="vj-cell"><span class="vjl">Decision supported</span><span class="vjv">Getting better, or getting worse?</span></div>
+        <div class="vj-cell"><span class="vjl">Related index</span><span class="vjv">OPI · GPI</span></div>
+        <div class="vj-cell"><span class="vjl">Drill path</span><span class="vjv mono">Open the detail page</span></div>
+      </div>
+    </div></div>
+  <section class="wp" id="methodology">
+    <div class="wp-num">05</div>
+    <div class="wp-body">
+      <h2>The visual language</h2>
+      <p class="lead">One rule runs through the whole interface: each kind of visual answers exactly one kind of question.</p>
+      <p>Cards tell you the current state. Trends tell you the direction. Comparisons tell you what matters most. Quadrants tell you what to do. Ask a single visual to do two of these jobs and it does neither one clearly, so nothing here is asked to.</p>
+    </div>
+  </section>
+  <div class="methset">
+    <div class="meth methhead"><div class="meth-v">Visual</div><div class="meth-q">Answers</div><div class="meth-d">Why</div></div>
+    <div class="meth"><div class="meth-v">Cards</div><div class="meth-q">What changed?</div><div class="meth-d">One value or one sentence you can read in a second. Is this healthy right now, or not?</div></div><div class="meth"><div class="meth-v">Trends</div><div class="meth-q">Which way is it moving?</div><div class="meth-d">A line over time, because the direction often matters more than today&#x27;s number.</div></div><div class="meth"><div class="meth-v">Scatter and bullet</div><div class="meth-q">Where do I look, and against what?</div><div class="meth-d">Position against peers or against a target, to find the outliers worth a closer look.</div></div><div class="meth"><div class="meth-v">Quadrants</div><div class="meth-q">What do I do about it?</div><div class="meth-d">A two-by-two that turns a position into an action: scale, optimize, hold, or cut.</div></div><div class="meth"><div class="meth-v">Action strips</div><div class="meth-q">What is next?</div><div class="meth-d">A short ranked list in plain words, so the page ends on a decision instead of a chart.</div></div><div class="meth"><div class="meth-v">Maps</div><div class="meth-q">Where is it?</div><div class="meth-d">Geography, but only when the answer is literally a place. It lives on the index pages, not here.</div></div>
+  </div>
+  <section class="wp" id="workflow">
+    <div class="wp-num">06</div>
+    <div class="wp-body">
+      <h2>How an executive moves through it</h2>
+      <p>The pages are arranged as a hierarchy, not a gallery, so there is one path through them and it is the same every time. You do not browse NorthStar. You run it. Start at the portfolio number, follow it down to the discipline that is dragging, and end on the specific thing to do. A report lets you wander. This does not.</p>
+    </div>
+  </section>
+  <div class="flowwrap"><div class="flow"><div class="fstep"><span class="fs-n">1</span><span class="fs-t">Open the interface</span></div><div class="fs-arrow">&#8595;</div><div class="fstep"><span class="fs-n">2</span><span class="fs-t">Read PHI</span></div><div class="fs-arrow">&#8595;</div><div class="fstep"><span class="fs-n">3</span><span class="fs-t">Identify the weakest index</span></div><div class="fs-arrow">&#8595;</div><div class="fstep"><span class="fs-n">4</span><span class="fs-t">Open that index page</span></div><div class="fs-arrow">&#8595;</div><div class="fstep"><span class="fs-n">5</span><span class="fs-t">Review the watch cards</span></div><div class="fs-arrow">&#8595;</div><div class="fstep"><span class="fs-n">6</span><span class="fs-t">Read the generated insight</span></div><div class="fs-arrow">&#8595;</div><div class="fstep"><span class="fs-n">7</span><span class="fs-t">Open the detail page</span></div><div class="fs-arrow">&#8595;</div><div class="fstep"><span class="fs-n">8</span><span class="fs-t">Take the action</span></div></div></div>
+  <section class="wp" id="interaction">
+    <div class="wp-num">07</div>
+    <div class="wp-body">
+      <h2>How it was designed to be read</h2>
+      <p class="lead">The Framework pages are about how to think. This page is about how to read.</p>
+      <p>Executives read the way everyone reads when they are busy: fast, in pieces, looking for the next thing to do. So the interface was built for that, not for completeness. A few principles do most of the work.</p>
+    </div>
+  </section>
+  <div class="uxset"><div class="ux"><div class="ux-t">Show the big thing first</div><p class="ux-d">The portfolio number comes first. Detail is one step away, not spread across the screen.</p></div><div class="ux"><div class="ux-t">Order by decision</div><p class="ux-d">The page is arranged by what you need to decide first, not by what data happens to exist.</p></div><div class="ux"><div class="ux-t">Keep it light</div><p class="ux-d">Each screen holds only a few things at once, so your attention goes to the call, not the layout.</p></div><div class="ux"><div class="ux-t">Make the path obvious</div><p class="ux-d">Every step down has a reason attached, so the route itself tells you why you are taking it.</p></div><div class="ux"><div class="ux-t">One question per visual</div><p class="ux-d">Nothing on the page tries to answer two things. A visual that does answers neither one well.</p></div><div class="ux"><div class="ux-t">Always a way down</div><p class="ux-d">Every high-level signal has a defined path to its cause, so any read can be explained.</p></div></div>
+  <section class="wp-close" id="close">
+    <div class="wpc-label">What this layer is</div>
+    <p class="wpc-statement">The executive summary answers four executive questions in under sixty seconds. It is not a report about the business. It is the interface through which the business is run.</p>
+    <p class="wpc-final">NorthStar was never meant to turn executives into analysts. It was meant to cut the amount of analysis they have to do before they can decide with confidence. The framework says why the indexes exist. The guides say how to read each one. This page is where that understanding turns into a decision. It comes last because it is the only layer anyone in leadership actually touches, and everything under it exists so that this part can stay simple.</p>
+    <p class="wpc-coda-final">Good executive interfaces do not eliminate complexity. They absorb it.</p>
+  </section>
+  <section class="cat" id="related">
+    <div class="cat-head"><h2>Related documentation</h2></div>
+    <div class="navcards">
+      <a class="navc" href="NorthStar_Executive_Index_Framework.html"><span class="nvt">Executive Decision Framework</span><span class="nvd">Why the four indexes exist</span></a>
+      <a class="navc" href="NorthStar_PHI.html"><span class="nvt">Executive Guide: PHI</span><span class="nvd">The number the dashboard leads with</span></a>
+      <a class="navc" href="NorthStar_Measures_Reference.html"><span class="nvt">Measure Catalog</span><span class="nvd">What every card is built from</span></a>
+      <a class="navc" href="NorthStar_Semantic_Model.html"><span class="nvt">Semantic Model</span><span class="nvd">The layer beneath the dashboard</span></a>
+    </div>
+  </section>
+
+  <nav class="pagenav" aria-label="Document navigation">
+    <a href="NorthStar_PHI.html"><span class="dir">Previous</span><span class="lbl">Executive Guide: PHI</span></a>
+    <a class="next" href="NorthStar_Attribution_Lab.html"><span class="dir">Next</span><span class="lbl">Attribution Lab</span></a>
+  </nav>
+
+</div>
+</main>
+</div>
+
+<footer>NORTHSTAR INTELLIGENCE PLATFORM · METADATA PORTAL · VERSION 1.0 &nbsp;·&nbsp; One source. Trusted data. Better decisions.</footer>
+
+</body>
+</html>

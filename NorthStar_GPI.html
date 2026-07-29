@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Executive Guide: GPI — NorthStar Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0D1B2A; --secondary:#18263B; --accent:#2563EB;
+    --success:#16A34A; --warning:#F59E0B; --info:#0EA5E9; --muted:#64748B;
+    --surface:#FFFFFF; --bg:#F8FAFC;
+    --line:#E2E8F0; --line-2:#CBD5E1; --ink:#0D1B2A; --ink-2:#475569;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+    --sidebar:280px; --topnav:72px; --maxw:1440px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  h1,h2,h3,h4{color:var(--primary);font-weight:600;line-height:1.3}
+
+  .topnav{position:sticky;top:0;z-index:30;height:var(--topnav);background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:28px}
+  .topnav .logo{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;color:var(--primary)}
+  .topnav .logo .mark{width:26px;height:26px;flex:none}
+  .topnav .logo small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);font-weight:400;margin-top:1px}
+  .topnav nav{display:flex;gap:22px;margin-left:8px;font-size:13.5px}
+  .topnav nav a{color:var(--ink-2)}
+  .topnav nav a[aria-current]{color:var(--primary);font-weight:500}
+  .topnav .right{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  .shell{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) 1fr}
+  aside{border-right:1px solid var(--line);background:var(--surface);position:sticky;top:var(--topnav);height:calc(100vh - var(--topnav));overflow-y:auto;padding:28px 0}
+  aside .grp{padding:0 24px;margin-bottom:22px}
+  aside .grp h5{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+  aside a{display:block;color:var(--ink-2);font-size:13.5px;padding:5px 0}
+  aside a:hover{color:var(--primary);text-decoration:none}
+  aside a[aria-current]{color:var(--accent);font-weight:500}
+  aside .search{padding:0 24px 22px}
+  aside .search input{width:100%;padding:8px 11px;border:1px solid var(--line-2);border-radius:6px;font-family:var(--sans);font-size:13px;background:var(--bg);color:var(--ink)}
+
+  main{background:var(--surface);min-width:0}
+  .doc{max-width:860px;padding:34px clamp(28px,4vw,56px) 90px}
+
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:26px}
+  .crumb a{color:var(--muted)} .crumb span{margin:0 7px;color:var(--line-2)}
+
+  .page-head{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+  .page-head .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  h1{font-size:32px;margin:0 0 14px}
+  .subtitle{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0;font-weight:400;line-height:1.5}
+
+  /* category jump bar */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px}
+  .jump a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 12px;border:1px solid var(--line-2);border-radius:20px;color:var(--ink-2)}
+  .jump a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+  section.cat{margin:40px 0;scroll-margin-top:90px}
+  .cat-head{border-bottom:2px solid var(--primary);padding-bottom:8px;margin-bottom:6px}
+  .cat-head h2{font-size:22px;margin:0}
+  .cat-intro{color:var(--ink-2);font-size:14.5px;margin:12px 0 8px;max-width:80ch}
+
+  /* term entry */
+  .term{border-bottom:1px solid var(--line);padding:24px 0;scroll-margin-top:90px}
+  .term:last-child{border-bottom:none}
+  .term h3{font-size:17px;margin:0 0 3px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .term h3 .also{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
+  .term .def{font-size:15px;color:var(--ink);margin:6px 0 0;max-width:82ch}
+  .term .row{margin-top:12px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:baseline}
+  .term .row .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+  .term .row .val{font-size:14px;color:var(--ink-2);max-width:72ch}
+  .term .row .val a{font-weight:500}
+  .term .formula{font-family:var(--mono);font-size:13px;color:var(--secondary);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:8px 12px;display:inline-block;margin-top:2px}
+  .term code{font-family:var(--mono);font-size:.88em;color:var(--secondary);background:var(--bg);padding:1px 5px;border-radius:2px}
+
+  .callout{border:1px solid var(--line);border-left:3px solid var(--info);background:var(--bg);border-radius:6px;padding:16px 20px;margin:20px 0}
+  .callout .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--info);margin-bottom:6px;font-weight:500}
+  .callout p{margin:0;color:var(--ink-2);font-size:13.5px}
+
+  .pagenav{display:flex;justify-content:space-between;margin-top:56px;padding-top:24px;border-top:1px solid var(--line);gap:16px}
+  .pagenav a{display:block;max-width:48%}
+  .pagenav .dir{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .pagenav .lbl{font-weight:600;color:var(--primary)}
+  .pagenav .next{text-align:right;margin-left:auto}
+  footer{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:var(--mono);font-size:11px;padding:22px 32px;text-align:center}
+  /* layers of business truth */
+  .lifecycle{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:24px 20px;margin:22px 0}
+  .lifecycle svg{display:block;width:100%;height:auto;max-width:820px;margin:0 auto}
+  .truth-note{border:1px solid var(--warning);border-left:3px solid var(--warning);background:#fffbeb;border-radius:6px;padding:14px 18px;margin:18px 0}
+  .truth-note .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#B45309;margin-bottom:5px;font-weight:500}
+  .truth-note p{margin:0;color:#78350F;font-size:13.5px}
+  .term .layer-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;font-weight:500}
+  .lt-mkt{background:#EFF4FB;color:#2563EB}
+  .lt-lease{background:#F0FDF4;color:#16A34A}
+  .lt-ops{background:#FEF3C7;color:#B45309}
+
+  /* cross-reference card: points to canonical definition elsewhere */
+  .xref{border:1px solid var(--line);border-left:3px solid var(--line-2);background:var(--bg);border-radius:6px;padding:14px 18px;margin:0}
+  .xref .xt{font-size:15px;font-weight:600;color:var(--primary);margin:0 0 3px}
+  .xref p{margin:0;color:var(--ink-2);font-size:13.5px}
+  .xref .goto{font-family:var(--mono);font-size:11px;margin-top:6px;display:inline-block}
+
+
+  /* parent term with nested views */
+  .parent{border-bottom:2px solid var(--primary);padding:26px 0 10px;margin-top:8px}
+  .parent h3{font-size:19px;margin:0 0 5px}
+  .parent .def{font-size:15px;color:var(--ink);margin:0;max-width:82ch}
+  .views{margin:0 0 8px}
+  .view{border-bottom:1px solid var(--line);padding:16px 0 16px 22px;border-left:2px solid var(--line-2);margin-left:2px;padding-left:20px}
+  .view h4{font-size:15px;margin:0 0 3px;color:var(--primary);display:flex;align-items:baseline;gap:10px}
+  .view h4 .layer-tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500}
+  .view p{margin:0;color:var(--ink-2);font-size:14px;max-width:78ch}
+  .view .sa{font-size:12.5px;margin-top:5px}
+  /* boxed thesis */
+  .thesis{border:2px solid var(--primary);border-radius:8px;padding:20px 24px;margin:24px 0;background:var(--bg)}
+  .thesis p{margin:0;font-size:17px;font-weight:500;color:var(--primary);max-width:none;text-align:center}
+  /* subgroup heading within a category */
+  .subgroup{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 4px;font-weight:500}
+
+
+  /* ============ executive guide (position paper) ============ */
+  .wp-head{margin-bottom:14px}
+  .wp-head .subtitle{font-size:17px;line-height:1.6;max-width:64ch;color:var(--ink)}
+  .idxbar{display:flex;align-items:center;gap:18px;padding:16px 20px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;background:var(--surface);margin:0 0 8px}
+  .ib-abbr{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--accent)}
+  .ib-q{font-size:16px;font-weight:600;color:var(--primary)}
+  @media(max-width:600px){.idxbar{flex-direction:column;align-items:flex-start;gap:6px}}
+
+  .wp{display:grid;grid-template-columns:64px 1fr;gap:8px;margin:46px 0 0;align-items:start}
+  .wp-num{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600;padding-top:6px}
+  .wp-body{max-width:66ch}
+  .wp-body h2{font-size:23px;font-weight:700;color:var(--primary);margin:0 0 16px;letter-spacing:-0.01em}
+  .wp-body p{font-size:15.5px;line-height:1.72;color:var(--ink);margin:0 0 16px}
+  .wp-body p.lead{font-size:19px;line-height:1.55;color:var(--primary);font-weight:500;margin-bottom:18px}
+  .wp-body p em{font-style:italic;color:var(--primary)}
+  .wp-body p strong{font-weight:600;color:var(--primary)}
+  @media(max-width:680px){.wp{grid-template-columns:1fr;gap:4px}.wp-num{padding-top:0}}
+
+  /* framework pillars (one paragraph each) */
+  .pilset{padding-left:72px;margin:14px 0 0;display:grid;gap:12px}
+  @media(max-width:680px){.pilset{padding-left:0}}
+  .pil{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:14px 18px;background:var(--surface)}
+  .pil-name{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);margin-bottom:5px}
+  .pil-desc{font-size:14px;line-height:1.62;color:var(--ink-2);margin:0}
+
+  /* executive interpretation */
+  .interp{margin:8px 0 0;border-top:2px solid var(--primary)}
+  .in-row{display:grid;grid-template-columns:150px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid var(--line);align-items:baseline}
+  .in-k{font-family:var(--mono);font-size:12px;font-weight:600}
+  .in-hi{color:#0E7490}.in-lo{color:#B45309}.in-tr{color:var(--accent)}
+  .in-v{font-size:14.5px;line-height:1.55;color:var(--ink-2)}
+  @media(max-width:640px){.in-row{grid-template-columns:1fr;gap:3px}}
+
+  /* decisions enabled (the differentiator) */
+  .decset{padding-left:72px;margin:14px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:680px){.decset{padding-left:0}}
+  @media(max-width:640px){.decset{grid-template-columns:1fr}}
+  .dec{border:1px solid var(--line);border-radius:8px;padding:15px 18px;background:var(--surface)}
+  .dec-t{font-size:14.5px;font-weight:700;color:var(--primary);margin-bottom:4px}
+  .dec-d{font-size:13.5px;line-height:1.55;color:var(--ink-2);margin:0}
+
+  /* misinterpretations */
+  .misreads{list-style:none;margin:14px 0 0;padding:0}
+  .misreads li{position:relative;padding:11px 0 11px 30px;font-size:14.5px;line-height:1.6;color:var(--ink-2);border-bottom:1px solid var(--line)}
+  .misreads li:last-child{border-bottom:none}
+  .misreads li:before{content:"!";position:absolute;left:8px;top:11px;font-family:var(--mono);font-size:12px;font-weight:700;color:#B45309}
+
+  /* questions this index answers */
+  .wp-answers{margin:52px 0 0;padding:36px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .wpa-label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:20px}
+  .wpa-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:14px 40px}
+  .wpa-list li{font-size:17px;font-weight:500;color:var(--primary);line-height:1.4;padding-left:22px;position:relative}
+  .wpa-list li:before{content:"";position:absolute;left:0;top:9px;width:8px;height:8px;border-radius:2px;background:var(--accent)}
+  @media(max-width:640px){.wpa-list{grid-template-columns:1fr}}
+
+  .navcards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin:20px 0}
+  .navc{border:1px solid var(--line);border-radius:8px;padding:14px 17px;text-decoration:none;background:var(--surface);transition:all .15s;display:block}
+  .navc:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(37,99,235,0.08)}
+  .navc .nvt{display:block;font-size:14px;font-weight:600;color:var(--accent)}
+  .navc .nvd{display:block;font-size:12px;color:var(--ink-2);margin-top:2px}
+  @media(max-width:640px){.navcards{grid-template-columns:1fr}}
+  .cat{margin:52px 0 0}.cat-head h2{font-size:19px}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+  @media(max-width:1000px){
+    .shell{grid-template-columns:1fr}
+    aside{display:none}
+    .term .row{grid-template-columns:1fr;gap:2px}
+    .term .row .lbl{padding-top:8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <a class="logo" href="index.html" aria-label="NorthStar home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19 13 L30 16 L19 19 L16 30 L13 19 L2 16 L13 13 Z" fill="#0D1B2A"/></svg>
+    <span>NORTHSTAR<small>METADATA PORTAL</small></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="NorthStar_About.html">About</a>
+    <a href="index.html" aria-current="page">Business</a>
+    <a href="NorthStar_Data_Model_Dictionary.html">Data</a>
+    <a href="NorthStar_Executive_Index_Framework.html">Analytics</a>
+    <a href="NorthStar_Pipeline_Architecture.html">Technical</a>
+  </nav>
+  <div class="right">v1.0</div>
+</header>
+
+<div class="shell">
+<aside aria-label="Documentation navigation">
+  <div class="search"><input type="search" placeholder="Search the metadata portal…" aria-label="Search documentation"></div>
+<div class="grp"><h5>Overview</h5>
+<a href="NorthStar_About.html">About NorthStar</a>
+<a href="NorthStar_Platform_Overview.html">Platform Overview</a>
+</div>
+<div class="grp"><h5>Business</h5>
+<a href="NorthStar_Business_Glossary.html">Business Glossary</a>
+<a href="NorthStar_Business_Rules.html">Business Rules</a>
+<a href="NorthStar_Data_Generation_Engine.html">Data Generation Engine</a>
+</div>
+<div class="grp"><h5>Executive</h5>
+<a href="NorthStar_Executive_Index_Framework.html">Decision Framework</a>
+<a href="NorthStar_GPI.html" aria-current="page">GPI</a>
+<a href="NorthStar_OPI.html">OPI</a>
+<a href="NorthStar_VPI.html">VPI</a>
+<a href="NorthStar_PHI.html">PHI</a>
+<a href="NorthStar_Executive_Dashboard.html">Executive Dashboard</a>
+<a href="NorthStar_Attribution_Lab.html">Attribution Lab</a>
+</div>
+<div class="grp"><h5>Technical</h5>
+<a href="NorthStar_Pipeline_Architecture.html">Pipeline Architecture</a>
+<a href="NorthStar_Pipeline_Dashboard.html">Pipeline Dashboard</a>
+<a href="NorthStar_Pipeline_Reliability.html">Pipeline Reliability</a>
+<a href="NorthStar_Data_Flow.html">Data Flow</a>
+<a href="NorthStar_Data_Model_Dictionary.html">Data Dictionary</a>
+<a href="NorthStar_Measures_Reference.html">Measure Catalog</a>
+<a href="NorthStar_Semantic_Model.html">Semantic Model</a>
+<a href="NorthStar_Platform_Specifications.html">Platform Specifications</a>
+</div>
+</aside>
+
+<main>
+<div class="doc">
+
+  <div class="crumb"><a href="index.html">Home</a><span>›</span><a href="NorthStar_Executive_Index_Framework.html">Executive Decision Framework</a><span>›</span>GPI</div>
+  <div class="page-head wp-head">
+    <div class="eyebrow">Executive Guide</div>
+    <h1>Executive Guide: Geographic Performance Index</h1>
+    <p class="subtitle">A management guide to the Geographic Performance Index. It argues why leasing performance should be judged by geography and against peers, and shows the decisions that judgment makes possible.</p>
+  </div>
+  <div class="idxbar"><span class="ib-abbr">GPI</span><span class="ib-q">Are our markets performing as expected?</span></div>
+  <section class="wp">
+    <div class="wp-num">01</div>
+    <div class="wp-body">
+      <h2>The executive question</h2>
+      <p class="lead">Every leasing organization already knows which markets are busy. Far fewer can say which markets are performing well.</p><p>Those are different questions. Busy is a fact about demand. Performing is a judgment about how well an organization is converting its conditions into results. GPI exists to answer the second question, the one budget decisions actually depend on.</p>
+    </div>
+  </section>
+  <section class="wp">
+    <div class="wp-num">02</div>
+    <div class="wp-body">
+      <h2>Why this index exists</h2>
+      <p>Raw performance lies. A market can lease eighty units a month in a high-demand metro where demand alone would carry it, while another leases twenty in a soft, oversupplied submarket where twenty is a genuine achievement. Ranked by volume, the first market wins every time. Judged by how well each is doing relative to what its conditions should produce, the second may be the stronger operation.</p><p>Absolute numbers reward size and demand, not skill. A company that allocates budget by volume pours money into markets that are already winning on their own, and starves the markets where good marketing is actually moving the needle. The business problem GPI solves is misallocation caused by mistaking demand for performance.</p>
+    </div>
+  </section>
+  <section class="wp">
+    <div class="wp-num">03</div>
+    <div class="wp-body">
+      <h2>Design philosophy</h2>
+      <p>The alternative to GPI is the scorecard most organizations already use: rank markets by leases, or by cost per lease, and reward the top of the list. That approach fails because it compares markets that are not comparable. A cost per lease that is excellent in one metro is poor in another, so a single leaderboard mixes skill with circumstance and calls the result performance.</p><p>GPI takes a different position. Performance is only meaningful relative to conditions, so each market is graded against its peers rather than a fixed target. And because volume bought at any cost is not success, efficiency is weighed alongside outcome, so a market cannot spend its way to a high score. The design choice, in one line: judge each geography against comparable geographies, on results and on the cost of achieving them.</p>
+    </div>
+  </section>
+  <section class="wp">
+    <div class="wp-num">04</div>
+    <div class="wp-body">
+      <h2>The framework</h2>
+      <p>GPI reads three things about a market and balances them. Each is a management idea, not a formula.</p>
+    </div>
+  </section>
+  <div class="pilset"><div class="pil"><div class="pil-name">Reality</div><p class="pil-desc">How the market is actually performing on the ground: the leasing outcomes it is producing, taken at face value. This is the anchor that keeps the score honest about results.</p></div><div class="pil"><div class="pil-name">Influence</div><p class="pil-desc">How much of that outcome marketing can credibly claim. A strong result in a market that would have leased itself earns less than the same result in a market that needed the push. This is where GPI separates demand from marketing&#x27;s contribution.</p></div><div class="pil"><div class="pil-name">Efficiency</div><p class="pil-desc">What the outcome cost to produce, relative to peers. Two markets with the same result are not equal if one spent twice as much. Efficiency is what stops volume from buying a good score.</p></div></div>
+  <section class="wp">
+    <div class="wp-num">05</div>
+    <div class="wp-body">
+      <h2>Executive interpretation</h2>
+      <p>A score is only useful if everyone reads it the same way. Here is how to read this one.</p>
+      <div class="interp">
+        <div class="in-row"><span class="in-k in-hi">A high score</span><span class="in-v">means the market is producing strong leasing outcomes that marketing can credibly claim credit for, at a cost that compares well to its peers. It is a candidate for more investment, not just applause.</span></div>
+        <div class="in-row"><span class="in-k in-lo">A low score</span><span class="in-v">means the market is lagging comparable markets once demand and spend are accounted for. It is a prompt to investigate, though the cause may sit outside marketing.</span></div>
+        <div class="in-row"><span class="in-k in-tr">A moving score</span><span class="in-v">matters more than the level. A market sliding down its peer ranking over several periods is an early signal that something is changing before it shows up in raw volume.</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="wp">
+    <div class="wp-num">06</div>
+    <div class="wp-body">
+      <h2>Decisions this score enables</h2>
+      <p class="lead">The point of the score is not the number. It is the decision the number makes possible.</p>
+      <p>Because GPI makes markets comparable on performance rather than size, it turns a pile of leasing reports into a small set of executive moves.</p>
+    </div>
+  </section>
+  <div class="decset"><div class="dec"><div class="dec-t">Market prioritization</div><p class="dec-d">Decide which markets get leadership attention this quarter, based on where performance is slipping relative to peers rather than where volume happens to be lowest.</p></div><div class="dec"><div class="dec-t">Marketing allocation</div><p class="dec-d">Move the next marketing dollar toward markets where spend is demonstrably producing leases, and away from markets where volume is really just demand.</p></div><div class="dec"><div class="dec-t">Regional comparison</div><p class="dec-d">Compare regions on a like-for-like basis, so a soft region&#x27;s best operator and a strong region&#x27;s laggard are both visible for what they are.</p></div><div class="dec"><div class="dec-t">Performance benchmarking</div><p class="dec-d">Set expectations for a market from its peer set rather than from last year&#x27;s number, giving operators a fair and defensible bar.</p></div></div>
+  <section class="wp">
+    <div class="wp-num">07</div>
+    <div class="wp-body">
+      <h2>Common misinterpretations</h2>
+      <p>A framework earns trust by naming its own limits. These are the readings to avoid.</p>
+      <ul class="misreads"><li>A high GPI does not necessarily mean marketing is perfect. It can mean the peer set is weak, and the market is simply the least-bad in a soft region.</li><li>A low GPI in a strong region is not automatically a failure. A market can outperform the portfolio and still rank low among exceptional peers.</li><li>GPI is a marketing lens. A low score driven by an operational problem, a staffing gap or a pricing error, should be read in OPI, not fought with more marketing.</li></ul>
+    </div>
+  </section>
+  <section class="wp">
+    <div class="wp-num">08</div>
+    <div class="wp-body">
+      <h2>Relationship to PHI</h2>
+      <p>GPI is the largest single input to the Portfolio Health Index, contributing roughly forty-five percent of it. That weight is a deliberate statement: for a leasing business, geographic marketing performance is the earliest reliable signal of where portfolio health is heading.</p><p>But GPI should never be read as the whole story. It measures one discipline and hands one clean number to PHI. A market can post a strong GPI while its operations quietly deteriorate; that is precisely why PHI also carries OPI and VPI. GPI tells an executive whether marketing is winning the market. It does not tell them whether the property can keep the residents it wins.</p>
+    </div>
+  </section>
+  <section class="wp-answers">
+    <div class="wpa-label">Questions GPI answers</div>
+    <ul class="wpa-list"><li>Which markets are outperforming expectations?</li><li>Where is marketing most efficient?</li><li>Which markets deserve additional investment?</li><li>Where is performance lagging peers?</li></ul>
+  </section>
+  <section class="cat">
+    <div class="cat-head"><h2>The rest of the framework</h2></div>
+    <div class="navcards"><a class="navc" href="NorthStar_Executive_Index_Framework.html"><span class="nvt">Executive Decision Framework</span><span class="nvd">Why the four indexes exist</span></a><a class="navc" href="NorthStar_OPI.html"><span class="nvt">Executive Guide: OPI</span><span class="nvd">Can operations sustain future demand?</span></a><a class="navc" href="NorthStar_VPI.html"><span class="nvt">Executive Guide: VPI</span><span class="nvd">Which investments deserve more capital?</span></a><a class="navc" href="NorthStar_PHI.html"><span class="nvt">Executive Guide: PHI</span><span class="nvd">Is the business healthy?</span></a></div>
+  </section>
+
+  <nav class="pagenav" aria-label="Document navigation">
+    <a href="NorthStar_Executive_Index_Framework.html"><span class="dir">Up</span><span class="lbl">Executive Decision Framework</span></a>
+    <a class="next" href="NorthStar_OPI.html"><span class="dir">Next</span><span class="lbl">Executive Guide: OPI</span></a>
+  </nav>
+
+</div>
+</main>
+</div>
+
+<footer>NORTHSTAR INTELLIGENCE PLATFORM · METADATA PORTAL · VERSION 1.0 &nbsp;·&nbsp; One source. Trusted data. Better decisions.</footer>
+
+</body>
+</html>

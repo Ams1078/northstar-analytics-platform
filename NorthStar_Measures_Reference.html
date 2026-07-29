@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Measure Catalog — NorthStar Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0D1B2A; --secondary:#18263B; --accent:#2563EB;
+    --success:#16A34A; --warning:#F59E0B; --info:#0EA5E9; --muted:#64748B;
+    --surface:#FFFFFF; --bg:#F8FAFC;
+    --line:#E2E8F0; --line-2:#CBD5E1; --ink:#0D1B2A; --ink-2:#475569;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+    --sidebar:280px; --topnav:72px; --maxw:1440px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  h1,h2,h3,h4{color:var(--primary);font-weight:600;line-height:1.3}
+
+  .topnav{position:sticky;top:0;z-index:30;height:var(--topnav);background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:28px}
+  .topnav .logo{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;color:var(--primary)}
+  .topnav .logo .mark{width:26px;height:26px;flex:none}
+  .topnav .logo small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);font-weight:400;margin-top:1px}
+  .topnav nav{display:flex;gap:22px;margin-left:8px;font-size:13.5px}
+  .topnav nav a{color:var(--ink-2)}
+  .topnav nav a[aria-current]{color:var(--primary);font-weight:500}
+  .topnav .right{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  .shell{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) 1fr}
+  aside{border-right:1px solid var(--line);background:var(--surface);position:sticky;top:var(--topnav);height:calc(100vh - var(--topnav));overflow-y:auto;padding:28px 0}
+  aside .grp{padding:0 24px;margin-bottom:22px}
+  aside .grp h5{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+  aside a{display:block;color:var(--ink-2);font-size:13.5px;padding:5px 0}
+  aside a:hover{color:var(--primary);text-decoration:none}
+  aside a[aria-current]{color:var(--accent);font-weight:500}
+  aside .search{padding:0 24px 22px}
+  aside .search input{width:100%;padding:8px 11px;border:1px solid var(--line-2);border-radius:6px;font-family:var(--sans);font-size:13px;background:var(--bg);color:var(--ink)}
+
+  main{background:var(--surface);min-width:0}
+  .doc{max-width:860px;padding:34px clamp(28px,4vw,56px) 90px}
+
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:26px}
+  .crumb a{color:var(--muted)} .crumb span{margin:0 7px;color:var(--line-2)}
+
+  .page-head{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+  .page-head .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  h1{font-size:32px;margin:0 0 14px}
+  .subtitle{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0;font-weight:400;line-height:1.5}
+
+  /* category jump bar */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px}
+  .jump a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 12px;border:1px solid var(--line-2);border-radius:20px;color:var(--ink-2)}
+  .jump a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+  section.cat{margin:40px 0;scroll-margin-top:90px}
+  .cat-head{border-bottom:2px solid var(--primary);padding-bottom:8px;margin-bottom:6px}
+  .cat-head h2{font-size:22px;margin:0}
+  .cat-intro{color:var(--ink-2);font-size:14.5px;margin:12px 0 8px;max-width:80ch}
+
+  /* term entry */
+  .term{border-bottom:1px solid var(--line);padding:24px 0;scroll-margin-top:90px}
+  .term:last-child{border-bottom:none}
+  .term h3{font-size:17px;margin:0 0 3px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .term h3 .also{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
+  .term .def{font-size:15px;color:var(--ink);margin:6px 0 0;max-width:82ch}
+  .term .row{margin-top:12px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:baseline}
+  .term .row .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+  .term .row .val{font-size:14px;color:var(--ink-2);max-width:72ch}
+  .term .row .val a{font-weight:500}
+  .term .formula{font-family:var(--mono);font-size:13px;color:var(--secondary);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:8px 12px;display:inline-block;margin-top:2px}
+  .term code{font-family:var(--mono);font-size:.88em;color:var(--secondary);background:var(--bg);padding:1px 5px;border-radius:2px}
+
+  .callout{border:1px solid var(--line);border-left:3px solid var(--info);background:var(--bg);border-radius:6px;padding:16px 20px;margin:20px 0}
+  .callout .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--info);margin-bottom:6px;font-weight:500}
+  .callout p{margin:0;color:var(--ink-2);font-size:13.5px}
+
+  .pagenav{display:flex;justify-content:space-between;margin-top:56px;padding-top:24px;border-top:1px solid var(--line);gap:16px}
+  .pagenav a{display:block;max-width:48%}
+  .pagenav .dir{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .pagenav .lbl{font-weight:600;color:var(--primary)}
+  .pagenav .next{text-align:right;margin-left:auto}
+  footer{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:var(--mono);font-size:11px;padding:22px 32px;text-align:center}
+  /* layers of business truth */
+  .lifecycle{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:24px 20px;margin:22px 0}
+  .lifecycle svg{display:block;width:100%;height:auto;max-width:820px;margin:0 auto}
+  .truth-note{border:1px solid var(--warning);border-left:3px solid var(--warning);background:#fffbeb;border-radius:6px;padding:14px 18px;margin:18px 0}
+  .truth-note .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#B45309;margin-bottom:5px;font-weight:500}
+  .truth-note p{margin:0;color:#78350F;font-size:13.5px}
+  .term .layer-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;font-weight:500}
+  .lt-mkt{background:#EFF4FB;color:#2563EB}
+  .lt-lease{background:#F0FDF4;color:#16A34A}
+  .lt-ops{background:#FEF3C7;color:#B45309}
+
+  /* cross-reference card: points to canonical definition elsewhere */
+  .xref{border:1px solid var(--line);border-left:3px solid var(--line-2);background:var(--bg);border-radius:6px;padding:14px 18px;margin:0}
+  .xref .xt{font-size:15px;font-weight:600;color:var(--primary);margin:0 0 3px}
+  .xref p{margin:0;color:var(--ink-2);font-size:13.5px}
+  .xref .goto{font-family:var(--mono);font-size:11px;margin-top:6px;display:inline-block}
+
+
+  /* parent term with nested views */
+  .parent{border-bottom:2px solid var(--primary);padding:26px 0 10px;margin-top:8px}
+  .parent h3{font-size:19px;margin:0 0 5px}
+  .parent .def{font-size:15px;color:var(--ink);margin:0;max-width:82ch}
+  .views{margin:0 0 8px}
+  .view{border-bottom:1px solid var(--line);padding:16px 0 16px 22px;border-left:2px solid var(--line-2);margin-left:2px;padding-left:20px}
+  .view h4{font-size:15px;margin:0 0 3px;color:var(--primary);display:flex;align-items:baseline;gap:10px}
+  .view h4 .layer-tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500}
+  .view p{margin:0;color:var(--ink-2);font-size:14px;max-width:78ch}
+  .view .sa{font-size:12.5px;margin-top:5px}
+  /* boxed thesis */
+  .thesis{border:2px solid var(--primary);border-radius:8px;padding:20px 24px;margin:24px 0;background:var(--bg)}
+  .thesis p{margin:0;font-size:17px;font-weight:500;color:var(--primary);max-width:none;text-align:center}
+  /* subgroup heading within a category */
+  .subgroup{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 4px;font-weight:500}
+
+
+  /* ============ measure catalog (architecture-first) ============ */
+  .cat{margin:44px 0 0}.cat-intro{max-width:72ch}.cat-head h2{font-size:19px}
+  .lookup{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:24px 0 8px}
+  .lookup #mcatsearch{flex:1;min-width:220px;border:1px solid var(--line);border-radius:6px;padding:9px 12px;font-family:var(--mono);font-size:13px;color:var(--ink);background:var(--bg);outline:none}
+  .lookup #mcatsearch:focus{border-color:var(--accent)}
+  .lookup-count{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+  .jump.tabs{display:flex;gap:4px;flex-wrap:wrap}
+  .jump.tabs a{font-family:var(--mono);font-size:11px;color:var(--ink-2);text-decoration:none;padding:5px 9px;border:1px solid transparent;border-bottom:2px solid transparent;border-radius:5px 5px 0 0}
+  .jump.tabs a:hover{color:var(--accent);border-bottom-color:var(--line-2)}
+  .scope .spv.txt{font-size:12.5px;font-weight:600}
+  .speclabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:26px 0 0;font-weight:500}
+  .mspec{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;border-top:2px solid var(--primary);margin:10px 0 8px;padding-top:6px}
+  .mspec .specrow{display:flex;align-items:baseline;font-family:var(--mono);font-size:12.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+  .mspec .sk{color:var(--ink-2)}
+  .mspec .leader{flex:1;border-bottom:1px dotted #CBD5E1;margin:0 10px;position:relative;top:-4px}
+  .mspec .sv{color:var(--primary);font-weight:600}
+  @media(max-width:640px){.mspec{grid-template-columns:1fr;gap:0}}
+  .implnote{font-size:12px;color:var(--muted);line-height:1.55;margin:18px 0 0;max-width:74ch}
+  .implnote b{color:var(--ink-2);font-weight:600}
+  .apinote{max-width:74ch;font-size:13px;color:var(--ink-2);line-height:1.6;margin:14px 0 0;padding-left:16px;border-left:2px solid var(--accent)}
+
+  /* recursion stack */
+  .archstack{display:flex;flex-direction:column;align-items:center;margin:24px 0;gap:0}
+  .asl{display:grid;grid-template-columns:34px 200px 1fr;align-items:center;gap:14px;border:1px solid var(--line);border-radius:6px;padding:11px 20px;background:var(--surface);width:100%;max-width:640px}
+  .asl-n{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:600}
+  .asl-name{font-size:14px;font-weight:600;color:var(--primary)}
+  .asl-desc{font-size:11.5px;color:var(--muted)}
+  .asl.asl-focus{border-color:var(--accent);background:#F4F8FE}
+  .asl-arrow{color:var(--muted);font-size:13px;margin:4px 0}
+  @media(max-width:600px){.asl{grid-template-columns:28px 1fr}.asl-desc{display:none}}
+
+  /* index framework */
+  .phitop{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;margin:22px 0 0}
+  .fw-index{display:flex;flex-direction:column;align-items:center;gap:1px;border:1.5px solid var(--accent);border-radius:7px;padding:9px 22px;background:#F4F8FE}
+  .fw-index.fw-phi{border-color:var(--gold,#D4AF37);background:#FBF7EC}
+  .fw-abbr{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--accent)}
+  .fw-phi .fw-abbr{color:#9A7B1F}
+  .fw-full{font-size:10.5px;color:var(--ink-2)}
+  .fw-weights{display:flex;gap:10px;flex-wrap:wrap}
+  .fw-wt{font-family:var(--mono);font-size:11px;color:var(--ink-2)}.fw-wt b{color:var(--primary)}
+  .fw-downarrow{text-align:center;font-family:var(--mono);font-size:10px;color:var(--muted);margin:10px 0;text-transform:uppercase;letter-spacing:.05em}
+  .fwgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .fwcard{border:1px solid var(--line);border-radius:8px;padding:16px;background:var(--surface)}
+  .fwcard .fw-index{border-color:var(--line);background:var(--bg);margin-bottom:8px}
+  .fwcard .fw-abbr{font-size:15px}
+  .fw-desc{font-size:12px;color:var(--ink-2);margin-bottom:10px;line-height:1.45}
+  .fw-pillars{display:flex;flex-direction:column;gap:5px}
+  .fw-p{display:flex;justify-content:space-between;align-items:baseline;border:1px solid var(--line);border-radius:5px;padding:6px 10px;background:var(--bg)}
+  .fw-pn{font-family:var(--mono);font-size:11.5px;color:var(--primary);font-weight:500}
+  .fw-pw{font-family:var(--mono);font-size:10px;color:var(--muted)}
+  .fw-sub{margin-top:8px;font-family:var(--mono);font-size:9.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+  @media(max-width:640px){.fwgrid{grid-template-columns:1fr}}
+
+  /* architectural chains */
+  .chaingrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0}
+  .chaincol{display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:16px 12px;background:var(--surface)}
+  .ch-title{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+  .ch-node{font-family:var(--mono);font-size:12px;text-align:center;border:1px solid var(--line);border-radius:5px;padding:7px 12px;width:100%;background:var(--bg);color:var(--ink)}
+  .ch-node.ch-base{color:var(--muted)}
+  .ch-node.ch-business{color:var(--primary)}
+  .ch-node.ch-pillar{color:#6D28D9;border-color:#E4D9F7;background:#F8F5FD}
+  .ch-node.ch-index{color:var(--accent);border-color:#DCE8FA;background:#F4F8FE;font-weight:600}
+  .ch-node.ch-portfolio{color:#9A7B1F;border-color:#EAD9A8;background:#FBF7EC;font-weight:700}
+  .ch-arrow{color:var(--muted);font-size:12px}
+  @media(max-width:640px){.chaingrid{grid-template-columns:1fr}}
+
+  /* full dependency map */
+  .fullmap{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:22px 0;padding:18px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+  .fm-node{font-family:var(--mono);font-size:11.5px;color:var(--primary);border:1px solid var(--line);border-radius:5px;padding:7px 11px;background:var(--bg)}
+  .fm-node:nth-last-child(3){border-color:var(--gold,#D4AF37);background:#FBF7EC;color:#9A7B1F;font-weight:600}
+  .fm-node:last-of-type{border-color:var(--accent);color:var(--accent);font-weight:600}
+  .fm-arrow{color:var(--accent);font-size:12px}
+
+  /* principles */
+  .principles{columns:2;column-gap:44px;margin:22px 0}
+  .prin{break-inside:avoid;display:block;padding:0 0 16px}
+  .prin .print{display:block;font-size:14px;font-weight:600;color:var(--primary)}
+  .prin .prind{display:block;font-size:13px;color:var(--ink-2);margin-top:2px;line-height:1.5}
+  @media(max-width:640px){.principles{columns:1}}
+
+  /* domain inventory */
+  .catblock{margin:26px 0 0}
+  .cb-head{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .cb-head h3{font-size:15px;font-weight:600;color:var(--primary);margin:0}
+  .cb-badge{width:9px;height:9px;border-radius:2px;display:inline-block;flex-shrink:0}
+  .cb-badge.c-base{background:#64748B}.cb-badge.c-biz{background:#2563EB}.cb-badge.c-norm{background:#0891B2}
+  .cb-badge.c-pillar{background:#7C3AED}.cb-badge.c-index{background:#0891B2}.cb-badge.c-support{background:#D4AF37}
+  .cb-count{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:auto}
+  .cb-desc{font-size:13px;color:var(--ink-2);margin:0 0 6px;max-width:72ch;line-height:1.5}
+  .mtable{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 0}
+  .mtable thead th{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 12px 8px 0;border-bottom:1.5px solid var(--primary);font-weight:500}
+  .mtable td{padding:8px 12px 8px 0;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45}
+  .mtable tbody tr:nth-child(even){background:#FAFBFC}
+  .mtable .mn{font-family:var(--mono);font-size:12px;color:var(--primary);font-weight:500;white-space:nowrap}
+  .mtable .mr{font-size:11.5px;color:var(--ink-2);white-space:nowrap;width:100px}
+  .mtable .md{font-family:var(--mono);font-size:11px;color:var(--secondary)}
+  .mtable tr.hidden,.catblock.hidden{display:none}
+
+  /* discrepancy note */
+  .discrepancy{border:1px solid #EAD9A8;background:#FBF7EC;border-radius:8px;padding:14px 18px;margin:22px 0}
+  .discrepancy .dt{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#9A7B1F;font-weight:600;margin-bottom:5px}
+  .discrepancy p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.55}
+  .discrepancy code{font-family:var(--mono);font-size:12px;color:var(--secondary)}
+
+  /* nav cards */
+  .navcards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin:20px 0}
+  .navc{border:1px solid var(--line);border-radius:8px;padding:14px 17px;text-decoration:none;background:var(--surface);transition:all .15s;display:block}
+  .navc:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(37,99,235,0.08)}
+  .navc .nvt{display:block;font-size:14px;font-weight:600;color:var(--accent)}
+  .navc .nvd{display:block;font-size:12px;color:var(--ink-2);margin-top:2px}
+  @media(max-width:640px){.navcards{grid-template-columns:1fr}}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+  @media(max-width:1000px){
+    .shell{grid-template-columns:1fr}
+    aside{display:none}
+    .term .row{grid-template-columns:1fr;gap:2px}
+    .term .row .lbl{padding-top:8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <a class="logo" href="index.html" aria-label="NorthStar home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19 13 L30 16 L19 19 L16 30 L13 19 L2 16 L13 13 Z" fill="#0D1B2A"/></svg>
+    <span>NORTHSTAR<small>METADATA PORTAL</small></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="NorthStar_About.html">About</a>
+    <a href="index.html">Business</a>
+    <a href="NorthStar_Data_Model_Dictionary.html">Data</a>
+    <a href="NorthStar_Executive_Index_Framework.html">Analytics</a>
+    <a href="NorthStar_Pipeline_Architecture.html">Technical</a>
+  </nav>
+  <div class="right">v1.0</div>
+</header>
+
+<div class="shell">
+<aside aria-label="Documentation navigation">
+  <div class="search"><input type="search" placeholder="Search the metadata portal…" aria-label="Search documentation"></div>
+<div class="grp"><h5>Overview</h5>
+<a href="NorthStar_About.html">About NorthStar</a>
+<a href="NorthStar_Platform_Overview.html">Platform Overview</a>
+</div>
+<div class="grp"><h5>Business</h5>
+<a href="NorthStar_Business_Glossary.html">Business Glossary</a>
+<a href="NorthStar_Business_Rules.html">Business Rules</a>
+<a href="NorthStar_Data_Generation_Engine.html">Data Generation Engine</a>
+</div>
+<div class="grp"><h5>Executive</h5>
+<a href="NorthStar_Executive_Index_Framework.html">Decision Framework</a>
+<a href="NorthStar_GPI.html">GPI</a>
+<a href="NorthStar_OPI.html">OPI</a>
+<a href="NorthStar_VPI.html">VPI</a>
+<a href="NorthStar_PHI.html">PHI</a>
+<a href="NorthStar_Executive_Dashboard.html">Executive Dashboard</a>
+<a href="NorthStar_Attribution_Lab.html">Attribution Lab</a>
+</div>
+<div class="grp"><h5>Technical</h5>
+<a href="NorthStar_Pipeline_Architecture.html">Pipeline Architecture</a>
+<a href="NorthStar_Pipeline_Dashboard.html">Pipeline Dashboard</a>
+<a href="NorthStar_Pipeline_Reliability.html">Pipeline Reliability</a>
+<a href="NorthStar_Data_Flow.html">Data Flow</a>
+<a href="NorthStar_Data_Model_Dictionary.html">Data Dictionary</a>
+<a href="NorthStar_Measures_Reference.html" aria-current="page">Measure Catalog</a>
+<a href="NorthStar_Semantic_Model.html">Semantic Model</a>
+<a href="NorthStar_Platform_Specifications.html">Platform Specifications</a>
+</div>
+</aside>
+
+<main>
+<div class="doc">
+
+  <div class="crumb"><a href="index.html">Home</a><span>›</span><a href="index.html">Data</a><span>›</span>Measure Catalog</div>
+  <div class="page-head">
+    <div class="eyebrow">Data</div>
+    <h1>Measure Catalog</h1>
+    <p class="subtitle">The Measure Catalog documents how business knowledge is encoded into the NorthStar semantic layer. Measures are organized as an architecture, from physical aggregations up through the four executive indexes, rather than as an inventory. Internal helper measures are intentionally omitted.</p>
+  </div>
+  <div class="lookup" id="lookup">
+    <input type="text" id="mcatsearch" placeholder="Filter measures by name, domain, or dependency…" autocomplete="off" aria-label="Filter measures">
+    <span class="lookup-count" id="lookupcount"></span>
+    <nav class="jump tabs"><a href="#architecture">Architecture</a><a href="#framework">Indexes</a><a href="#chains">Chains</a><a href="#map">Map</a><a href="#domains">Domains</a></nav>
+  </div>
+  <div class="speclabel">Measure Specification</div>
+  <div class="mspec">
+<div class="specrow"><span class="sk">Semantic objects</span><span class="leader"></span><span class="sv">1,289</span></div><div class="specrow"><span class="sk">Architecture layers</span><span class="leader"></span><span class="sv">10</span></div><div class="specrow"><span class="sk">Executive indexes</span><span class="leader"></span><span class="sv">4</span></div><div class="specrow"><span class="sk">Primary measure table</span><span class="leader"></span><span class="sv">Created Measure</span></div><div class="specrow"><span class="sk">Presentation logic</span><span class="leader"></span><span class="sv">Separated</span></div><div class="specrow"><span class="sk">Index composition</span><span class="leader"></span><span class="sv">PHI &#8592; GPI · OPI · VPI</span></div>  </div>
+  <p class="apinote">Like an API reference, this catalog documents the semantic architecture a developer would build from, not every private measure. The page teaches the framework: how a stored column climbs through base measures, KPIs, normalized scores, and pillars into GPI, OPI, VPI, and finally PHI. The measure tables at the end are a deliberately short, structural sample.</p>
+  <section class="cat" id="architecture">
+    <div class="cat-head"><h2>The recursive architecture</h2></div>
+    <p class="cat-intro">Every measure sits on one of ten layers. Each layer consumes the one above and is consumed by the one below. This recursion, from a stored column all the way to an executive insight, is the design that defines NorthStar.</p>
+    <div class="archstack">
+      <div class="asl"><span class="asl-n">01</span><span class="asl-name">Stored Columns</span><span class="asl-desc">The physical fact columns. Spend, MetricValue, OccupiedUnits.</span></div>      <div class="asl-arrow">&#8595;</div>      <div class="asl"><span class="asl-n">02</span><span class="asl-name">Base Measures</span><span class="asl-desc">One aggregation over one column. Marketing Spend, Impressions, Occupied Units.</span></div>      <div class="asl-arrow">&#8595;</div>      <div class="asl"><span class="asl-n">03</span><span class="asl-name">Business KPIs</span><span class="asl-desc">Ratios built from base measures. Occupancy %, Cost per Lead, CTR %.</span></div>      <div class="asl-arrow">&#8595;</div>      <div class="asl"><span class="asl-n">04</span><span class="asl-name">Benchmark Measures</span><span class="asl-desc">Peer and portfolio reference values a KPI is compared against.</span></div>      <div class="asl-arrow">&#8595;</div>      <div class="asl"><span class="asl-n">05</span><span class="asl-name">Normalized Scores</span><span class="asl-desc">KPIs rescaled to a common 0–100 basis so unlike metrics can combine.</span></div>      <div class="asl-arrow">&#8595;</div>      <div class="asl"><span class="asl-n">06</span><span class="asl-name">Pillar Scores</span><span class="asl-desc">The weighted sub-scores each index rolls up from.</span></div>      <div class="asl-arrow">&#8595;</div>      <div class="asl asl-focus"><span class="asl-n">07</span><span class="asl-name">Index Scores</span><span class="asl-desc">GPI, OPI, VPI. One composite per performance domain.</span></div>      <div class="asl-arrow">&#8595;</div>      <div class="asl asl-focus"><span class="asl-n">08</span><span class="asl-name">Portfolio Score</span><span class="asl-desc">PHI. The single executive number, weighted from the three indexes.</span></div>      <div class="asl-arrow">&#8595;</div>      <div class="asl"><span class="asl-n">09</span><span class="asl-name">Display Measures</span><span class="asl-desc">Colors, icons, stars, formatted strings. Consume scores, never compute them.</span></div>      <div class="asl-arrow">&#8595;</div>      <div class="asl"><span class="asl-n">10</span><span class="asl-name">Insight Measures</span><span class="asl-desc">Dynamic narrative that reads the scores and writes the sentence.</span></div>    </div>
+  </section>
+  <section class="cat" id="framework">
+    <div class="cat-head"><h2>The index framework</h2></div>
+    <p class="cat-intro">Four composite indexes sit at the top of the model. GPI, OPI, and VPI each score one performance domain, and all three roll up into PHI, the single portfolio number. Each index is a weighted blend of its own pillar scores.</p>
+
+    <div class="phitop">
+      <div class="fw-index fw-phi"><span class="fw-abbr">PHI</span><span class="fw-full">Portfolio Health Index</span></div>
+      <div class="fw-weights"><span class="fw-wt"><b>0.45</b> GPI</span><span class="fw-wt"><b>0.30</b> OPI</span><span class="fw-wt"><b>0.25</b> VPI</span></div>
+    </div>
+    <div class="fw-downarrow">&#8595; rolls up from</div>
+
+    <div class="fwgrid">
+      <div class="fwcard">
+        <div class="fw-index"><span class="fw-abbr">GPI</span><span class="fw-full">Geographic Performance Index</span></div>
+        <div class="fw-desc">Marketing performance by geography.</div>
+        <div class="fw-pillars"><div class="fw-p"><span class="fw-pn">Reality</span><span class="fw-pw">0.40</span></div><div class="fw-p"><span class="fw-pn">Influence</span><span class="fw-pw">0.35</span></div><div class="fw-p"><span class="fw-pn">Efficiency</span><span class="fw-pw">0.25</span></div></div>
+      </div>
+      <div class="fwcard">
+        <div class="fw-index"><span class="fw-abbr">OPI</span><span class="fw-full">Operations Index</span></div>
+        <div class="fw-desc">Operational health, present and forward.</div>
+        <div class="fw-pillars"><div class="fw-p"><span class="fw-pn">Current State</span><span class="fw-pw">0.60</span></div><div class="fw-p"><span class="fw-pn">Future State</span><span class="fw-pw">0.40</span></div></div>
+        <div class="fw-sub">each state = <span>0.60 Operational Reality</span><span>0.40 Marketing Influence</span></div>
+      </div>
+      <div class="fwcard">
+        <div class="fw-index"><span class="fw-abbr">VPI</span><span class="fw-full">Vendor Performance Index</span></div>
+        <div class="fw-desc">Vendor and channel effectiveness.</div>
+        <div class="fw-pillars"><div class="fw-p"><span class="fw-pn">Awareness</span><span class="fw-pw">stage</span></div><div class="fw-p"><span class="fw-pn">Consideration</span><span class="fw-pw">stage</span></div><div class="fw-p"><span class="fw-pn">Evaluation</span><span class="fw-pw">stage</span></div><div class="fw-p"><span class="fw-pn">Conversion</span><span class="fw-pw">stage</span></div></div>
+      </div>
+    </div>
+  </section>
+  <p class="implnote"><b>Implementation note.</b> The production registry currently contains legacy PHI measures. This document reflects the target architecture that supersedes them.</p>
+  <section class="cat" id="chains">
+    <div class="cat-head"><h2>Architectural chains</h2></div>
+    <p class="cat-intro">Three chains show how a single stored value climbs every layer to reach PHI. Read down each column: a raw count becomes a KPI, a KPI becomes a pillar score, a pillar rolls into an index, and every index resolves to the one portfolio number.</p>
+    <div class="chaingrid">
+      <div class="chaincol"><div class="ch-title">Marketing → GPI</div><span class="ch-node ch-base">Marketing Spend</span><span class="ch-arrow">&#8595;</span><span class="ch-node ch-business">Cost per Lead</span><span class="ch-arrow">&#8595;</span><span class="ch-node ch-pillar">Efficiency</span><span class="ch-arrow">&#8595;</span><span class="ch-node ch-index">GPI</span><span class="ch-arrow">&#8595;</span><span class="ch-node ch-portfolio">PHI</span></div>      <div class="chaincol"><div class="ch-title">Operations → OPI</div><span class="ch-node ch-base">Occupied Units</span><span class="ch-arrow">&#8595;</span><span class="ch-node ch-business">Occupancy %</span><span class="ch-arrow">&#8595;</span><span class="ch-node ch-pillar">Current State</span><span class="ch-arrow">&#8595;</span><span class="ch-node ch-index">OPI</span><span class="ch-arrow">&#8595;</span><span class="ch-node ch-portfolio">PHI</span></div>      <div class="chaincol"><div class="ch-title">Vendor → VPI</div><span class="ch-node ch-base">Impressions</span><span class="ch-arrow">&#8595;</span><span class="ch-node ch-business">CTR %</span><span class="ch-arrow">&#8595;</span><span class="ch-node ch-pillar">Awareness</span><span class="ch-arrow">&#8595;</span><span class="ch-node ch-index">VPI</span><span class="ch-arrow">&#8595;</span><span class="ch-node ch-portfolio">PHI</span></div>    </div>
+  </section>
+  <section class="cat" id="map">
+    <div class="cat-head"><h2>Full dependency map</h2></div>
+    <p class="cat-intro">The whole semantic model in one line. Every measure lives somewhere on this path, between a stored column and the report a reader sees.</p>
+    <div class="fullmap"><span class="fm-node">Stored Columns</span><span class="fm-arrow">&#8594;</span><span class="fm-node">Base Measures</span><span class="fm-arrow">&#8594;</span><span class="fm-node">Business KPIs</span><span class="fm-arrow">&#8594;</span><span class="fm-node">Benchmarks</span><span class="fm-arrow">&#8594;</span><span class="fm-node">Normalized Scores</span><span class="fm-arrow">&#8594;</span><span class="fm-node">Pillars</span><span class="fm-arrow">&#8594;</span><span class="fm-node">Indexes</span><span class="fm-arrow">&#8594;</span><span class="fm-node">PHI</span><span class="fm-arrow">&#8594;</span><span class="fm-node">Display</span><span class="fm-arrow">&#8594;</span><span class="fm-node">Insights</span></div>
+  </section>
+  <section class="cat" id="principles">
+    <div class="cat-head"><h2>Design principles</h2></div>
+    <p class="cat-intro">The rules that keep the architecture maintainable. They are enforced by the layering itself.</p>
+    <div class="principles">
+      <div class="prin"><span class="print">Base measures are written once</span><span class="prind">Every ratio and score reuses a base aggregation. A column is never summed twice in two places.</span></div>
+      <div class="prin"><span class="print">Business logic lives below presentation</span><span class="prind">Presentation measures consume scores; they never compute a KPI. A color reads a tier, it does not recalculate it.</span></div>
+      <div class="prin"><span class="print">Indexes reference pillars, not display</span><span class="prind">An index rolls up its pillar scores. It never reads a color, icon, or formatted string.</span></div>
+      <div class="prin"><span class="print">Scores are rescaled before they combine</span><span class="prind">Unlike metrics are normalized to a common 0–100 basis before they are weighted together.</span></div>
+      <div class="prin"><span class="print">Every index resolves to PHI</span><span class="prind">GPI, OPI, and VPI each roll up into the one portfolio number, so every measure has a path to the executive score.</span></div>
+      <div class="prin"><span class="print">Variables over nested expressions</span><span class="prind">Heavy measures resolve each input into a variable once, then combine them. Nothing recomputes inside an iterator.</span></div>
+    </div>
+  </section>
+  <section class="cat" id="domains">
+    <div class="cat-head"><h2>Structural measures by domain</h2></div>
+    <p class="cat-intro">A short, structural sample rather than a full inventory. These are the measures someone would need to understand or extend each domain, grouped the way analysts think, not by folder.</p>
+    <div class="catblock" data-cat="Marketing">
+      <div class="cb-head"><span class="cb-badge c-biz"></span><h3>Marketing</h3><span class="cb-count">12</span></div>
+      <p class="cb-desc">Spend, funnel volumes, and the conversion ratios that feed GPI.</p>
+      <table class="mtable"><thead><tr><th>Measure</th><th>Returns</th><th>Depends on</th></tr></thead><tbody><tr data-m="marketing spend marketing stored / base"><td class="mn">Marketing Spend</td><td class="mr">Currency</td><td class="md">stored / base</td></tr><tr data-m="impressions marketing stored / base"><td class="mn">Impressions</td><td class="mr">Number</td><td class="md">stored / base</td></tr><tr data-m="clicks marketing stored / base"><td class="mn">Clicks</td><td class="mr">Number</td><td class="md">stored / base</td></tr><tr data-m="leads (funnel) marketing stored / base"><td class="mn">Leads (Funnel)</td><td class="mr">Number</td><td class="md">stored / base</td></tr><tr data-m="new leases (funnel) marketing stored / base"><td class="mn">New Leases (Funnel)</td><td class="mr">Number</td><td class="md">stored / base</td></tr><tr data-m="ctr % marketing clicks · impressions"><td class="mn">CTR %</td><td class="mr">Decimal (%)</td><td class="md">Clicks · Impressions</td></tr><tr data-m="click-to-visit % marketing clicks · visits (funnel)"><td class="mn">Click-to-Visit %</td><td class="mr">Decimal (%)</td><td class="md">Clicks · Visits (Funnel)</td></tr><tr data-m="visit-to-lead % marketing leads (funnel) · visits (funnel)"><td class="mn">Visit-to-Lead %</td><td class="mr">Decimal (%)</td><td class="md">Leads (Funnel) · Visits (Funnel)</td></tr><tr data-m="lead-to-lease % (funnel) marketing leads (funnel) · new leases (funnel)"><td class="mn">Lead-to-Lease % (Funnel)</td><td class="mr">Decimal (%)</td><td class="md">Leads (Funnel) · New Leases (Funnel)</td></tr><tr data-m="cost per lead (actual) marketing leads (actual) · marketing spend"><td class="mn">Cost per Lead (Actual)</td><td class="mr">Currency</td><td class="md">Leads (Actual) · Marketing Spend</td></tr><tr data-m="cost per lease (actual) marketing marketing spend · new leases (actual)"><td class="mn">Cost per Lease (Actual)</td><td class="mr">Currency</td><td class="md">Marketing Spend · New Leases (Actual)</td></tr><tr data-m="spend share % marketing marketing spend"><td class="mn">Spend Share %</td><td class="mr">Decimal (%)</td><td class="md">Marketing Spend</td></tr></tbody></table>
+    </div>    <div class="catblock" data-cat="Operations">
+      <div class="cb-head"><span class="cb-badge c-index"></span><h3>Operations</h3><span class="cb-count">8</span></div>
+      <p class="cb-desc">Occupancy, absorption, and coverage that feed OPI.</p>
+      <table class="mtable"><thead><tr><th>Measure</th><th>Returns</th><th>Depends on</th></tr></thead><tbody><tr data-m="occupied units operations stored / base"><td class="mn">Occupied Units</td><td class="mr">Number</td><td class="md">stored / base</td></tr><tr data-m="vacant units operations stored / base"><td class="mn">Vacant Units</td><td class="mr">Number</td><td class="md">stored / base</td></tr><tr data-m="occupancy rate % operations occupied units · vacant units"><td class="mn">Occupancy Rate %</td><td class="mr">Decimal (%)</td><td class="md">Occupied Units · Vacant Units</td></tr><tr data-m="vacancy rate % operations occupied units · vacant units"><td class="mn">Vacancy Rate %</td><td class="mr">Decimal (%)</td><td class="md">Occupied Units · Vacant Units</td></tr><tr data-m="net absorption operations move-ins · move-outs"><td class="mn">Net Absorption</td><td class="mr">Number</td><td class="md">Move-Ins · Move-Outs</td></tr><tr data-m="lease velocity operations lease velocity (30d)"><td class="mn">Lease Velocity</td><td class="mr">Number</td><td class="md">Lease Velocity (30D)</td></tr><tr data-m="absorption days (est) operations move-ins · vacant ready units (est)"><td class="mn">Absorption Days (Est)</td><td class="mr">Number</td><td class="md">Move-Ins · Vacant Ready Units (Est)</td></tr><tr data-m="coverage ratio (next 60d) operations lease expirations (next 60d) · scheduled move-ins (next 60d)"><td class="mn">Coverage Ratio (Next 60D)</td><td class="mr">Decimal (%)</td><td class="md">Lease Expirations (Next 60D) · Scheduled Move-Ins (Next 60D)</td></tr></tbody></table>
+    </div>    <div class="catblock" data-cat="Vendor">
+      <div class="cb-head"><span class="cb-badge c-pillar"></span><h3>Vendor</h3><span class="cb-count">8</span></div>
+      <p class="cb-desc">Funnel-stage percentile scores that feed VPI.</p>
+      <table class="mtable"><thead><tr><th>Measure</th><th>Returns</th><th>Depends on</th></tr></thead><tbody><tr data-m="awareness score vendor awareness_cpc_percentile · awareness_ctr_percentile · awareness_clicktovisit_percentile · awareness_impressions_percentile"><td class="mn">Awareness Score</td><td class="mr">Number</td><td class="md">Awareness_CPC_Percentile · Awareness_CTR_Percentile · Awareness_ClickToVisit_Percentile · Awareness_Impressions_Percentile</td></tr><tr data-m="consideration score vendor consideration_cpv_percentile · consideration_visittolead_percentile · consideration_visits_percentile"><td class="mn">Consideration Score</td><td class="mr">Decimal (%)</td><td class="md">Consideration_CPV_Percentile · Consideration_VisitToLead_Percentile · Consideration_Visits_Percentile</td></tr><tr data-m="evaluation score vendor evaluation_cpl_percentile · evaluation_leadtolease_percentile · evaluation_leads_percentile"><td class="mn">Evaluation Score</td><td class="mr">Number</td><td class="md">Evaluation_CPL_Percentile · Evaluation_LeadToLease_Percentile · Evaluation_Leads_Percentile</td></tr><tr data-m="conversion score vendor conversion_costperlease_percentile · conversion_newleases_percentile · conversion_sellrate_percentile"><td class="mn">Conversion Score</td><td class="mr">Number</td><td class="md">Conversion_CostPerLease_Percentile · Conversion_NewLeases_Percentile · Conversion_SellRate_Percentile</td></tr><tr data-m="vendor score vendor ctr % · cost per click · cost per lease (actual) · is paid channel"><td class="mn">Vendor Score</td><td class="mr">Number</td><td class="md">CTR % · Cost per Click · Cost per Lease (Actual) · Is Paid Channel</td></tr><tr data-m="channel score vendor ctr % · cost per click · cost per lease (actual) · lead-to-lease % (actual)"><td class="mn">Channel Score</td><td class="mr">Number</td><td class="md">CTR % · Cost per Click · Cost per Lease (Actual) · Lead-to-Lease % (Actual)</td></tr><tr data-m="cost per click vendor clicks · marketing spend (funnel)"><td class="mn">Cost per Click</td><td class="mr">Currency</td><td class="md">Clicks · Marketing Spend (Funnel)</td></tr><tr data-m="vendor rank vendor vendor score for ranking"><td class="mn">Vendor Rank</td><td class="mr">Text/Rank</td><td class="md">Vendor Score for Ranking</td></tr></tbody></table>
+    </div>    <div class="catblock" data-cat="Executive">
+      <div class="cb-head"><span class="cb-badge c-support"></span><h3>Executive</h3><span class="cb-count">7</span></div>
+      <p class="cb-desc">The four composite indexes and their tiers.</p>
+      <table class="mtable"><thead><tr><th>Measure</th><th>Returns</th><th>Depends on</th></tr></thead><tbody><tr data-m="gpi score executive gpi pillar 1 (absolute) · gpi pillar 2 (trend)"><td class="mn">GPI Score</td><td class="mr">Number</td><td class="md">GPI Pillar 1 (Absolute) · GPI Pillar 2 (Trend)</td></tr><tr data-m="operations index score executive absorption days (est) · coverage ratio (next 60d) · lease velocity · net absorption"><td class="mn">Operations Index Score</td><td class="mr">Decimal (%)</td><td class="md">Absorption Days (Est) · Coverage Ratio (Next 60D) · Lease Velocity · Net Absorption</td></tr><tr data-m="vendor score executive ctr % · cost per click · cost per lease (actual) · is paid channel"><td class="mn">Vendor Score</td><td class="mr">Number</td><td class="md">CTR % · Cost per Click · Cost per Lease (Actual) · Is Paid Channel</td></tr><tr data-m="portfolio health index executive portfolio health - geo marketing · portfolio health - marketing funnel · portfolio health - operations"><td class="mn">Portfolio Health Index</td><td class="mr">Number</td><td class="md">Portfolio Health - Geo Marketing · Portfolio Health - Marketing Funnel · Portfolio Health - Operations</td></tr><tr data-m="gpi tier executive gpi score"><td class="mn">GPI Tier</td><td class="mr">Text/Rank</td><td class="md">GPI Score</td></tr><tr data-m="ops index tier executive operations index score"><td class="mn">Ops Index Tier</td><td class="mr">Text/Rank</td><td class="md">Operations Index Score</td></tr><tr data-m="vpi performance tier executive vendor performance index"><td class="mn">VPI Performance Tier</td><td class="mr">Text/Rank</td><td class="md">Vendor Performance Index</td></tr></tbody></table>
+    </div>  </section>
+  <section class="cat" id="related">
+    <div class="cat-head"><h2>Related documentation</h2></div>
+    <div class="navcards">
+      <a class="navc" href="NorthStar_Executive_Index_Framework.html"><span class="nvt">Executive Index Framework</span><span class="nvd">GPI, OPI, VPI, PHI in depth</span></a>
+      <a class="navc" href="NorthStar_Data_Model_Dictionary.html"><span class="nvt">Data Dictionary</span><span class="nvd">Physical tables and columns</span></a>
+      <a class="navc" href="NorthStar_Semantic_Model.html"><span class="nvt">Semantic Model</span><span class="nvd">Relationships and filter flow</span></a>
+      <a class="navc" href="NorthStar_Business_Rules.html"><span class="nvt">Business Rules</span><span class="nvd">Counting and governance</span></a>
+    </div>
+  </section>
+
+  <nav class="pagenav" aria-label="Document navigation">
+    <a href="NorthStar_Data_Model_Dictionary.html"><span class="dir">Previous</span><span class="lbl">Data Dictionary</span></a>
+    <a class="next" href="NorthStar_Executive_Index_Framework.html"><span class="dir">Next</span><span class="lbl">Executive Index Framework</span></a>
+  </nav>
+
+</div>
+</main>
+</div>
+
+<footer>NORTHSTAR INTELLIGENCE PLATFORM · METADATA PORTAL · VERSION 1.0 &nbsp;·&nbsp; One source. Trusted data. Better decisions.</footer>
+
+<script>
+(function(){
+  var box=document.getElementById('mcatsearch');
+  if(!box) return;
+  var cats=[].slice.call(document.querySelectorAll('.catblock'));
+  var cards=[].slice.call(document.querySelectorAll('.mcard'));
+  var count=document.getElementById('lookupcount');
+  function apply(){
+    var q=box.value.trim().toLowerCase();
+    if(!q){
+      cats.forEach(function(c){c.classList.remove('hidden');
+        [].forEach.call(c.querySelectorAll('.mtable tbody tr'),function(r){r.classList.remove('hidden');});});
+      cards.forEach(function(c){c.classList.remove('hidden');});
+      count.textContent='';return;
+    }
+    var shown=0;
+    cards.forEach(function(c){
+      var m=(c.getAttribute('data-m')||'').indexOf(q)>-1;
+      c.classList.toggle('hidden',!m);
+    });
+    cats.forEach(function(c){
+      var rows=[].slice.call(c.querySelectorAll('.mtable tbody tr'));
+      var any=false;
+      rows.forEach(function(r){
+        var m=(r.getAttribute('data-m')||'').indexOf(q)>-1;
+        r.classList.toggle('hidden',!m); if(m){any=true;shown++;}
+      });
+      c.classList.toggle('hidden',!any);
+    });
+    count.textContent=shown+' measure'+(shown===1?'':'s');
+  }
+  box.addEventListener('input',apply);
+})();
+</script>
+
+</body>
+</html>

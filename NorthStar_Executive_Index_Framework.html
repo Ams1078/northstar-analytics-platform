@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Executive Decision Framework — NorthStar Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0D1B2A; --secondary:#18263B; --accent:#2563EB;
+    --success:#16A34A; --warning:#F59E0B; --info:#0EA5E9; --muted:#64748B;
+    --surface:#FFFFFF; --bg:#F8FAFC;
+    --line:#E2E8F0; --line-2:#CBD5E1; --ink:#0D1B2A; --ink-2:#475569;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+    --sidebar:280px; --topnav:72px; --maxw:1440px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  h1,h2,h3,h4{color:var(--primary);font-weight:600;line-height:1.3}
+
+  .topnav{position:sticky;top:0;z-index:30;height:var(--topnav);background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:28px}
+  .topnav .logo{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;color:var(--primary)}
+  .topnav .logo .mark{width:26px;height:26px;flex:none}
+  .topnav .logo small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);font-weight:400;margin-top:1px}
+  .topnav nav{display:flex;gap:22px;margin-left:8px;font-size:13.5px}
+  .topnav nav a{color:var(--ink-2)}
+  .topnav nav a[aria-current]{color:var(--primary);font-weight:500}
+  .topnav .right{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  .shell{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) 1fr}
+  aside{border-right:1px solid var(--line);background:var(--surface);position:sticky;top:var(--topnav);height:calc(100vh - var(--topnav));overflow-y:auto;padding:28px 0}
+  aside .grp{padding:0 24px;margin-bottom:22px}
+  aside .grp h5{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+  aside a{display:block;color:var(--ink-2);font-size:13.5px;padding:5px 0}
+  aside a:hover{color:var(--primary);text-decoration:none}
+  aside a[aria-current]{color:var(--accent);font-weight:500}
+  aside .search{padding:0 24px 22px}
+  aside .search input{width:100%;padding:8px 11px;border:1px solid var(--line-2);border-radius:6px;font-family:var(--sans);font-size:13px;background:var(--bg);color:var(--ink)}
+
+  main{background:var(--surface);min-width:0}
+  .doc{max-width:860px;padding:34px clamp(28px,4vw,56px) 90px}
+
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:26px}
+  .crumb a{color:var(--muted)} .crumb span{margin:0 7px;color:var(--line-2)}
+
+  .page-head{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+  .page-head .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  h1{font-size:32px;margin:0 0 14px}
+  .subtitle{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0;font-weight:400;line-height:1.5}
+
+  /* category jump bar */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px}
+  .jump a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 12px;border:1px solid var(--line-2);border-radius:20px;color:var(--ink-2)}
+  .jump a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+  section.cat{margin:40px 0;scroll-margin-top:90px}
+  .cat-head{border-bottom:2px solid var(--primary);padding-bottom:8px;margin-bottom:6px}
+  .cat-head h2{font-size:22px;margin:0}
+  .cat-intro{color:var(--ink-2);font-size:14.5px;margin:12px 0 8px;max-width:80ch}
+
+  /* term entry */
+  .term{border-bottom:1px solid var(--line);padding:24px 0;scroll-margin-top:90px}
+  .term:last-child{border-bottom:none}
+  .term h3{font-size:17px;margin:0 0 3px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .term h3 .also{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
+  .term .def{font-size:15px;color:var(--ink);margin:6px 0 0;max-width:82ch}
+  .term .row{margin-top:12px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:baseline}
+  .term .row .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+  .term .row .val{font-size:14px;color:var(--ink-2);max-width:72ch}
+  .term .row .val a{font-weight:500}
+  .term .formula{font-family:var(--mono);font-size:13px;color:var(--secondary);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:8px 12px;display:inline-block;margin-top:2px}
+  .term code{font-family:var(--mono);font-size:.88em;color:var(--secondary);background:var(--bg);padding:1px 5px;border-radius:2px}
+
+  .callout{border:1px solid var(--line);border-left:3px solid var(--info);background:var(--bg);border-radius:6px;padding:16px 20px;margin:20px 0}
+  .callout .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--info);margin-bottom:6px;font-weight:500}
+  .callout p{margin:0;color:var(--ink-2);font-size:13.5px}
+
+  .pagenav{display:flex;justify-content:space-between;margin-top:56px;padding-top:24px;border-top:1px solid var(--line);gap:16px}
+  .pagenav a{display:block;max-width:48%}
+  .pagenav .dir{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .pagenav .lbl{font-weight:600;color:var(--primary)}
+  .pagenav .next{text-align:right;margin-left:auto}
+  footer{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:var(--mono);font-size:11px;padding:22px 32px;text-align:center}
+  /* layers of business truth */
+  .lifecycle{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:24px 20px;margin:22px 0}
+  .lifecycle svg{display:block;width:100%;height:auto;max-width:820px;margin:0 auto}
+  .truth-note{border:1px solid var(--warning);border-left:3px solid var(--warning);background:#fffbeb;border-radius:6px;padding:14px 18px;margin:18px 0}
+  .truth-note .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#B45309;margin-bottom:5px;font-weight:500}
+  .truth-note p{margin:0;color:#78350F;font-size:13.5px}
+  .term .layer-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;font-weight:500}
+  .lt-mkt{background:#EFF4FB;color:#2563EB}
+  .lt-lease{background:#F0FDF4;color:#16A34A}
+  .lt-ops{background:#FEF3C7;color:#B45309}
+
+  /* cross-reference card: points to canonical definition elsewhere */
+  .xref{border:1px solid var(--line);border-left:3px solid var(--line-2);background:var(--bg);border-radius:6px;padding:14px 18px;margin:0}
+  .xref .xt{font-size:15px;font-weight:600;color:var(--primary);margin:0 0 3px}
+  .xref p{margin:0;color:var(--ink-2);font-size:13.5px}
+  .xref .goto{font-family:var(--mono);font-size:11px;margin-top:6px;display:inline-block}
+
+
+  /* parent term with nested views */
+  .parent{border-bottom:2px solid var(--primary);padding:26px 0 10px;margin-top:8px}
+  .parent h3{font-size:19px;margin:0 0 5px}
+  .parent .def{font-size:15px;color:var(--ink);margin:0;max-width:82ch}
+  .views{margin:0 0 8px}
+  .view{border-bottom:1px solid var(--line);padding:16px 0 16px 22px;border-left:2px solid var(--line-2);margin-left:2px;padding-left:20px}
+  .view h4{font-size:15px;margin:0 0 3px;color:var(--primary);display:flex;align-items:baseline;gap:10px}
+  .view h4 .layer-tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500}
+  .view p{margin:0;color:var(--ink-2);font-size:14px;max-width:78ch}
+  .view .sa{font-size:12.5px;margin-top:5px}
+  /* boxed thesis */
+  .thesis{border:2px solid var(--primary);border-radius:8px;padding:20px 24px;margin:24px 0;background:var(--bg)}
+  .thesis p{margin:0;font-size:17px;font-weight:500;color:var(--primary);max-width:none;text-align:center}
+  /* subgroup heading within a category */
+  .subgroup{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 4px;font-weight:500}
+
+
+  /* ============ whitepaper aesthetic (distinct from reference pages) ============ */
+  .wp-head{margin-bottom:8px}
+  .wp-head .subtitle{font-size:17px;line-height:1.6;max-width:64ch;color:var(--ink)}
+
+  /* numbered whitepaper sections: number gutter + prose body */
+  .wp{display:grid;grid-template-columns:64px 1fr;gap:8px;margin:52px 0 0;align-items:start}
+  .wp-num{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600;padding-top:6px}
+  .wp-body{max-width:66ch}
+  .wp-body h2{font-size:24px;font-weight:700;color:var(--primary);margin:0 0 16px;letter-spacing:-0.01em}
+  .wp-body p{font-size:15.5px;line-height:1.72;color:var(--ink);margin:0 0 16px}
+  .wp-body p.lead{font-size:19px;line-height:1.55;color:var(--primary);font-weight:500;margin-bottom:18px}
+  .wp-body p em{font-style:italic;color:var(--primary)}
+  .wp-body .wp-turn{font-size:17px;font-weight:600;color:var(--primary);border-left:2px solid var(--accent);padding-left:16px;margin-top:22px}
+  @media(max-width:680px){.wp{grid-template-columns:1fr;gap:4px}.wp-num{padding-top:0}}
+
+  /* index entries — typographic, question-led */
+  .idxset{margin:18px 0 0;padding-left:72px}
+  @media(max-width:680px){.idxset{padding-left:0}}
+  .idxentry{display:grid;grid-template-columns:180px 1fr;gap:28px;padding:26px 0;border-top:1px solid var(--line);scroll-margin-top:72px}
+  .idxentry:first-child{border-top:2px solid var(--primary)}
+  .idx-mark{display:flex;flex-direction:column;gap:2px;padding-top:2px}
+  .idx-abbr{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--accent);letter-spacing:-0.01em}
+  .idx-full{font-size:12px;color:var(--muted);line-height:1.35}
+  .idx-content{max-width:60ch}
+  .idx-q{font-size:20px;font-weight:600;color:var(--primary);line-height:1.4;margin:0 0 14px}
+  .idx-ql{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:5px}
+  .idx-purpose{font-size:14.5px;line-height:1.68;color:var(--ink-2);margin:0 0 12px}
+  .idx-thesis{font-size:14.5px;line-height:1.6;color:var(--primary);font-weight:500;margin:0 0 12px}
+  .idx-tags{display:flex;flex-wrap:wrap;gap:6px}
+  .idx-tag{font-family:var(--mono);font-size:10.5px;color:var(--ink-2);border:1px solid var(--line);border-radius:4px;padding:3px 9px;background:var(--surface)}
+  @media(max-width:640px){.idxentry{grid-template-columns:1fr;gap:12px}.idx-abbr{font-size:22px}}
+
+  /* KPI vs index comparison */
+  .vstable{margin:22px 0;border-top:2px solid var(--primary)}
+  .vs-row{display:grid;grid-template-columns:1fr 40px 1fr;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .vs-kpi,.vs-idx{display:flex;flex-direction:column;gap:3px}
+  .vs-name{font-family:var(--mono);font-size:12px;font-weight:600}
+  .vs-kpi .vs-name{color:var(--muted)}
+  .vs-idx .vs-name{color:var(--accent)}
+  .vs-q{font-size:14.5px;line-height:1.4}
+  .vs-kpi .vs-q{color:var(--muted)}
+  .vs-idx .vs-q{color:var(--primary);font-weight:500}
+  .vs-mid{text-align:center;color:var(--accent);font-size:16px}
+  @media(max-width:640px){.vs-row{grid-template-columns:1fr;gap:6px}.vs-mid{display:none}.vs-idx{padding-top:6px}}
+
+  /* framework diagram wrapper (appears after philosophy) */
+  .fwwrap{padding-left:72px;margin:20px 0 0}
+  @media(max-width:680px){.fwwrap{padding-left:0}}
+  .phitop{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;margin:0 0 0}
+  .fw-index{display:flex;flex-direction:column;align-items:center;gap:1px;border:1.5px solid var(--accent);border-radius:7px;padding:9px 22px;background:#F4F8FE}
+  .fw-index.fw-phi{border-color:#D4AF37;background:#FBF7EC}
+  .fw-abbr{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--accent)}
+  .fw-phi .fw-abbr{color:#9A7B1F}
+  .fw-full{font-size:10.5px;color:var(--ink-2)}
+  .fw-weights{display:flex;gap:12px;flex-wrap:wrap}
+  .fw-wt{font-family:var(--mono);font-size:12px;color:var(--ink-2)}.fw-wt b{color:var(--primary)}
+  .fw-downarrow{text-align:center;font-family:var(--mono);font-size:10px;color:var(--muted);margin:12px 0;text-transform:uppercase;letter-spacing:.05em}
+  .fwgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .fwcard{border:1px solid var(--line);border-radius:8px;padding:16px;background:var(--surface)}
+  .fwcard .fw-index{border-color:var(--line);background:var(--bg);margin-bottom:10px}
+  .fw-pillars{display:flex;flex-direction:column;gap:5px}
+  .fw-p{display:flex;justify-content:space-between;align-items:baseline;border:1px solid var(--line);border-radius:5px;padding:6px 10px;background:var(--bg)}
+  .fw-pn{font-family:var(--mono);font-size:11.5px;color:var(--primary);font-weight:500}
+  .fw-pw{font-family:var(--mono);font-size:10px;color:var(--muted)}
+  @media(max-width:640px){.fwgrid{grid-template-columns:1fr}}
+
+  /* closing hero statement */
+  .wp-close{margin:64px 0 0;padding:44px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .wpc-label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:20px}
+  .wpc-statement{font-size:26px;line-height:1.5;font-weight:600;color:var(--primary);letter-spacing:-0.01em;max-width:24ch;margin:0 0 20px}
+  .wpc-statement em{font-style:italic;color:var(--accent)}
+  .wpc-coda{font-size:16px;color:var(--ink-2);margin:0}
+  @media(max-width:640px){.wpc-statement{font-size:21px;max-width:none}}
+
+  .childnav{padding-left:72px;margin:26px 0 0}
+  @media(max-width:680px){.childnav{padding-left:0}}
+  .cn-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:12px}
+  .navcards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin:20px 0}
+  .navc{border:1px solid var(--line);border-radius:8px;padding:14px 17px;text-decoration:none;background:var(--surface);transition:all .15s;display:block}
+  .navc:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(37,99,235,0.08)}
+  .navc .nvt{display:block;font-size:14px;font-weight:600;color:var(--accent)}
+  .navc .nvd{display:block;font-size:12px;color:var(--ink-2);margin-top:2px}
+  @media(max-width:640px){.navcards{grid-template-columns:1fr}}
+  .cat{margin:52px 0 0}.cat-head h2{font-size:19px}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+  @media(max-width:1000px){
+    .shell{grid-template-columns:1fr}
+    aside{display:none}
+    .term .row{grid-template-columns:1fr;gap:2px}
+    .term .row .lbl{padding-top:8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <a class="logo" href="index.html" aria-label="NorthStar home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19 13 L30 16 L19 19 L16 30 L13 19 L2 16 L13 13 Z" fill="#0D1B2A"/></svg>
+    <span>NORTHSTAR<small>METADATA PORTAL</small></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="NorthStar_About.html">About</a>
+    <a href="index.html" aria-current="page">Business</a>
+    <a href="NorthStar_Data_Model_Dictionary.html">Data</a>
+    <a href="NorthStar_Executive_Index_Framework.html">Analytics</a>
+    <a href="NorthStar_Pipeline_Architecture.html">Technical</a>
+  </nav>
+  <div class="right">v1.0</div>
+</header>
+
+<div class="shell">
+<aside aria-label="Documentation navigation">
+  <div class="search"><input type="search" placeholder="Search the metadata portal…" aria-label="Search documentation"></div>
+<div class="grp"><h5>Overview</h5>
+<a href="NorthStar_About.html">About NorthStar</a>
+<a href="NorthStar_Platform_Overview.html">Platform Overview</a>
+</div>
+<div class="grp"><h5>Business</h5>
+<a href="NorthStar_Business_Glossary.html">Business Glossary</a>
+<a href="NorthStar_Business_Rules.html">Business Rules</a>
+<a href="NorthStar_Data_Generation_Engine.html">Data Generation Engine</a>
+</div>
+<div class="grp"><h5>Executive</h5>
+<a href="NorthStar_Executive_Index_Framework.html" aria-current="page">Decision Framework</a>
+<a href="NorthStar_GPI.html">GPI</a>
+<a href="NorthStar_OPI.html">OPI</a>
+<a href="NorthStar_VPI.html">VPI</a>
+<a href="NorthStar_PHI.html">PHI</a>
+<a href="NorthStar_Executive_Dashboard.html">Executive Dashboard</a>
+<a href="NorthStar_Attribution_Lab.html">Attribution Lab</a>
+</div>
+<div class="grp"><h5>Technical</h5>
+<a href="NorthStar_Pipeline_Architecture.html">Pipeline Architecture</a>
+<a href="NorthStar_Pipeline_Dashboard.html">Pipeline Dashboard</a>
+<a href="NorthStar_Pipeline_Reliability.html">Pipeline Reliability</a>
+<a href="NorthStar_Data_Flow.html">Data Flow</a>
+<a href="NorthStar_Data_Model_Dictionary.html">Data Dictionary</a>
+<a href="NorthStar_Measures_Reference.html">Measure Catalog</a>
+<a href="NorthStar_Semantic_Model.html">Semantic Model</a>
+<a href="NorthStar_Platform_Specifications.html">Platform Specifications</a>
+</div>
+</aside>
+
+<main>
+<div class="doc">
+
+  <div class="crumb"><a href="index.html">Home</a><span>›</span><a href="index.html">Analytics</a><span>›</span>Executive Decision Framework</div>
+  <div class="page-head wp-head">
+    <div class="eyebrow">Analytics · Whitepaper</div>
+    <h1>Executive Decision Framework</h1>
+    <p class="subtitle">NorthStar organizes hundreds of operational metrics into four executive indexes, each measuring an independent dimension of portfolio health. This is the theory behind that decision, and the reasoning that shaped every score in the platform.</p>
+  </div>
+  <section class="wp" id="why">
+    <div class="wp-num">01</div>
+    <div class="wp-body">
+      <h2>Why executive indexes exist</h2>
+      <p class="lead">Modern organizations rarely suffer from a lack of data. They suffer from a lack of clarity.</p>
+      <p>A regional manager may have hundreds of metrics within reach: occupancy, cost per lead, marketing spend, conversion rate, lease velocity, traffic, retention, vendor performance. Each answers one narrow question. None answers the larger one that a leader actually needs settled: <em>how healthy is this part of the business?</em></p>
+      <p>NorthStar was built to close that gap. It does not replace operational metrics. It organizes them into four executive indexes, each measuring an independent dimension of performance. Together they form a complete picture of portfolio health.</p>
+      <p class="wp-turn">The result is not a dashboard. It is a management framework.</p>
+    </div>
+  </section>
+  <section class="wp" id="four">
+    <div class="wp-num">02</div>
+    <div class="wp-body">
+      <h2>Four indexes, four questions</h2>
+      <p>Each index exists to answer one executive question that no single metric can. None of what follows is about how the score is computed. It is about what the score is <em>for</em>.</p>
+    </div>
+  </section>
+  <div class="idxset">
+    <article class="idxentry" id="gpi">
+      <div class="idx-mark"><span class="idx-abbr">GPI</span><span class="idx-full">Geographic Performance Index</span></div>
+      <div class="idx-content">
+        <p class="idx-q"><span class="idx-ql">Question</span>Are our markets performing as expected?</p>
+        <p class="idx-purpose">Marketing should never be judged on volume alone. High leasing volume in an already strong market can hide inefficient spending, while a struggling market may be quietly outperforming expectations. GPI evaluates a geography against its peers, balancing market reality, marketing influence, and marketing efficiency.</p>
+        <p class="idx-thesis">The goal is not to measure activity. It is to measure competitive geographic performance.</p>
+        <div class="idx-tags"><span class="idx-tag">Market Reality</span><span class="idx-tag">Marketing Influence</span><span class="idx-tag">Marketing Efficiency</span></div>
+      </div>
+    </article>    <article class="idxentry" id="opi">
+      <div class="idx-mark"><span class="idx-abbr">OPI</span><span class="idx-full">Operations Performance Index</span></div>
+      <div class="idx-content">
+        <p class="idx-q"><span class="idx-ql">Question</span>Can operations sustain future demand?</p>
+        <p class="idx-purpose">Traditional operational reporting looks at current occupancy and stops there. OPI separates current health from future risk, combining operational reality with marketing support to judge whether a property that is healthy today will still be healthy sixty days from now.</p>
+        <p class="idx-thesis">Its purpose is early intervention, not historical reporting.</p>
+        <div class="idx-tags"><span class="idx-tag">Current health</span><span class="idx-tag">Future risk</span></div>
+      </div>
+    </article>    <article class="idxentry" id="vpi">
+      <div class="idx-mark"><span class="idx-abbr">VPI</span><span class="idx-full">Vendor Performance Index</span></div>
+      <div class="idx-content">
+        <p class="idx-q"><span class="idx-ql">Question</span>Which marketing investments deserve more capital?</p>
+        <p class="idx-purpose">Vendors rarely fail at every stage. Some build awareness, others convert, and some perform only at the bottom of the funnel. VPI evaluates vendors across the full customer journey to separate scale candidates from optimization candidates and elimination candidates.</p>
+        <p class="idx-thesis">It exists to guide budget allocation, not simply to rank vendors.</p>
+        <div class="idx-tags"><span class="idx-tag">Scale</span><span class="idx-tag">Optimize</span><span class="idx-tag">Eliminate</span></div>
+      </div>
+    </article>    <article class="idxentry" id="phi">
+      <div class="idx-mark"><span class="idx-abbr">PHI</span><span class="idx-full">Portfolio Health Index</span></div>
+      <div class="idx-content">
+        <p class="idx-q"><span class="idx-ql">Question</span>Is the business healthy?</p>
+        <p class="idx-purpose">Executives rarely have time to interpret dozens of operational reports. PHI synthesizes the three performance domains into a single indicator. It does not replace operational detail; it prioritizes where an executive should investigate first.</p>
+        <p class="idx-thesis">PHI is a navigation tool, not a replacement for analysis.</p>
+        <div class="idx-tags"><span class="idx-tag">Integrates GPI, OPI, VPI</span></div>
+      </div>
+    </article>  </div>
+  <section class="wp" id="whynotkpi">
+    <div class="wp-num">03</div>
+    <div class="wp-body">
+      <h2>Why indexes, not KPIs</h2>
+      <p class="lead">KPIs measure individual events. Indexes measure systems.</p>
+      <p>A KPI reports a fact. An index renders a judgment. The same subject, asked two different questions, produces two very different kinds of answer.</p>
+      <div class="vstable">      <div class="vs-row">
+        <div class="vs-kpi"><span class="vs-name">Occupancy</span><span class="vs-q">Are units occupied?</span></div>
+        <div class="vs-mid">&#8594;</div>
+        <div class="vs-idx"><span class="vs-name">OPI</span><span class="vs-q">Is this property&#x27;s operational model sustainable?</span></div>
+      </div>      <div class="vs-row">
+        <div class="vs-kpi"><span class="vs-name">Marketing Spend</span><span class="vs-q">How much did we spend?</span></div>
+        <div class="vs-mid">&#8594;</div>
+        <div class="vs-idx"><span class="vs-name">GPI</span><span class="vs-q">Was the investment effective relative to its peers?</span></div>
+      </div>      <div class="vs-row">
+        <div class="vs-kpi"><span class="vs-name">Vendor CTR</span><span class="vs-q">Did users click?</span></div>
+        <div class="vs-mid">&#8594;</div>
+        <div class="vs-idx"><span class="vs-name">VPI</span><span class="vs-q">Does this vendor create business value?</span></div>
+      </div></div>
+      <p class="wp-turn">That difference, the move from event to system, is the entire philosophy.</p>
+    </div>
+  </section>
+  <section class="wp" id="whynotphi">
+    <div class="wp-num">04</div>
+    <div class="wp-body">
+      <h2>Why not just PHI?</h2>
+      <p class="lead">If one score is too blunt, it is fair to ask the opposite question. Why not stop at PHI, the single number executives actually want?</p>
+      <p>Because a single score tells an executive <em>where</em> to investigate. It does not tell them <em>why</em> performance changed. A portfolio health number that drops is a prompt, not an explanation, and an organization that manages to one number quickly loses the ability to say who is responsible for it.</p>
+      <p>NorthStar intentionally separates performance into three independent domains before synthesizing them into PHI. That separation preserves accountability. Marketing owns GPI. Operations owns OPI. Vendor strategy owns VPI. PHI coordinates them; it does not replace them. The composite exists to point, and the three indexes beneath it exist to answer.</p>
+    </div>
+  </section>
+  <section class="wp" id="framework">
+    <div class="wp-num">05</div>
+    <div class="wp-body">
+      <h2>The framework</h2>
+      <p>With the purpose of each index established, the structure follows naturally. Three domain indexes sit beneath one portfolio index. GPI, OPI, and VPI each score a discipline; PHI integrates them into the single number an executive reads first.</p>
+    </div>
+  </section>
+  <div class="fwwrap">
+    <div class="phitop">
+      <div class="fw-index fw-phi"><span class="fw-abbr">PHI</span><span class="fw-full">Portfolio Health Index</span></div>
+      <div class="fw-weights"><span class="fw-wt"><b>0.45</b> GPI</span><span class="fw-wt"><b>0.30</b> OPI</span><span class="fw-wt"><b>0.25</b> VPI</span></div>
+    </div>
+    <div class="fw-downarrow">&#8595; integrates</div>
+    <div class="fwgrid">
+      <div class="fwcard"><div class="fw-index"><span class="fw-abbr">GPI</span><span class="fw-full">Geographic Performance</span></div><div class="fw-pillars"><div class="fw-p"><span class="fw-pn">Reality</span><span class="fw-pw">0.40</span></div><div class="fw-p"><span class="fw-pn">Influence</span><span class="fw-pw">0.35</span></div><div class="fw-p"><span class="fw-pn">Efficiency</span><span class="fw-pw">0.25</span></div></div></div>
+      <div class="fwcard"><div class="fw-index"><span class="fw-abbr">OPI</span><span class="fw-full">Operations Performance</span></div><div class="fw-pillars"><div class="fw-p"><span class="fw-pn">Current State</span><span class="fw-pw">0.60</span></div><div class="fw-p"><span class="fw-pn">Future State</span><span class="fw-pw">0.40</span></div></div></div>
+      <div class="fwcard"><div class="fw-index"><span class="fw-abbr">VPI</span><span class="fw-full">Vendor Performance</span></div><div class="fw-pillars"><div class="fw-p"><span class="fw-pn">Awareness</span><span class="fw-pw">stage</span></div><div class="fw-p"><span class="fw-pn">Consideration</span><span class="fw-pw">stage</span></div><div class="fw-p"><span class="fw-pn">Evaluation</span><span class="fw-pw">stage</span></div><div class="fw-p"><span class="fw-pn">Conversion</span><span class="fw-pw">stage</span></div></div></div>
+    </div>
+  </div>
+  <div class="childnav">
+    <div class="cn-label">Read the executive guides</div>
+    <div class="navcards">
+      <a class="navc" href="NorthStar_GPI.html"><span class="nvt">Executive Guide: GPI</span><span class="nvd">Are our markets performing as expected?</span></a>
+      <a class="navc" href="NorthStar_OPI.html"><span class="nvt">Executive Guide: OPI</span><span class="nvd">Can operations sustain future demand?</span></a>
+      <a class="navc" href="NorthStar_VPI.html"><span class="nvt">Executive Guide: VPI</span><span class="nvd">Which investments deserve more capital?</span></a>
+      <a class="navc" href="NorthStar_PHI.html"><span class="nvt">Executive Guide: PHI</span><span class="nvd">Is the business healthy?</span></a>
+    </div>
+  </div>
+  <section class="wp" id="independence">
+    <div class="wp-num">06</div>
+    <div class="wp-body">
+      <h2>Independent by design</h2>
+      <p>The four indexes are intentionally independent. Each measures one business discipline, and no index reaches into another's domain. GPI never reads operations. OPI never scores vendors. Only PHI integrates the three, and it does so by weight, not by blending their internals.</p>
+      <p>That independence is a governance decision, not an accident of the model. It keeps each index interpretable on its own, and it means a change in one discipline cannot silently distort another. An operations problem shows up in OPI, where an operator will look for it, and nowhere it does not belong.</p>
+    </div>
+  </section>
+  <section class="wp-close" id="measures">
+    <div class="wpc-label">What NorthStar measures</div>
+    <p class="wpc-statement">NorthStar does not measure marketing. It does not measure operations. It does not measure vendors. It measures the health of a residential real estate portfolio <em>through</em> those disciplines.</p>
+    <p class="wpc-coda">That distinction defines the platform.</p>
+  </section>
+  <section class="cat" id="related">
+    <div class="cat-head"><h2>Related documentation</h2></div>
+    <div class="navcards">
+      <a class="navc" href="NorthStar_Measures_Reference.html"><span class="nvt">Measure Catalog</span><span class="nvd">How the indexes are built</span></a>
+      <a class="navc" href="NorthStar_Executive_Dashboard.html"><span class="nvt">Executive Dashboard</span><span class="nvd">The framework in use</span></a>
+      <a class="navc" href="NorthStar_Semantic_Model.html"><span class="nvt">Semantic Model</span><span class="nvd">How the data is organized</span></a>
+      <a class="navc" href="NorthStar_About.html"><span class="nvt">About NorthStar</span><span class="nvd">Why the platform exists</span></a>
+    </div>
+  </section>
+
+  <nav class="pagenav" aria-label="Document navigation">
+    <a href="NorthStar_Measures_Reference.html"><span class="dir">Previous</span><span class="lbl">Measure Catalog</span></a>
+    <a class="next" href="NorthStar_Executive_Dashboard.html"><span class="dir">Next</span><span class="lbl">Executive Dashboard</span></a>
+  </nav>
+
+</div>
+</main>
+</div>
+
+<footer>NORTHSTAR INTELLIGENCE PLATFORM · METADATA PORTAL · VERSION 1.0 &nbsp;·&nbsp; One source. Trusted data. Better decisions.</footer>
+
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Attribution Lab — NorthStar Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0D1B2A; --secondary:#18263B; --accent:#2563EB;
+    --success:#16A34A; --warning:#F59E0B; --info:#0EA5E9; --muted:#64748B;
+    --surface:#FFFFFF; --bg:#F8FAFC;
+    --line:#E2E8F0; --line-2:#CBD5E1; --ink:#0D1B2A; --ink-2:#475569;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+    --sidebar:280px; --topnav:72px; --maxw:1440px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  h1,h2,h3,h4{color:var(--primary);font-weight:600;line-height:1.3}
+
+  .topnav{position:sticky;top:0;z-index:30;height:var(--topnav);background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:28px}
+  .topnav .logo{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;color:var(--primary)}
+  .topnav .logo .mark{width:26px;height:26px;flex:none}
+  .topnav .logo small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);font-weight:400;margin-top:1px}
+  .topnav nav{display:flex;gap:22px;margin-left:8px;font-size:13.5px}
+  .topnav nav a{color:var(--ink-2)}
+  .topnav nav a[aria-current]{color:var(--primary);font-weight:500}
+  .topnav .right{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  .shell{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) 1fr}
+  aside{border-right:1px solid var(--line);background:var(--surface);position:sticky;top:var(--topnav);height:calc(100vh - var(--topnav));overflow-y:auto;padding:28px 0}
+  aside .grp{padding:0 24px;margin-bottom:22px}
+  aside .grp h5{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+  aside a{display:block;color:var(--ink-2);font-size:13.5px;padding:5px 0}
+  aside a:hover{color:var(--primary);text-decoration:none}
+  aside a[aria-current]{color:var(--accent);font-weight:500}
+  aside .search{padding:0 24px 22px}
+  aside .search input{width:100%;padding:8px 11px;border:1px solid var(--line-2);border-radius:6px;font-family:var(--sans);font-size:13px;background:var(--bg);color:var(--ink)}
+
+  main{background:var(--surface);min-width:0}
+  .doc{max-width:860px;padding:34px clamp(28px,4vw,56px) 90px}
+
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:26px}
+  .crumb a{color:var(--muted)} .crumb span{margin:0 7px;color:var(--line-2)}
+
+  .page-head{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+  .page-head .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  h1{font-size:32px;margin:0 0 14px}
+  .subtitle{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0;font-weight:400;line-height:1.5}
+
+  /* category jump bar */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px}
+  .jump a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 12px;border:1px solid var(--line-2);border-radius:20px;color:var(--ink-2)}
+  .jump a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+  section.cat{margin:40px 0;scroll-margin-top:90px}
+  .cat-head{border-bottom:2px solid var(--primary);padding-bottom:8px;margin-bottom:6px}
+  .cat-head h2{font-size:22px;margin:0}
+  .cat-intro{color:var(--ink-2);font-size:14.5px;margin:12px 0 8px;max-width:80ch}
+
+  /* term entry */
+  .term{border-bottom:1px solid var(--line);padding:24px 0;scroll-margin-top:90px}
+  .term:last-child{border-bottom:none}
+  .term h3{font-size:17px;margin:0 0 3px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .term h3 .also{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
+  .term .def{font-size:15px;color:var(--ink);margin:6px 0 0;max-width:82ch}
+  .term .row{margin-top:12px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:baseline}
+  .term .row .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+  .term .row .val{font-size:14px;color:var(--ink-2);max-width:72ch}
+  .term .row .val a{font-weight:500}
+  .term .formula{font-family:var(--mono);font-size:13px;color:var(--secondary);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:8px 12px;display:inline-block;margin-top:2px}
+  .term code{font-family:var(--mono);font-size:.88em;color:var(--secondary);background:var(--bg);padding:1px 5px;border-radius:2px}
+
+  .callout{border:1px solid var(--line);border-left:3px solid var(--info);background:var(--bg);border-radius:6px;padding:16px 20px;margin:20px 0}
+  .callout .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--info);margin-bottom:6px;font-weight:500}
+  .callout p{margin:0;color:var(--ink-2);font-size:13.5px}
+
+  .pagenav{display:flex;justify-content:space-between;margin-top:56px;padding-top:24px;border-top:1px solid var(--line);gap:16px}
+  .pagenav a{display:block;max-width:48%}
+  .pagenav .dir{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .pagenav .lbl{font-weight:600;color:var(--primary)}
+  .pagenav .next{text-align:right;margin-left:auto}
+  footer{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:var(--mono);font-size:11px;padding:22px 32px;text-align:center}
+  /* layers of business truth */
+  .lifecycle{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:24px 20px;margin:22px 0}
+  .lifecycle svg{display:block;width:100%;height:auto;max-width:820px;margin:0 auto}
+  .truth-note{border:1px solid var(--warning);border-left:3px solid var(--warning);background:#fffbeb;border-radius:6px;padding:14px 18px;margin:18px 0}
+  .truth-note .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#B45309;margin-bottom:5px;font-weight:500}
+  .truth-note p{margin:0;color:#78350F;font-size:13.5px}
+  .term .layer-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;font-weight:500}
+  .lt-mkt{background:#EFF4FB;color:#2563EB}
+  .lt-lease{background:#F0FDF4;color:#16A34A}
+  .lt-ops{background:#FEF3C7;color:#B45309}
+
+  /* cross-reference card: points to canonical definition elsewhere */
+  .xref{border:1px solid var(--line);border-left:3px solid var(--line-2);background:var(--bg);border-radius:6px;padding:14px 18px;margin:0}
+  .xref .xt{font-size:15px;font-weight:600;color:var(--primary);margin:0 0 3px}
+  .xref p{margin:0;color:var(--ink-2);font-size:13.5px}
+  .xref .goto{font-family:var(--mono);font-size:11px;margin-top:6px;display:inline-block}
+
+
+  /* parent term with nested views */
+  .parent{border-bottom:2px solid var(--primary);padding:26px 0 10px;margin-top:8px}
+  .parent h3{font-size:19px;margin:0 0 5px}
+  .parent .def{font-size:15px;color:var(--ink);margin:0;max-width:82ch}
+  .views{margin:0 0 8px}
+  .view{border-bottom:1px solid var(--line);padding:16px 0 16px 22px;border-left:2px solid var(--line-2);margin-left:2px;padding-left:20px}
+  .view h4{font-size:15px;margin:0 0 3px;color:var(--primary);display:flex;align-items:baseline;gap:10px}
+  .view h4 .layer-tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500}
+  .view p{margin:0;color:var(--ink-2);font-size:14px;max-width:78ch}
+  .view .sa{font-size:12.5px;margin-top:5px}
+  /* boxed thesis */
+  .thesis{border:2px solid var(--primary);border-radius:8px;padding:20px 24px;margin:24px 0;background:var(--bg)}
+  .thesis p{margin:0;font-size:17px;font-weight:500;color:var(--primary);max-width:none;text-align:center}
+  /* subgroup heading within a category */
+  .subgroup{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 4px;font-weight:500}
+
+
+  /* ============ attribution lab (research environment) ============ */
+  .wp-head{margin-bottom:14px}
+  .wp-head .subtitle{font-size:17px;line-height:1.6;max-width:64ch;color:var(--ink)}
+  .wp{display:grid;grid-template-columns:64px 1fr;gap:8px;margin:46px 0 0;align-items:start}
+  .wp-num{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600;padding-top:6px}
+  .wp-body{max-width:66ch}
+  .wp-body h2{font-size:23px;font-weight:700;color:var(--primary);margin:0 0 16px;letter-spacing:-0.01em}
+  .wp-body p{font-size:15.5px;line-height:1.72;color:var(--ink);margin:0 0 16px}
+  .wp-body p.lead{font-size:19px;line-height:1.55;color:var(--primary);font-weight:500;margin-bottom:18px}
+  .wp-body p em{font-style:italic;color:var(--primary)}
+  @media(max-width:680px){.wp{grid-template-columns:1fr;gap:4px}.wp-num{padding-top:0}}
+
+  /* behavioral ecosystem chain */
+  .ecowrap{padding-left:72px;margin:16px 0 0}
+  @media(max-width:680px){.ecowrap{padding-left:0}}
+  .eco{display:flex;flex-direction:column;align-items:center}
+  .eco-node{border:1px solid var(--line);border-radius:6px;padding:9px 22px;background:var(--surface);font-family:var(--mono);font-size:12.5px;color:var(--ink);min-width:240px;text-align:center}
+  .eco-node.eco-focus{border-color:var(--accent);background:#F4F8FE;color:var(--accent);font-weight:600}
+  .eco-arrow{color:var(--muted);font-size:13px;margin:4px 0}
+  @media(max-width:640px){.eco-node{min-width:0;width:100%}}
+
+  /* prospect journey (horizontal) */
+  .journeywrap{padding-left:72px;margin:14px 0 0}
+  @media(max-width:680px){.journeywrap{padding-left:0}}
+  .journey{display:flex;flex-wrap:wrap;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:18px;background:var(--surface)}
+  .jn{font-family:var(--mono);font-size:12.5px;color:var(--primary);border:1px solid var(--line);border-radius:5px;padding:8px 13px;background:var(--bg)}
+  .jn:last-of-type{border-color:var(--accent);color:var(--accent);font-weight:600}
+  .ja{color:var(--accent);font-size:13px}
+
+  /* attribution model cards */
+  .modelset{padding-left:72px;margin:14px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:680px){.modelset{padding-left:0}}
+  @media(max-width:640px){.modelset{grid-template-columns:1fr}}
+  .model{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;background:var(--surface)}
+  .model-n{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);margin-bottom:4px}
+  .model-d{font-size:13.5px;line-height:1.55;color:var(--ink-2);margin:0}
+
+  /* two workspaces / phases */
+  .phaseset{padding-left:72px;margin:14px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:680px){.phaseset{padding-left:0}}
+  @media(max-width:640px){.phaseset{grid-template-columns:1fr}}
+  .phase{border:1px solid var(--line);border-radius:8px;padding:18px 20px;background:var(--surface)}
+  .phase-t{font-size:16px;font-weight:700;color:var(--primary)}
+  .phase-r{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:2px 0 10px}
+  .phase-d{font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:0}
+
+  /* closing */
+  .wp-close{margin:60px 0 0;padding:44px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .wpc-label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:20px}
+  .wpc-statement{font-size:24px;line-height:1.5;font-weight:600;color:var(--primary);letter-spacing:-0.01em;max-width:36ch;margin:0 0 18px}
+  .wpc-statement em{font-style:italic;color:var(--accent)}
+  .wpc-final{font-size:16px;line-height:1.7;color:var(--ink-2);margin:0;max-width:64ch}
+  @media(max-width:640px){.wpc-statement{font-size:20px;max-width:none}}
+
+  .navcards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin:20px 0}
+  .navc{border:1px solid var(--line);border-radius:8px;padding:14px 17px;text-decoration:none;background:var(--surface);transition:all .15s;display:block}
+  .navc:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(37,99,235,0.08)}
+  .navc .nvt{display:block;font-size:14px;font-weight:600;color:var(--accent)}
+  .navc .nvd{display:block;font-size:12px;color:var(--ink-2);margin-top:2px}
+  @media(max-width:640px){.navcards{grid-template-columns:1fr}}
+  .cat{margin:52px 0 0}.cat-head h2{font-size:19px}
+
+  /* credit-shift illustration */
+  .shiftwrap{padding-left:72px;margin:14px 0 0}
+  @media(max-width:680px){.shiftwrap{padding-left:0}}
+  .shift-journey{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-bottom:14px}
+  .sj{font-family:var(--mono);font-size:12px;color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:7px 11px;background:var(--bg)}
+  .sj.sj-end{border-color:var(--accent);color:var(--accent);font-weight:600}
+  .sja{color:var(--muted);font-size:12px}
+  .shiftgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .shiftcard{border:1px solid var(--line);border-radius:8px;padding:14px 16px;background:var(--surface)}
+  .sc-model{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .sc-verdict{font-size:15px;font-weight:700;color:var(--accent);margin-bottom:5px}
+  .sc-read{font-size:12.5px;color:var(--ink-2);line-height:1.45;margin:0}
+  .shift-punch{font-size:16px;font-weight:600;color:var(--primary);margin:16px 0 0;border-left:2px solid var(--accent);padding-left:16px}
+  @media(max-width:640px){.shiftgrid{grid-template-columns:1fr}}
+
+  /* model cards with question + implication */
+  .modelset{padding-left:72px;margin:14px 0 0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  @media(max-width:680px){.modelset{padding-left:0}}
+  @media(max-width:760px){.modelset{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.modelset{grid-template-columns:1fr}}
+  .model{border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:8px;padding:14px 16px;background:var(--surface)}
+  .model-n{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--primary);margin-bottom:6px}
+  .model-q{font-size:13.5px;color:var(--ink);line-height:1.45;margin:0 0 8px;font-style:italic}
+  .model-i{font-size:12.5px;color:var(--accent);line-height:1.4;margin:0}
+
+  /* anchor line */
+  .wp-anchor{margin:44px 0 0;padding:32px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .anchor-line{font-size:22px;line-height:1.5;font-weight:600;color:var(--primary);letter-spacing:-0.01em;max-width:52ch;margin:0 0 16px}
+  .anchor-line em{font-style:italic;color:var(--accent)}
+  .anchor-sub{font-size:15px;line-height:1.65;color:var(--ink-2);max-width:64ch;margin:0}
+
+  /* thesis box */
+  .thesisbox{padding-left:72px;margin:16px 0 0}
+  @media(max-width:680px){.thesisbox{padding-left:0}}
+  .thesisbox{}
+  .tb-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px}
+  .thesisbox .tb-text{font-size:16px;line-height:1.65;color:var(--primary);font-weight:500;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:18px 20px;background:var(--surface);margin:0}
+
+  /* pull quote */
+  .pullquote{margin:40px 0 0;padding-left:72px}
+  @media(max-width:680px){.pullquote{padding-left:0}}
+  .pq-text{font-size:22px;line-height:1.5;font-weight:600;color:var(--primary);letter-spacing:-0.01em;border-left:3px solid var(--accent);padding:4px 0 4px 22px;margin:0;max-width:56ch}
+
+  /* inverted hierarchy — lab on top, engine at base */
+  .hierwrap{padding-left:72px;margin:16px 0 0}
+  @media(max-width:680px){.hierwrap{padding-left:0}}
+  .hier-cap{font-size:13.5px;color:var(--ink-2);line-height:1.55;max-width:60ch;margin-bottom:16px}
+  .hier{display:flex;flex-direction:column;align-items:center}
+  .hier-node{border:1px solid var(--line);border-radius:6px;padding:10px 24px;background:var(--surface);font-family:var(--mono);font-size:12.5px;color:var(--ink);min-width:260px;text-align:center}
+  .hier-node.hier-top{border-color:var(--accent);background:#F4F8FE;color:var(--accent);font-weight:600}
+  .hier-node.hier-base{border-color:#CBB26B;background:#FBF7EC;color:#9A7B1F;font-weight:600}
+  .hier-arrow{color:var(--muted);font-size:13px;margin:4px 0}
+  @media(max-width:640px){.hier-node{min-width:0;width:100%}}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+  @media(max-width:1000px){
+    .shell{grid-template-columns:1fr}
+    aside{display:none}
+    .term .row{grid-template-columns:1fr;gap:2px}
+    .term .row .lbl{padding-top:8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <a class="logo" href="index.html" aria-label="NorthStar home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19 13 L30 16 L19 19 L16 30 L13 19 L2 16 L13 13 Z" fill="#0D1B2A"/></svg>
+    <span>NORTHSTAR<small>METADATA PORTAL</small></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="NorthStar_About.html">About</a>
+    <a href="index.html" aria-current="page">Business</a>
+    <a href="NorthStar_Data_Model_Dictionary.html">Data</a>
+    <a href="NorthStar_Executive_Index_Framework.html">Analytics</a>
+    <a href="NorthStar_Pipeline_Architecture.html">Technical</a>
+  </nav>
+  <div class="right">v1.0</div>
+</header>
+
+<div class="shell">
+<aside aria-label="Documentation navigation">
+  <div class="search"><input type="search" placeholder="Search the metadata portal…" aria-label="Search documentation"></div>
+<div class="grp"><h5>Overview</h5>
+<a href="NorthStar_About.html">About NorthStar</a>
+<a href="NorthStar_Platform_Overview.html">Platform Overview</a>
+</div>
+<div class="grp"><h5>Business</h5>
+<a href="NorthStar_Business_Glossary.html">Business Glossary</a>
+<a href="NorthStar_Business_Rules.html">Business Rules</a>
+<a href="NorthStar_Data_Generation_Engine.html">Data Generation Engine</a>
+</div>
+<div class="grp"><h5>Executive</h5>
+<a href="NorthStar_Executive_Index_Framework.html">Decision Framework</a>
+<a href="NorthStar_GPI.html">GPI</a>
+<a href="NorthStar_OPI.html">OPI</a>
+<a href="NorthStar_VPI.html">VPI</a>
+<a href="NorthStar_PHI.html">PHI</a>
+<a href="NorthStar_Executive_Dashboard.html">Executive Dashboard</a>
+<a href="NorthStar_Attribution_Lab.html" aria-current="page">Attribution Lab</a>
+</div>
+<div class="grp"><h5>Technical</h5>
+<a href="NorthStar_Pipeline_Architecture.html">Pipeline Architecture</a>
+<a href="NorthStar_Pipeline_Dashboard.html">Pipeline Dashboard</a>
+<a href="NorthStar_Pipeline_Reliability.html">Pipeline Reliability</a>
+<a href="NorthStar_Data_Flow.html">Data Flow</a>
+<a href="NorthStar_Data_Model_Dictionary.html">Data Dictionary</a>
+<a href="NorthStar_Measures_Reference.html">Measure Catalog</a>
+<a href="NorthStar_Semantic_Model.html">Semantic Model</a>
+<a href="NorthStar_Platform_Specifications.html">Platform Specifications</a>
+</div>
+</aside>
+
+<main>
+<div class="doc">
+
+  <div class="crumb"><a href="index.html">Home</a><span>›</span><a href="index.html">Analytics</a><span>›</span>Attribution Lab</div>
+  <div class="page-head wp-head">
+    <div class="eyebrow">Analytics · A Marketing Decision Laboratory</div>
+    <h1>Attribution Lab</h1>
+    <p class="subtitle">Marketing investment decisions depend on knowing which channels create value. The difficulty is that the answer changes depending on how you interpret a customer's journey. An Attribution Lab exists to test those interpretations before an organization commits budget to them.</p>
+  </div>
+  <section class="wp">
+    <div class="wp-num">01</div>
+    <div class="wp-body">
+      <h2>A simple question with no simple answer</h2>
+      <p class="lead">Every marketing organization eventually faces the same question, and discovers it is far harder than it sounds.</p><p>Picture the CMO of an apartment operator at year end. The spend is committed: twelve million dollars on Google, eight million on Apartments.com, five million on Facebook, two million on email. The CEO asks one question. Which channels actually drove leases?</p><p>It sounds simple. It is not. A customer almost never arrives like a straight line from Google to a signed lease. A real journey looks more like this: a Google search, then Apartments.com, then organic search a week later, then a retargeting ad, then an email, then a tour, then the lease. So who earned it? Google, for finding them? Email, for the nudge that closed them? Apartments.com, somewhere in the middle? There is no objective answer, and that absence is the business problem.</p>
+    </div>
+  </section>
+  <section class="wp">
+    <div class="wp-num">02</div>
+    <div class="wp-body">
+      <h2>Why the interpretation is worth millions</h2>
+      <p>The reason this matters is that the interpretation drives the budget. Change how credit is assigned and you change where the money goes, without a single thing about the customers actually changing.</p><p>Suppose the company drops Apartments.com because a last-touch view says it does not convert. Six months later, Google conversions collapse, because Apartments.com was never the closer. It was the introduction. The company just cut the top of its own funnel. Now flip it: someone proposes killing email because it earns almost no first-touch credit, until a time-weighted view shows email is present in the final week before nearly every signed lease. Cut it and conversions fall. Both are million-dollar mistakes, and both come from trusting a single interpretation of the same behavior.</p>
+    </div>
+  </section>
+  <section class="wp" id="shift">
+    <div class="wp-num">03</div>
+    <div class="wp-body">
+      <h2>The same journey, three conclusions</h2>
+      <p>Take one real-shaped journey worth twenty thousand dollars in lease value, and watch what happens to the credit as the model changes. Nothing about the customer changes. Only the lens does.</p>
+    </div>
+  </section>
+  <div class="shiftwrap">
+    <div class="shift-journey"><span class="sj">Google</span><span class="sja">&#8594;</span><span class="sj">Apartments.com</span><span class="sja">&#8594;</span><span class="sj">Organic</span><span class="sja">&#8594;</span><span class="sj">Email</span><span class="sja">&#8594;</span><span class="sj sj-end">Lease</span></div>
+    <div class="shiftgrid">
+      <div class="shiftcard"><div class="sc-model">First Touch</div><div class="sc-verdict">Google gets $20,000</div><p class="sc-read">Conclusion: Google is your best channel.</p></div>
+      <div class="shiftcard"><div class="sc-model">Last Touch</div><div class="sc-verdict">Email gets $20,000</div><p class="sc-read">Conclusion: Email is driving leasing.</p></div>
+      <div class="shiftcard"><div class="sc-model">Linear</div><div class="sc-verdict">Each gets $5,000</div><p class="sc-read">Conclusion: They all contribute.</p></div>
+    </div>
+    <p class="shift-punch">Same customer. Same revenue. Three different strategies. Now multiply it by fifty thousand leases.</p>
+  </div>
+  <section class="wp" id="models">
+    <div class="wp-num">04</div>
+    <div class="wp-body">
+      <h2>Why there is no correct model</h2>
+      <p>The instinct is to ask which attribution model is right. There is no industry standard, and that is not an oversight. Each model answers a different business question, so the right one depends on what the business is trying to decide. They are not competing. They are complementary.</p>
+      <p>It is like asking who the best baseball player is. Best hitter? Best fielder? Highest WAR? Every answer is legitimate; they measure different things. Nobody claims WAR is objectively correct. It is simply the best metric for one purpose. Attribution works the same way.</p>
+    </div>
+  </section>
+  <div class="modelset"><div class="model"><div class="model-n">First Touch</div><p class="model-q">Who introduced this customer to us?</p><p class="model-i">Invest more in awareness.</p></div><div class="model"><div class="model-n">Last Touch</div><p class="model-q">What actually got them to sign?</p><p class="model-i">Invest in closing channels.</p></div><div class="model"><div class="model-n">Linear</div><p class="model-q">Every interaction mattered.</p><p class="model-i">Do not starve the middle of the funnel.</p></div><div class="model"><div class="model-n">Time Decay</div><p class="model-q">The closer to the lease, the more it counts.</p><p class="model-i">Optimize remarketing and conversion.</p></div><div class="model"><div class="model-n">U-Shape</div><p class="model-q">What opened and what closed?</p><p class="model-i">Fund discovery and the close together.</p></div><div class="model"><div class="model-n">W-Shape</div><p class="model-q">What moved them through the middle too?</p><p class="model-i">Protect the key mid-journey moment.</p></div></div>
+  <section class="wp">
+    <div class="wp-num">05</div>
+    <div class="wp-body">
+      <h2>Why companies build an Attribution Lab</h2>
+      <p class="lead">The company is not buying attribution because attribution is interesting. It is buying confidence when spending the next dollar.</p><p>Because these are not reporting questions. They are investment questions, made under uncertainty, with millions of dollars riding on the interpretation. Without a controlled place to test them, the conversation defaults to whoever argues hardest: the marketing director defends the channel that shows well on their preferred model, the agency defends the one that funds their work, finance objects to the cost. Everyone has data. Nobody agrees, because everyone is looking through a different lens.</p><p>An Attribution Lab gives an organization a controlled environment to evaluate those perspectives before committing budget. Analysts can compare models, see how each interprets the same behavior, and choose the perspective that best fits the decision at hand. The point is not to find the universally correct model. The point is to make better-informed investments, and to replace defending channels with evaluating evidence. What the lab actually produces is confidence.</p>
+    </div>
+  </section>
+  <section class="wp-anchor" id="anchor">
+    <p class="anchor-line">The purpose of the Attribution Lab is not to determine which attribution model is correct. It is to determine which model best explains how <em>our</em> customers actually make decisions.</p>
+    <p class="anchor-sub">Once an organization believes a model reflects its customers' real behavior, it can allocate budget with confidence. And because customer behavior changes over time, the preferred model changes too, which is why mature organizations do not choose once and forget. They re-test. That ongoing re-evaluation is the business value a lab provides.</p>
+  </section>
+  <section class="wp">
+    <div class="wp-num">06</div>
+    <div class="wp-body">
+      <h2>Why this page exists in this portfolio</h2>
+      <p class="lead">There are two reasons this page exists, and the second one is the one most portfolios cannot offer.</p><p>Most companies buy attribution software because they need better marketing decisions. NorthStar demonstrates that capability. But in this portfolio, the page serves a second purpose that matters just as much.</p><p>It demonstrates that the synthetic operating environment is sophisticated enough to support one of marketing's most demanding analytical problems. And that reverses the relationship you would expect. The engine does not merely support the Attribution Lab. The Attribution Lab validates the engine.</p>
+    </div>
+  </section>
+  <div class="thesisbox">
+    <div class="tb-label">The thesis</div>
+    <p class="tb-text">The Attribution Lab serves two purposes. For analysts, it is a decision-support tool for evaluating marketing investment through multiple attribution models. For the platform, it is proof that the synthetic operating environment produces customer behavior realistic enough to support advanced marketing analytics.</p>
+  </div>
+  <section class="wp">
+    <div class="wp-num">07</div>
+    <div class="wp-body">
+      <h2>A stress test in disguise</h2>
+      <p class="lead">The Attribution Lab is less a demonstration of attribution than it is a stress test of the synthetic ecosystem.</p><p>Attribution is one of the easiest analytics demonstrations to fake, and one of the hardest to make believable. The reason is a chain of dependencies. Believable attribution requires believable customers. Believable customers require believable journeys. Believable journeys require believable behavior. Believable behavior requires an ecosystem. That entire chain has to work, or the whole thing quietly falls apart.</p><p>Which is why the honest description of this page is not the obvious one. If prospect creation, touch timing, channel switching, journey duration, conversion windows, or lease timing were even slightly wrong, the attribution models would produce numbers that look fine and mean nothing. So a functioning Attribution Lab is not really a demonstration of attribution. It is proof that every upstream system is behaving realistically at once.</p>
+    </div>
+  </section>
+  <div class="hierwrap">
+    <div class="hier-cap">The lab sits on top of the whole ecosystem. To answer its question, everything beneath it has to be working, which is what makes it a quality test for the engine.</div>
+    <div class="hier"><div class="hier-node hier-top">Marketing Investment Decisions</div><div class="hier-arrow">&#8595;</div><div class="hier-node">Attribution Lab</div><div class="hier-arrow">&#8595;</div><div class="hier-node">Customer Journeys</div><div class="hier-arrow">&#8595;</div><div class="hier-node">Touchpoints</div><div class="hier-arrow">&#8595;</div><div class="hier-node">Prospects</div><div class="hier-arrow">&#8595;</div><div class="hier-node hier-base">Behavior Engine</div></div>
+  </div>
+  <section class="wp">
+    <div class="wp-num">08</div>
+    <div class="wp-body">
+      <h2>Statistically real is not the same as behaviorally real</h2>
+      <p class="lead">This is the distinction very few portfolio projects can make, and the one this page is built to prove.</p><p>Most synthetic data is statistically realistic. The numbers look plausible: the distributions are sensible, the totals add up, a chart looks like a chart. That is not hard, and it is not what attribution needs.</p><p>Attribution needs data that is behaviorally realistic, where the customers behave plausibly, not just the aggregates. That is a much harder problem, because behavior unfolds over time and depends on sequence, memory, and timing rather than on a distribution. Because attribution depends on behavior and not merely on distributions, a working Attribution Lab is one of the strongest possible demonstrations that the synthetic ecosystem is behaving like a real business, not just resembling one on a summary chart.</p>
+    </div>
+  </section>
+  <section class="wp">
+    <div class="wp-num">09</div>
+    <div class="wp-body">
+      <h2>Where NorthStar begins</h2>
+      <p>Most attribution demonstrations start with the models. They analyze a static table of historical transactions that never had a life, and the interesting question, whether the underlying behavior is believable, never comes up because there is no behavior at all.</p><p>NorthStar begins much earlier, with the customer. Every figure an analyst touches traces back to a simulated prospect that behaves the way real prospects behave: it appears, collects touches over days, switches channels, goes quiet, comes back, and eventually converts or expires. Attribution is simply the last thing that happens to that behavior, not the first thing the platform generates. That is the part worth showing.</p>
+    </div>
+  </section>
+  <div class="pullquote">
+    <p class="pq-text">Everyone can generate a row with a customer ID, a channel, a date, and a revenue figure. Far fewer can generate a customer that behaves like a person.</p>
+  </div>
+  <section class="wp" id="ecosystem">
+    <div class="wp-num">10</div>
+    <div class="wp-body">
+      <h2>What the behavior has to do</h2>
+      <p>The reason attribution is a fair test is that real customer behavior is genuinely hard. Customers disappear and return. They switch channels. They collect several touches. They convert weeks later, or never. Any environment that wants to support attribution has to produce all of that, in order, across time. NorthStar does, and the chain below is what stands behind every attributed lease.</p>
+    </div>
+  </section>
+  <div class="ecowrap"><div class="eco"><div class="eco-node">Marketing Spend</div><div class="eco-arrow">&#8595;</div><div class="eco-node">Prospects</div><div class="eco-arrow">&#8595;</div><div class="eco-node">Touchpoints</div><div class="eco-arrow">&#8595;</div><div class="eco-node">Journeys (over days)</div><div class="eco-arrow">&#8595;</div><div class="eco-node">Conversions</div><div class="eco-arrow">&#8595;</div><div class="eco-node">Lease Events</div><div class="eco-arrow">&#8595;</div><div class="eco-node">Attribution Models</div><div class="eco-arrow">&#8595;</div><div class="eco-node eco-focus">Analyst Decision</div></div></div>
+  <section class="wp" id="workspaces">
+    <div class="wp-num">11</div>
+    <div class="wp-body">
+      <h2>From exploration to decision</h2>
+      <p>The lab is organized as two workspaces, which are really two stages of a single decision. First an analyst learns how the models behave on this data. Then they see what changes, in dollars, when the organization commits to one.</p>
+    </div>
+  </section>
+  <div class="phaseset">
+    <div class="phase">
+      <div class="phase-t">Main Analysis</div>
+      <div class="phase-r">Explore the interpretations</div>
+      <p class="phase-d">How does each model score this data, and what changes when you switch between them? An analyst compares credit recipes, looks at journey depth and multi-touch bias, and builds intuition for how sensitive the picture is to the choice of model.</p>
+    </div>
+    <div class="phase">
+      <div class="phase-t">Model Impact</div>
+      <div class="phase-r">Price the decision</div>
+      <p class="phase-d">Once a model is in question, what actually moves? Every figure is measured against a Linear baseline: the shift in attributed leases, in lease value, in cost per conversion, in which channels gain or lose credit. This is where an interpretation becomes a budget consequence.</p>
+    </div>
+  </div>
+  <section class="wp">
+    <div class="wp-num">12</div>
+    <div class="wp-body">
+      <h2>The spread is the insight</h2>
+      <p>The most useful thing the lab produces is not any one model's answer. It is the distance between them.</p><p>When every model tells roughly the same story, the conclusion is robust. It does not depend on the assumptions, and the organization can act on it with confidence. When the models disagree sharply, the result is being driven by the assumptions rather than the behavior, and any single number deserves suspicion. That spread, agreement versus disagreement, is a signal no individual model can give. It only appears when you compare, and it is exactly the signal that keeps a company from making a confident, expensive mistake.</p>
+    </div>
+  </section>
+  <section class="wp-close" id="close">
+    <div class="wpc-label">Two sides of one coin</div>
+    <p class="wpc-statement">The Executive Dashboard gives leadership the confidence to run the business. The Attribution Lab gives analysts the confidence to recommend where the next marketing dollar goes.</p>
+    <p class="wpc-final">One page demonstrates how NorthStar supports executive decisions. This one demonstrates that the synthetic ecosystem beneath it is rich enough to answer far harder questions. The dashboard shows what leadership sees. The lab shows why the data can be trusted to bear the weight of a real investment decision.</p>
+  </section>
+  <section class="cat" id="related">
+    <div class="cat-head"><h2>Related documentation</h2></div>
+    <div class="navcards">
+      <a class="navc" href="NorthStar_Executive_Dashboard.html"><span class="nvt">Executive Dashboard</span><span class="nvd">Confidence to run the business</span></a>
+      <a class="navc" href="NorthStar_Data_Generation_Engine.html"><span class="nvt">Simulation Engine</span><span class="nvd">How the customer behavior is produced</span></a>
+      <a class="navc" href="NorthStar_VPI.html"><span class="nvt">Executive Guide: VPI</span><span class="nvd">Vendor investment, one level up</span></a>
+      <a class="navc" href="NorthStar_Data_Model_Dictionary.html"><span class="nvt">Data Dictionary</span><span class="nvd">The prospect and touch tables</span></a>
+    </div>
+  </section>
+
+  <nav class="pagenav" aria-label="Document navigation">
+    <a href="NorthStar_Executive_Dashboard.html"><span class="dir">Previous</span><span class="lbl">Executive Dashboard</span></a>
+    <a class="next" href="NorthStar_Data_Generation_Engine.html"><span class="dir">Next</span><span class="lbl">Simulation Engine</span></a>
+  </nav>
+
+</div>
+</main>
+</div>
+
+<footer>NORTHSTAR INTELLIGENCE PLATFORM · METADATA PORTAL · VERSION 1.0 &nbsp;·&nbsp; One source. Trusted data. Better decisions.</footer>
+
+</body>
+</html>

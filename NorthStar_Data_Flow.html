@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Flow & Architecture — NorthStar Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0D1B2A; --secondary:#18263B; --accent:#2563EB;
+    --success:#16A34A; --warning:#F59E0B; --info:#0EA5E9; --muted:#64748B;
+    --surface:#FFFFFF; --bg:#F8FAFC;
+    --line:#E2E8F0; --line-2:#CBD5E1; --ink:#0D1B2A; --ink-2:#475569;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+    --sidebar:280px; --topnav:72px; --maxw:1440px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  h1,h2,h3,h4{color:var(--primary);font-weight:600;line-height:1.3}
+
+  .topnav{position:sticky;top:0;z-index:30;height:var(--topnav);background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:28px}
+  .topnav .logo{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;color:var(--primary)}
+  .topnav .logo .mark{width:26px;height:26px;flex:none}
+  .topnav .logo small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);font-weight:400;margin-top:1px}
+  .topnav nav{display:flex;gap:22px;margin-left:8px;font-size:13.5px}
+  .topnav nav a{color:var(--ink-2)}
+  .topnav nav a[aria-current]{color:var(--primary);font-weight:500}
+  .topnav .right{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  .shell{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) 1fr}
+  aside{border-right:1px solid var(--line);background:var(--surface);position:sticky;top:var(--topnav);height:calc(100vh - var(--topnav));overflow-y:auto;padding:28px 0}
+  aside .grp{padding:0 24px;margin-bottom:22px}
+  aside .grp h5{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+  aside a{display:block;color:var(--ink-2);font-size:13.5px;padding:5px 0}
+  aside a:hover{color:var(--primary);text-decoration:none}
+  aside a[aria-current]{color:var(--accent);font-weight:500}
+  aside .search{padding:0 24px 22px}
+  aside .search input{width:100%;padding:8px 11px;border:1px solid var(--line-2);border-radius:6px;font-family:var(--sans);font-size:13px;background:var(--bg);color:var(--ink)}
+
+  main{background:var(--surface);min-width:0}
+  .doc{max-width:860px;padding:34px clamp(28px,4vw,56px) 90px}
+
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:26px}
+  .crumb a{color:var(--muted)} .crumb span{margin:0 7px;color:var(--line-2)}
+
+  .page-head{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+  .page-head .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  h1{font-size:32px;margin:0 0 14px}
+  .subtitle{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0;font-weight:400;line-height:1.5}
+
+  /* category jump bar */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px}
+  .jump a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 12px;border:1px solid var(--line-2);border-radius:20px;color:var(--ink-2)}
+  .jump a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+  section.cat{margin:40px 0;scroll-margin-top:90px}
+  .cat-head{border-bottom:2px solid var(--primary);padding-bottom:8px;margin-bottom:6px}
+  .cat-head h2{font-size:22px;margin:0}
+  .cat-intro{color:var(--ink-2);font-size:14.5px;margin:12px 0 8px;max-width:80ch}
+
+  /* term entry */
+  .term{border-bottom:1px solid var(--line);padding:24px 0;scroll-margin-top:90px}
+  .term:last-child{border-bottom:none}
+  .term h3{font-size:17px;margin:0 0 3px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .term h3 .also{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
+  .term .def{font-size:15px;color:var(--ink);margin:6px 0 0;max-width:82ch}
+  .term .row{margin-top:12px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:baseline}
+  .term .row .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+  .term .row .val{font-size:14px;color:var(--ink-2);max-width:72ch}
+  .term .row .val a{font-weight:500}
+  .term .formula{font-family:var(--mono);font-size:13px;color:var(--secondary);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:8px 12px;display:inline-block;margin-top:2px}
+  .term code{font-family:var(--mono);font-size:.88em;color:var(--secondary);background:var(--bg);padding:1px 5px;border-radius:2px}
+
+  .callout{border:1px solid var(--line);border-left:3px solid var(--info);background:var(--bg);border-radius:6px;padding:16px 20px;margin:20px 0}
+  .callout .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--info);margin-bottom:6px;font-weight:500}
+  .callout p{margin:0;color:var(--ink-2);font-size:13.5px}
+
+  .pagenav{display:flex;justify-content:space-between;margin-top:56px;padding-top:24px;border-top:1px solid var(--line);gap:16px}
+  .pagenav a{display:block;max-width:48%}
+  .pagenav .dir{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .pagenav .lbl{font-weight:600;color:var(--primary)}
+  .pagenav .next{text-align:right;margin-left:auto}
+  footer{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:var(--mono);font-size:11px;padding:22px 32px;text-align:center}
+  /* layers of business truth */
+  .lifecycle{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:24px 20px;margin:22px 0}
+  .lifecycle svg{display:block;width:100%;height:auto;max-width:820px;margin:0 auto}
+  .truth-note{border:1px solid var(--warning);border-left:3px solid var(--warning);background:#fffbeb;border-radius:6px;padding:14px 18px;margin:18px 0}
+  .truth-note .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#B45309;margin-bottom:5px;font-weight:500}
+  .truth-note p{margin:0;color:#78350F;font-size:13.5px}
+  .term .layer-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;font-weight:500}
+  .lt-mkt{background:#EFF4FB;color:#2563EB}
+  .lt-lease{background:#F0FDF4;color:#16A34A}
+  .lt-ops{background:#FEF3C7;color:#B45309}
+
+  /* cross-reference card: points to canonical definition elsewhere */
+  .xref{border:1px solid var(--line);border-left:3px solid var(--line-2);background:var(--bg);border-radius:6px;padding:14px 18px;margin:0}
+  .xref .xt{font-size:15px;font-weight:600;color:var(--primary);margin:0 0 3px}
+  .xref p{margin:0;color:var(--ink-2);font-size:13.5px}
+  .xref .goto{font-family:var(--mono);font-size:11px;margin-top:6px;display:inline-block}
+
+
+  /* parent term with nested views */
+  .parent{border-bottom:2px solid var(--primary);padding:26px 0 10px;margin-top:8px}
+  .parent h3{font-size:19px;margin:0 0 5px}
+  .parent .def{font-size:15px;color:var(--ink);margin:0;max-width:82ch}
+  .views{margin:0 0 8px}
+  .view{border-bottom:1px solid var(--line);padding:16px 0 16px 22px;border-left:2px solid var(--line-2);margin-left:2px;padding-left:20px}
+  .view h4{font-size:15px;margin:0 0 3px;color:var(--primary);display:flex;align-items:baseline;gap:10px}
+  .view h4 .layer-tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500}
+  .view p{margin:0;color:var(--ink-2);font-size:14px;max-width:78ch}
+  .view .sa{font-size:12.5px;margin-top:5px}
+  /* boxed thesis */
+  .thesis{border:2px solid var(--primary);border-radius:8px;padding:20px 24px;margin:24px 0;background:var(--bg)}
+  .thesis p{margin:0;font-size:17px;font-weight:500;color:var(--primary);max-width:none;text-align:center}
+  /* subgroup heading within a category */
+  .subgroup{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 4px;font-weight:500}
+
+
+  /* section number badge */
+  .secnum{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:500}
+  .archframe{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:24px 20px;margin:22px 0}
+  .archframe svg{display:block;width:100%;height:auto;margin:0 auto}
+  .archcap{text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);margin:14px 0 0}
+
+  /* chart 3: source landscape */
+  .srcland{margin:22px 0}
+  .srcgroup{margin:0 0 18px}
+  .sgh{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;padding:6px 12px;border-radius:5px 5px 0 0;color:#fff}
+  .sg-mkt{background:var(--accent)} .sg-web{background:#0891B2} .sg-crm{background:#7C3AED} .sg-pms{background:#B45309} .sg-soc{background:#64748B}
+  .sgcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;padding:12px;border:1px solid var(--line);border-top:none;border-radius:0 0 6px 6px;background:var(--surface)}
+  .srccard{border:1px solid var(--line);border-radius:6px;padding:11px 13px;background:var(--bg)}
+  .scn{font-size:13.5px;font-weight:600;color:var(--primary);margin-bottom:7px}
+  .scn .chtag{font-family:var(--mono);font-size:8.5px;font-weight:500;letter-spacing:.05em;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:3px;padding:1px 5px;margin-left:6px;text-transform:uppercase}
+  .scd{display:flex;flex-wrap:wrap;gap:4px}
+  .scd span{font-family:var(--mono);font-size:9.5px;background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:1px 6px;color:var(--ink-2)}
+  .entstep{text-align:center;color:var(--line-2);font-size:20px;margin:2px 0}
+  .entband{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:13px 18px;background:var(--surface)}
+  .entband .ebn{font-size:15px;font-weight:600;color:var(--primary)}
+  .entband .ebsub{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:9px 0 5px}
+  .entband .ebd{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+  .entband .ebd span{font-family:var(--mono);font-size:10.5px;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:2px 9px;color:var(--ink-2)}
+  .entband .ebd span.opt{border-style:dashed;color:var(--muted)}
+  .entband.l-wh{border-left-color:var(--secondary)} .entband.l-sem{border-left-color:var(--accent);background:#EFF4FB}
+  .entconsumers{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:4px}
+  .ec{border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:6px;padding:11px 13px;background:var(--surface)}
+  .ec .ecn{font-size:13px;font-weight:600;color:var(--primary)}
+  .ec .ecr{font-size:11px;color:var(--ink-2);margin-top:3px}
+  .ec-ops{border-top-color:var(--warning);border-top-style:dashed}
+  .ec-meta{border-top-color:var(--info);border-top-style:dashed}
+  @media(max-width:700px){.entconsumers{grid-template-columns:repeat(2,1fr)}}
+
+  /* chart 4: narrative table */
+  .narr{margin:22px 0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .narr .nh{display:grid;grid-template-columns:1.4fr 1fr 1.2fr;gap:14px;padding:11px 16px 11px 46px;background:var(--secondary);color:#fff;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+  .narr .nr{display:grid;grid-template-columns:1.4fr 1fr 1.2fr;gap:14px;padding:11px 16px 11px 46px;border-bottom:1px solid var(--line);position:relative;font-size:13px}
+  .narr .nr:last-child{border-bottom:none}
+  .narr .nr:nth-child(even){background:var(--bg)}
+  .narr .nn{position:absolute;left:14px;top:11px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--mono);font-size:11px;display:flex;align-items:center;justify-content:center}
+  .narr .ne{font-weight:500;color:var(--primary)}
+  .narr .ns{font-family:var(--mono);font-size:11px;color:var(--accent)}
+  .narr .nd{color:var(--ink-2)}
+  @media(max-width:700px){.narr .nh{display:none}.narr .nr{grid-template-columns:1fr;gap:3px}}
+
+  /* chart 6: product family */
+  .prodfam{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0}
+  .pf{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;background:var(--surface)}
+  .pf .pfn{font-size:15.5px;font-weight:600;color:var(--primary)}
+  .pf .pfp{font-size:12.5px;color:var(--ink-2);margin:2px 0 9px}
+  .pf ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:5px}
+  .pf li{font-family:var(--mono);font-size:10.5px;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:2px 8px;color:var(--ink-2)}
+  @media(max-width:640px){.prodfam{grid-template-columns:1fr}}
+
+  .philosophy{border-top:2px solid var(--primary);margin:32px 0 0;padding:24px 0 0}
+  .philosophy p{font-size:18px;font-weight:500;color:var(--primary);line-height:1.5;max-width:70ch;margin:0}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+  @media(max-width:1000px){
+    .shell{grid-template-columns:1fr}
+    aside{display:none}
+    .term .row{grid-template-columns:1fr;gap:2px}
+    .term .row .lbl{padding-top:8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <a class="logo" href="index.html" aria-label="NorthStar home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19 13 L30 16 L19 19 L16 30 L13 19 L2 16 L13 13 Z" fill="#0D1B2A"/></svg>
+    <span>NORTHSTAR<small>METADATA PORTAL</small></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="NorthStar_About.html">About</a>
+    <a href="index.html">Business</a>
+    <a href="NorthStar_Data_Model_Dictionary.html">Data</a>
+    <a href="NorthStar_Executive_Index_Framework.html">Analytics</a>
+    <a href="NorthStar_Pipeline_Architecture.html">Technical</a>
+  </nav>
+  <div class="right">v1.0</div>
+</header>
+
+<div class="shell">
+<aside aria-label="Documentation navigation">
+  <div class="search"><input type="search" placeholder="Search the metadata portal…" aria-label="Search documentation"></div>
+<div class="grp"><h5>Overview</h5>
+<a href="NorthStar_About.html">About NorthStar</a>
+<a href="NorthStar_Platform_Overview.html">Platform Overview</a>
+</div>
+<div class="grp"><h5>Business</h5>
+<a href="NorthStar_Business_Glossary.html">Business Glossary</a>
+<a href="NorthStar_Business_Rules.html">Business Rules</a>
+<a href="NorthStar_Data_Generation_Engine.html">Data Generation Engine</a>
+</div>
+<div class="grp"><h5>Executive</h5>
+<a href="NorthStar_Executive_Index_Framework.html">Decision Framework</a>
+<a href="NorthStar_GPI.html">GPI</a>
+<a href="NorthStar_OPI.html">OPI</a>
+<a href="NorthStar_VPI.html">VPI</a>
+<a href="NorthStar_PHI.html">PHI</a>
+<a href="NorthStar_Executive_Dashboard.html">Executive Dashboard</a>
+<a href="NorthStar_Attribution_Lab.html">Attribution Lab</a>
+</div>
+<div class="grp"><h5>Technical</h5>
+<a href="NorthStar_Pipeline_Architecture.html">Pipeline Architecture</a>
+<a href="NorthStar_Pipeline_Dashboard.html">Pipeline Dashboard</a>
+<a href="NorthStar_Pipeline_Reliability.html">Pipeline Reliability</a>
+<a href="NorthStar_Data_Flow.html" aria-current="page">Data Flow</a>
+<a href="NorthStar_Data_Model_Dictionary.html">Data Dictionary</a>
+<a href="NorthStar_Measures_Reference.html">Measure Catalog</a>
+<a href="NorthStar_Semantic_Model.html">Semantic Model</a>
+<a href="NorthStar_Platform_Specifications.html">Platform Specifications</a>
+</div>
+</aside>
+
+<main>
+<div class="doc">
+
+  <div class="crumb"><a href="index.html">Home</a><span>›</span><a href="index.html">Data</a><span>›</span>Data Flow &amp; Architecture</div>
+
+  <div class="page-head">
+    <div class="eyebrow">Data</div>
+    <h1>Data Flow &amp; Architecture</h1>
+    <p class="subtitle">How NorthStar is built, how data moves through it, and what it represents when synthetic generation is replaced by production systems. Each diagram answers one question. Real marketing, web, CRM, leasing, and property-management systems each produce a fragment of the resident journey; NorthStar integrates those fragments, resolves their shared keys, publishes them into a governed model, and turns them into operational and executive decisions.</p>
+  </div>
+  <section class="cat" id="implemented">
+    <div class="cat-head"><h2><span class="secnum">01</span> &nbsp;NorthStar Platform Architecture</h2></div>
+    <p class="cat-intro">What is NorthStar made of? The platform runs as a single vertical pipeline. Between staged files in blob storage and the SQL warehouse, the Operations Pipeline Report validates, reconciles, and controls what gets published. The semantic model then serves the two analytical experiences. The Metadata Portal documents every layer without participating in the flow.</p>
+    <div class="archframe"><svg viewBox="0 0 760 680" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif" role="img" aria-label="Implemented NorthStar architecture. A vertical pipeline from synthetic generator through Azure Functions and Blob, where the operations pipeline report validates and controls publication into the SQL warehouse, then the semantic model serves the executive dashboard and attribution lab. A metadata portal documents the whole platform."><defs><marker id="mk2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#94A3B8"/></marker></defs><rect x="265" y="12" width="230" height="44" rx="6" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.4"/><text x="380" y="31" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Synthetic Data Generator</text><text x="380" y="46" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">DETERMINISTIC TRUTH</text><rect x="265" y="86" width="230" height="44" rx="6" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.4"/><text x="380" y="105" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Azure Functions</text><text x="380" y="120" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">FLEX CONSUMPTION</text><rect x="265" y="160" width="230" height="44" rx="6" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.4"/><text x="380" y="179" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Azure Blob Storage</text><text x="380" y="194" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">STAGED CSV FILES</text><line x1="380" y1="56" x2="380" y2="83" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><line x1="380" y1="130" x2="380" y2="157" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><rect x="265" y="360" width="230" height="44" rx="6" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.4"/><text x="380" y="379" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Azure SQL Warehouse</text><text x="380" y="394" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">PUBLISHED FACTS</text><line x1="380" y1="204" x2="380" y2="357" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><rect x="450" y="234" width="250" height="96" rx="7" fill="#FEF9F0" stroke="#B45309" stroke-width="1.4"/><text x="575" y="254" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Operations Pipeline Report</text><text x="575" y="268" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#B45309" letter-spacing="0.05em">VALIDATES · RECONCILES · CONTROLS PUBLISH</text><text x="466" y="282" font-size="9" fill="#475569">• Pipeline status</text><text x="466" y="292" font-size="9" fill="#475569">• Validation results</text><text x="466" y="302" font-size="9" fill="#475569">• Reconciliation</text><text x="466" y="312" font-size="9" fill="#475569">• Error diagnostics</text><text x="466" y="322" font-size="9" fill="#475569">• Publish status</text><path d="M 380.0 282.0 L 450.0 282.0" fill="none" stroke="#B45309" stroke-width="1.2" stroke-dasharray="4 3"/><circle cx="380.0" cy="282.0" r="3" fill="#B45309"/><line x1="380" y1="404" x2="380" y2="431" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><rect x="265" y="434" width="230" height="44" rx="6" fill="#EFF4FB" stroke="#2563EB" stroke-width="1.4"/><text x="380" y="453" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Power BI Semantic Model</text><text x="380" y="468" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">GOVERNED MEASURES</text><line x1="380" y1="478" x2="380" y2="495" stroke="#94A3B8" stroke-width="1.4"/><line x1="248" y1="498" x2="512" y2="498" stroke="#94A3B8" stroke-width="1.4"/><line x1="248" y1="498" x2="248" y2="509" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><rect x="128" y="512" width="240" height="40" rx="6" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.4"/><text x="248" y="536" text-anchor="middle" font-size="12" font-weight="600" fill="#0D1B2A">Executive Dashboard</text><line x1="512" y1="498" x2="512" y2="509" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><rect x="392" y="512" width="240" height="40" rx="6" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.4"/><text x="512" y="536" text-anchor="middle" font-size="12" font-weight="600" fill="#0D1B2A">Attribution Lab</text><line x1="20" y1="578" x2="740" y2="578" stroke="#E2E8F0" stroke-width="1"/><rect x="20" y="594" width="720" height="44" rx="7" fill="#F0FBFF" stroke="#0891B2" stroke-width="1.4" stroke-dasharray="5 3"/><text x="380.0" y="614" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Metadata Portal</text><text x="380.0" y="629" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="#0891B2" letter-spacing="0.05em">DOCUMENTS THE COMPLETE PLATFORM ABOVE</text></svg>
+      <p class="archcap">Operations Pipeline Report controls the publish into the warehouse. Metadata Portal documents the platform.</p>
+    </div>
+  </section>
+  <section class="cat" id="processing">
+    <div class="cat-head"><h2><span class="secnum">02</span> &nbsp;NorthStar Data Processing Flow</h2></div>
+    <p class="cat-intro">How does data move? The generator creates canonical truth first, then domain pipelines process CRM, marketing funnel, and property operations. Their results are reconciled against that truth, published as CSV to blob, loaded into the warehouse, and the semantic model refreshes. The Operations Pipeline Report observes the reconciliation, publish, and load stages.</p>
+    <div class="archframe"><svg viewBox="0 0 760 680" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif" role="img" aria-label="NorthStar data processing flow. Canonical synthetic generation creates truth first, then CRM, marketing funnel, and property operations pipelines process each domain, results are reconciled, CSV files publish to blob, load into the SQL warehouse, and the semantic model refreshes. The operations pipeline report observes the reconciliation, publish, and load stages."><defs><marker id="mk3" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#94A3B8"/></marker></defs><rect x="179" y="12" width="280" height="40" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.4"/><text x="319" y="29" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Canonical Synthetic Generation</text><text x="319" y="44" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">THE ANSWER KEY</text><rect x="179" y="72" width="280" height="40" rx="6" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.4"/><text x="319" y="89" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">CRM / Prospect Journey Generation</text><text x="319" y="104" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">DOMAIN PIPELINE</text><rect x="179" y="132" width="280" height="40" rx="6" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.4"/><text x="319" y="149" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Marketing Funnel Generation</text><text x="319" y="164" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">DOMAIN PIPELINE</text><rect x="179" y="192" width="280" height="40" rx="6" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.4"/><text x="319" y="209" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Property Operations Generation</text><text x="319" y="224" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">DOMAIN PIPELINE</text><rect x="179" y="252" width="280" height="40" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.4"/><text x="319" y="269" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Cross-Domain Reconciliation</text><text x="319" y="284" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">MEASURED VS TRUTH</text><rect x="179" y="312" width="280" height="40" rx="6" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.4"/><text x="319" y="329" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">CSV Files Published to Blob</text><text x="319" y="344" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">APPROVED OUTPUT</text><rect x="179" y="372" width="280" height="40" rx="6" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.4"/><text x="319" y="389" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Blob-to-SQL Loading</text><text x="319" y="404" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">INGESTION</text><rect x="179" y="432" width="280" height="40" rx="6" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.4"/><text x="319" y="449" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Azure SQL Warehouse</text><text x="319" y="464" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">PUBLISHED FACTS</text><rect x="179" y="492" width="280" height="40" rx="6" fill="#EFF4FB" stroke="#2563EB" stroke-width="1.4"/><text x="319" y="509" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Power BI Semantic Model Refresh</text><text x="319" y="524" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">GOVERNED LAYER</text><line x1="319" y1="52" x2="319" y2="69" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><line x1="319" y1="112" x2="319" y2="129" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><line x1="319" y1="172" x2="319" y2="189" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><line x1="319" y1="232" x2="319" y2="249" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><line x1="319" y1="292" x2="319" y2="309" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><line x1="319" y1="352" x2="319" y2="369" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><line x1="319" y1="412" x2="319" y2="429" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><line x1="319" y1="472" x2="319" y2="489" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><rect x="499" y="252" width="245" height="220" rx="7" fill="#FEF9F0" stroke="#B45309" stroke-width="1.4"/><text x="622" y="272" text-anchor="middle" font-size="12" font-weight="600" fill="#0D1B2A">Operations</text><text x="622" y="288" text-anchor="middle" font-size="12" font-weight="600" fill="#0D1B2A">Pipeline Report</text><text x="622" y="304" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#B45309">OBSERVES &amp; REPORTS</text><text x="622" y="322" text-anchor="middle" font-size="9.5" fill="#475569">status</text><text x="622" y="335" text-anchor="middle" font-size="9.5" fill="#475569">errors</text><text x="622" y="348" text-anchor="middle" font-size="9.5" fill="#475569">variance</text><text x="622" y="361" text-anchor="middle" font-size="9.5" fill="#475569">publish</text><path d="M 459.2 272.0 L 499.2 272.0" fill="none" stroke="#B45309" stroke-width="1" stroke-dasharray="3 3"/><path d="M 459.2 332.0 L 499.2 332.0" fill="none" stroke="#B45309" stroke-width="1" stroke-dasharray="3 3"/><path d="M 459.2 392.0 L 499.2 392.0" fill="none" stroke="#B45309" stroke-width="1" stroke-dasharray="3 3"/><path d="M 459.2 452.0 L 499.2 452.0" fill="none" stroke="#B45309" stroke-width="1" stroke-dasharray="3 3"/></svg>
+      <p class="archcap">Canonical truth first, then domain pipelines, reconciliation, and publish.</p>
+    </div>
+  </section>
+  <section class="cat" id="enterprise">
+    <div class="cat-head"><h2><span class="secnum">03</span> &nbsp;Enterprise Production Narrative</h2></div>
+    <p class="cat-intro">What does NorthStar represent when synthetic generation is replaced by real systems? Named production sources each supply fragments of the resident journey. They are integrated, their shared business keys resolved, and modeled into the same governed warehouse. The systems named below are representative of the commercial multifamily stack; they illustrate integration points, not the implemented platform.</p>
+
+    <div class="srcland">      <div class="srcgroup"><div class="sgh sg-mkt">Marketing &amp; Media Vendors</div><div class="sgcards">        <div class="srccard"><div class="scn">Zillow <span class="chtag">ILS</span></div><div class="scd"><span>Property listings</span><span>Impressions</span><span>Views</span><span>Leads</span><span>Calls</span><span>Spend</span><span>Source IDs</span></div></div>        <div class="srccard"><div class="scn">Apartments.com <span class="chtag">ILS</span></div><div class="scd"><span>Property listings</span><span>Impressions</span><span>Listing views</span><span>Leads</span><span>Calls</span><span>Emails</span><span>Spend</span></div></div>        <div class="srccard"><div class="scn">Apartment List <span class="chtag">ILS</span></div><div class="scd"><span>Listings</span><span>Impressions</span><span>Leads</span><span>Referrals</span><span>Spend</span><span>Property IDs</span></div></div>        <div class="srccard"><div class="scn">Google Ads <span class="chtag">Paid Search</span></div><div class="scd"><span>Campaign</span><span>Ad group</span><span>Keyword</span><span>Impressions</span><span>Clicks</span><span>Spend</span><span>Conversions</span><span>UTM identifiers</span></div></div>        <div class="srccard"><div class="scn">Bing Ads <span class="chtag">Paid Search</span></div><div class="scd"><span>Campaign</span><span>Ad group</span><span>Keyword</span><span>Impressions</span><span>Clicks</span><span>Spend</span><span>Conversions</span></div></div>        <div class="srccard"><div class="scn">Facebook <span class="chtag">Paid Social</span></div><div class="scd"><span>Campaign</span><span>Ad set</span><span>Creative</span><span>Impressions</span><span>Clicks</span><span>Spend</span><span>Leads</span></div></div>        <div class="srccard"><div class="scn">Instagram <span class="chtag">Paid Social</span></div><div class="scd"><span>Campaign</span><span>Ad set</span><span>Creative</span><span>Impressions</span><span>Clicks</span><span>Spend</span><span>Leads</span></div></div>        <div class="srccard"><div class="scn">Google Display <span class="chtag">Display</span></div><div class="scd"><span>Campaign</span><span>Placement</span><span>Impressions</span><span>Clicks</span><span>Spend</span><span>Conversions</span></div></div>        <div class="srccard"><div class="scn">StackAdapt <span class="chtag">Display</span></div><div class="scd"><span>Campaign</span><span>Impressions</span><span>Clicks</span><span>Spend</span><span>Conversions</span></div></div>        <div class="srccard"><div class="scn">TradeDesk <span class="chtag">Display</span></div><div class="scd"><span>Campaign</span><span>Impressions</span><span>Clicks</span><span>Spend</span><span>Conversions</span></div></div>        <div class="srccard"><div class="scn">Email Marketing <span class="chtag">Email</span></div><div class="scd"><span>Sends</span><span>Opens</span><span>Clicks</span><span>Leads</span><span>Property IDs</span></div></div>      </div></div>      <div class="srcgroup"><div class="sgh sg-web">Web &amp; Digital Analytics</div><div class="sgcards">        <div class="srccard"><div class="scn">Google Analytics 4</div><div class="scd"><span>Users</span><span>Sessions</span><span>Landing pages</span><span>Property-page visits</span><span>Source / medium</span><span>Campaign</span><span>Web conversions</span><span>Form activity</span></div></div>        <div class="srccard"><div class="scn">Google Tag Manager</div><div class="scd"><span>Event instrumentation</span><span>Campaign parameters</span><span>Property identifiers</span><span>Form events</span><span>Conversion tags</span></div></div>        <div class="srccard"><div class="scn">Adobe Analytics</div><div class="scd"><span>Visits</span><span>Visitors</span><span>Page activity</span><span>Campaign attribution</span><span>Conversion events</span></div></div>      </div></div>      <div class="srcgroup"><div class="sgh sg-crm">CRM &amp; Leasing</div><div class="sgcards">        <div class="srccard"><div class="scn">Salesforce (SFDC)</div><div class="scd"><span>Lead</span><span>Contact</span><span>Prospect</span><span>Campaign response</span><span>Lead source</span><span>Opportunity</span><span>Activity history</span><span>Conversion events</span></div></div>        <div class="srccard"><div class="scn">Knock CRM</div><div class="scd"><span>Prospect</span><span>Guest card</span><span>Calls</span><span>Emails</span><span>Appointments</span><span>Tours</span><span>Follow-up activity</span><span>Leasing status</span></div></div>        <div class="srccard"><div class="scn">Entrata / RealPage CRM</div><div class="scd"><span>Prospect</span><span>Inquiry</span><span>Appointment</span><span>Tour</span><span>Application</span><span>Lease status</span><span>Lead source</span></div></div>      </div></div>      <div class="srcgroup"><div class="sgh sg-pms">Property Management</div><div class="sgcards">        <div class="srccard"><div class="scn">Yardi</div><div class="scd"><span>Property</span><span>Unit</span><span>Unit status</span><span>Resident</span><span>Lease</span><span>Lease start / end</span><span>Move-in</span><span>Move-out</span><span>Notice</span><span>Renewal</span><span>Occupancy</span><span>Vacancy</span></div></div>        <div class="srccard"><div class="scn">RealPage / Entrata PMS / MRI</div><div class="scd"><span>Property &amp; unit inventory</span><span>Resident records</span><span>Lease events</span><span>Occupancy</span><span>Vacancy</span><span>Move-ins</span><span>Move-outs</span><span>Renewals</span></div></div>      </div></div>      <div class="srcgroup"><div class="sgh sg-soc">Reputation &amp; Social</div><div class="sgcards">        <div class="srccard"><div class="scn">Brandwatch</div><div class="scd"><span>Mentions</span><span>Sentiment</span><span>Topics</span><span>Share of voice</span><span>Engagement</span></div></div>        <div class="srccard"><div class="scn">Sprinklr</div><div class="scd"><span>Social engagement</span><span>Mentions</span><span>Customer interactions</span><span>Sentiment</span></div></div>        <div class="srccard"><div class="scn">Meltwater</div><div class="scd"><span>Earned-media mentions</span><span>Social mentions</span><span>Reach</span><span>Sentiment</span><span>Coverage</span></div></div>      </div></div>    </div>
+
+    <div class="entstep">↓</div>
+    <div class="entband"><div class="ebn">API &amp; File Ingestion</div><div class="ebd"><span>REST APIs</span><span>Vendor exports</span><span>SFTP</span><span>Webhooks</span><span>Scheduled files</span><span>Database extracts</span></div></div>
+    <div class="entstep">↓</div>
+    <div class="entband"><div class="ebn">Identity &amp; Key Resolution</div><div class="ebd"><span>Property ID mapping</span><span>Vendor ID mapping</span><span>Campaign ID mapping</span><span>Prospect ID matching</span><span>Lead-source normalization</span><span>Date normalization</span></div></div>
+    <div class="entstep">↓</div>
+    <div class="entband l-wh"><div class="ebn">Enterprise Warehouse</div><div class="ebsub">Conformed dimensions</div><div class="ebd"><span>Date</span><span>Lease Date</span><span>Property</span><span>Region</span><span>Market</span><span>Vendor</span><span>Campaign</span><span>Prospect identity</span></div><div class="ebsub">Fact domains</div><div class="ebd"><span>Marketing Spend</span><span>Marketing Funnel</span><span>Prospect Journey</span><span>Leasing</span><span>Property Operations</span><span class="opt">Reputation / Social (optional)</span></div></div>
+    <div class="entstep">↓</div>
+    <div class="entband l-sem"><div class="ebn">Power BI Semantic Model</div><div class="ebd"><span>Business measures</span><span>Shared date logic</span><span>Geographic hierarchy</span><span>Attribution calculations</span><span>Executive indexes</span><span>Governed definitions</span></div></div>
+    <div class="entstep">↓</div>
+    <div class="entconsumers">
+      <div class="ec"><div class="ecn">Executive Dashboard</div><div class="ecr">consumes semantic model</div></div>
+      <div class="ec"><div class="ecn">Attribution Lab</div><div class="ecr">semantic model + prospect journey</div></div>
+      <div class="ec ec-ops"><div class="ecn">Operations Pipeline Report</div><div class="ecr">pipeline telemetry + reconciliation</div></div>
+      <div class="ec ec-meta"><div class="ecn">Metadata Portal</div><div class="ecr">documents the platform</div></div>
+    </div>
+    <p class="archcap">Named production sources, integrated and key-resolved into the governed model. Solid = data consumption; the operations and metadata products relate by telemetry and documentation.</p>
+  </section>
+  <section class="cat" id="narrative">
+    <div class="cat-head"><h2><span class="secnum">04</span> &nbsp;Prospect-to-Resident Narrative</h2></div>
+    <p class="cat-intro">How does one resident move through the business, and which system records each event? A website visit is not a leasing tour; an application is not a signed lease; a signed lease is not a move-in. These distinctions are the narrative.</p>
+    <div class="narr">
+      <div class="nh"><span>Business Event</span><span>System of Record</span><span>NorthStar Data Created</span></div>      <div class="nr"><span class="nn">1</span><span class="ne">Prospect sees or clicks an advertisement</span><span class="ns">Zillow · Google Ads · Facebook · Display · Email</span><span class="nd">Impression, click, spend, vendor, campaign</span></div>      <div class="nr"><span class="nn">2</span><span class="ne">Prospect visits a property website</span><span class="ns">GA4 or Adobe Analytics</span><span class="nd">Visit, source, medium, campaign, property</span></div>      <div class="nr"><span class="nn">3</span><span class="ne">Prospect submits an inquiry</span><span class="ns">Website form · SFDC · Knock · CRM</span><span class="nd">Lead / prospect record</span></div>      <div class="nr"><span class="nn">4</span><span class="ne">Leasing team contacts the prospect</span><span class="ns">CRM</span><span class="nd">Call, email, follow-up activity</span></div>      <div class="nr"><span class="nn">5</span><span class="ne">Prospect schedules and completes a tour</span><span class="ns">CRM / leasing system</span><span class="nd">Appointment and tour</span></div>      <div class="nr"><span class="nn">6</span><span class="ne">Prospect submits an application</span><span class="ns">CRM or PMS</span><span class="nd">Application event</span></div>      <div class="nr"><span class="nn">7</span><span class="ne">Prospect signs a lease</span><span class="ns">Yardi · RealPage · Entrata · MRI</span><span class="nd">New lease</span></div>      <div class="nr"><span class="nn">8</span><span class="ne">Resident is scheduled to move in</span><span class="ns">PMS</span><span class="nd">Scheduled move-in</span></div>      <div class="nr"><span class="nn">9</span><span class="ne">Resident moves in</span><span class="ns">PMS</span><span class="nd">Move-in, occupied-unit change</span></div>      <div class="nr"><span class="nn">10</span><span class="ne">NorthStar joins the journey</span><span class="ns">Warehouse + attribution model</span><span class="nd">Vendor-to-visit-to-lease path</span></div>      <div class="nr"><span class="nn">11</span><span class="ne">NorthStar calculates performance</span><span class="ns">Semantic model</span><span class="nd">GPI, OPI, VPI, PHI</span></div>      <div class="nr"><span class="nn">12</span><span class="ne">Leadership acts</span><span class="ns">Executive Dashboard</span><span class="nd">Budget, leasing, vendor decision</span></div>    </div>
+  </section>
+  <section class="cat" id="domain">
+    <div class="cat-head"><h2><span class="secnum">05</span> &nbsp;NorthStar Domain Model</h2></div>
+    <p class="cat-intro">How do production datasets map to NorthStar’s actual fact tables? Each source group lands in specific facts, all sharing the conformed dimensions, and the semantic model reads from the whole star.</p>
+    <div class="archframe"><svg viewBox="0 0 760 640" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif" role="img" aria-label="NorthStar domain model. Ad and ILS vendors map to marketing spend and funnel facts; web analytics maps to funnel and prospect journey; CRM maps to prospect journey and leasing; property management maps to leasing and property operations. All facts join conformed dimensions and feed the Power BI semantic model."><defs><marker id="mk4" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#94A3B8"/></marker></defs><rect x="514" y="20" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/><text x="629" y="41.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#0D1B2A">fact_marketing_spend_daily</text><rect x="514" y="70" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/><text x="629" y="91.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#0D1B2A">fact_marketing_funnel_daily</text><rect x="514" y="120" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/><text x="629" y="141.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#0D1B2A">fact_prospect_journey</text><rect x="514" y="170" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/><text x="629" y="191.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#0D1B2A">fact_leasing_daily</text><rect x="514" y="220" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/><text x="629" y="241.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#0D1B2A">fact_property_ops_daily</text><rect x="16" y="24" width="180" height="52" rx="5" fill="#EFF4FB" stroke="#2563EB" stroke-width="1.2"/><text x="106" y="54.0" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0D1B2A">Ad Platforms &amp; ILS</text><path d="M 196 50.0 C 355.0 50.0, 355.0 37.0, 514 37.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#mk4)"/><path d="M 196 50.0 C 355.0 50.0, 355.0 87.0, 514 87.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#mk4)"/><rect x="16" y="100" width="180" height="52" rx="5" fill="#EFF4FB" stroke="#2563EB" stroke-width="1.2"/><text x="106" y="130.0" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0D1B2A">GA4 / Adobe / Web</text><path d="M 196 126.0 C 355.0 126.0, 355.0 87.0, 514 87.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#mk4)"/><path d="M 196 126.0 C 355.0 126.0, 355.0 137.0, 514 137.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#mk4)"/><rect x="16" y="176" width="180" height="52" rx="5" fill="#EFF4FB" stroke="#2563EB" stroke-width="1.2"/><text x="106" y="206.0" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0D1B2A">SFDC / Knock / CRM</text><path d="M 196 202.0 C 355.0 202.0, 355.0 137.0, 514 137.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#mk4)"/><path d="M 196 202.0 C 355.0 202.0, 355.0 187.0, 514 187.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#mk4)"/><rect x="16" y="252" width="180" height="52" rx="5" fill="#EFF4FB" stroke="#2563EB" stroke-width="1.2"/><text x="106" y="282.0" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0D1B2A">Yardi / RealPage / PMS</text><path d="M 196 278.0 C 355.0 278.0, 355.0 187.0, 514 187.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#mk4)"/><path d="M 196 278.0 C 355.0 278.0, 355.0 237.0, 514 237.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#mk4)"/><rect x="16" y="344" width="728" height="46" rx="6" fill="#F8FAFC" stroke="#0D1B2A" stroke-width="1.3"/><text x="30" y="362" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.08em">CONFORMED DIMENSIONS</text><text x="77" y="380" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" fill="#0D1B2A">dim_date</text><text x="198" y="380" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" fill="#0D1B2A">dim_lease_date</text><text x="319" y="380" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" fill="#0D1B2A">dim_property</text><text x="441" y="380" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" fill="#0D1B2A">dim_region</text><text x="562" y="380" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" fill="#0D1B2A">dim_market</text><text x="683" y="380" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" fill="#0D1B2A">dim_vendor</text><line x1="629" y1="254" x2="629" y2="341" stroke="#94A3B8" stroke-width="1.4"/><line x1="380" y1="390" x2="380" y2="413" stroke="#94A3B8" stroke-width="1.4" marker-end="url(#a)"/><rect x="230" y="416" width="300" height="44" rx="6" fill="#EFF4FB" stroke="#2563EB" stroke-width="1.4"/><text x="380" y="435" text-anchor="middle" font-size="13" font-weight="600" fill="#0D1B2A">Power BI Semantic Model</text><text x="380" y="450" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748B" letter-spacing="0.05em">BUSINESS MEASURES · INDEXES</text></svg>
+      <p class="archcap">Sources map to the five real fact tables, joined on conformed dimensions.</p>
+    </div>
+  </section>
+  <section class="cat" id="products">
+    <div class="cat-head"><h2><span class="secnum">06</span> &nbsp;Analytics &amp; Governance Products</h2></div>
+    <p class="cat-intro">What applications use the data? Three analytical and operational products plus the governance layer, each with a distinct purpose.</p>
+    <div class="prodfam">      <div class="pf" style="border-left-color:#2563EB"><div class="pfn">Executive Dashboard</div><div class="pfp">Strategic performance</div><ul><li>GPI</li><li>OPI</li><li>VPI</li><li>PHI</li><li>Decision support</li></ul></div>      <div class="pf" style="border-left-color:#7C3AED"><div class="pfn">Attribution Lab</div><div class="pfp">Marketing experimentation</div><ul><li>Multi-touch attribution</li><li>Model comparison</li><li>Vendor influence</li><li>Prospect journey analysis</li></ul></div>      <div class="pf" style="border-left-color:#B45309"><div class="pfn">Operations Pipeline Report</div><div class="pfp">Operational observability</div><ul><li>Run status</li><li>Reconciliation</li><li>Validation failures</li><li>Load health</li><li>Publication status</li><li>Source comparison</li></ul></div>      <div class="pf" style="border-left-color:#0891B2"><div class="pfn">Metadata Portal</div><div class="pfp">Platform documentation</div><ul><li>Glossary</li><li>Business rules</li><li>Architecture</li><li>Generation logic</li><li>Semantic model</li><li>Data dictionary</li><li>Measure catalog</li></ul></div>    </div>
+
+    <div class="philosophy">
+      <p>NorthStar separates operational monitoring, analytical consumption, and platform governance into independent products built on the same governed data foundation, so that each can evolve without disrupting the others.</p>
+    </div>
+  </section>
+
+  <div class="callout">
+    <div class="ct">Related documentation</div>
+    <p>The Data Dictionary documents the physical tables and columns. The Measure Catalog documents the semantic-layer calculations. The Data Generation Engine documents how canonical truth is produced.</p>
+  </div>
+
+  <nav class="pagenav" aria-label="Document navigation">
+    <a href="NorthStar_Business_Rules.html"><span class="dir">Previous</span><span class="lbl">Business Rules</span></a>
+    <a class="next" href="NorthStar_Data_Model_Dictionary.html"><span class="dir">Next</span><span class="lbl">Data Dictionary</span></a>
+  </nav>
+
+</div>
+</main>
+</div>
+
+<footer>NORTHSTAR INTELLIGENCE PLATFORM · METADATA PORTAL · VERSION 1.0 &nbsp;·&nbsp; One source. Trusted data. Better decisions.</footer>
+
+</body>
+</html>

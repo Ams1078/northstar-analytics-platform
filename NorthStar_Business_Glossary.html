@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business Glossary — NorthStar Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0D1B2A; --secondary:#18263B; --accent:#2563EB;
+    --success:#16A34A; --warning:#F59E0B; --info:#0EA5E9; --muted:#64748B;
+    --surface:#FFFFFF; --bg:#F8FAFC;
+    --line:#E2E8F0; --line-2:#CBD5E1; --ink:#0D1B2A; --ink-2:#475569;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+    --sidebar:280px; --topnav:72px; --maxw:1440px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  h1,h2,h3,h4{color:var(--primary);font-weight:600;line-height:1.3}
+
+  .topnav{position:sticky;top:0;z-index:30;height:var(--topnav);background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:28px}
+  .topnav .logo{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;color:var(--primary)}
+  .topnav .logo .mark{width:26px;height:26px;flex:none}
+  .topnav .logo small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);font-weight:400;margin-top:1px}
+  .topnav nav{display:flex;gap:22px;margin-left:8px;font-size:13.5px}
+  .topnav nav a{color:var(--ink-2)}
+  .topnav nav a[aria-current]{color:var(--primary);font-weight:500}
+  .topnav .right{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  .shell{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) 1fr}
+  aside{border-right:1px solid var(--line);background:var(--surface);position:sticky;top:var(--topnav);height:calc(100vh - var(--topnav));overflow-y:auto;padding:28px 0}
+  aside .grp{padding:0 24px;margin-bottom:22px}
+  aside .grp h5{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+  aside a{display:block;color:var(--ink-2);font-size:13.5px;padding:5px 0}
+  aside a:hover{color:var(--primary);text-decoration:none}
+  aside a[aria-current]{color:var(--accent);font-weight:500}
+  aside .search{padding:0 24px 22px}
+  aside .search input{width:100%;padding:8px 11px;border:1px solid var(--line-2);border-radius:6px;font-family:var(--sans);font-size:13px;background:var(--bg);color:var(--ink)}
+
+  main{background:var(--surface);min-width:0}
+  .doc{max-width:860px;padding:34px clamp(28px,4vw,56px) 90px}
+
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:26px}
+  .crumb a{color:var(--muted)} .crumb span{margin:0 7px;color:var(--line-2)}
+
+  .page-head{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+  .page-head .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  h1{font-size:32px;margin:0 0 14px}
+  .subtitle{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0;font-weight:400;line-height:1.5}
+
+  /* category jump bar */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px}
+  .jump a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 12px;border:1px solid var(--line-2);border-radius:20px;color:var(--ink-2)}
+  .jump a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+  section.cat{margin:40px 0;scroll-margin-top:90px}
+  .cat-head{border-bottom:2px solid var(--primary);padding-bottom:8px;margin-bottom:6px}
+  .cat-head h2{font-size:22px;margin:0}
+  .cat-intro{color:var(--ink-2);font-size:14.5px;margin:12px 0 8px;max-width:80ch}
+
+  /* term entry */
+  .term{border-bottom:1px solid var(--line);padding:24px 0;scroll-margin-top:90px}
+  .term:last-child{border-bottom:none}
+  .term h3{font-size:17px;margin:0 0 3px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .term h3 .also{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
+  .term .def{font-size:15px;color:var(--ink);margin:6px 0 0;max-width:82ch}
+  .term .row{margin-top:12px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:baseline}
+  .term .row .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+  .term .row .val{font-size:14px;color:var(--ink-2);max-width:72ch}
+  .term .row .val a{font-weight:500}
+  .term .formula{font-family:var(--mono);font-size:13px;color:var(--secondary);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:8px 12px;display:inline-block;margin-top:2px}
+  .term code{font-family:var(--mono);font-size:.88em;color:var(--secondary);background:var(--bg);padding:1px 5px;border-radius:2px}
+
+  .callout{border:1px solid var(--line);border-left:3px solid var(--info);background:var(--bg);border-radius:6px;padding:16px 20px;margin:20px 0}
+  .callout .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--info);margin-bottom:6px;font-weight:500}
+  .callout p{margin:0;color:var(--ink-2);font-size:13.5px}
+
+  .pagenav{display:flex;justify-content:space-between;margin-top:56px;padding-top:24px;border-top:1px solid var(--line);gap:16px}
+  .pagenav a{display:block;max-width:48%}
+  .pagenav .dir{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .pagenav .lbl{font-weight:600;color:var(--primary)}
+  .pagenav .next{text-align:right;margin-left:auto}
+  footer{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:var(--mono);font-size:11px;padding:22px 32px;text-align:center}
+  /* layers of business truth */
+  .lifecycle{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:24px 20px;margin:22px 0}
+  .lifecycle svg{display:block;width:100%;height:auto;max-width:820px;margin:0 auto}
+  .truth-note{border:1px solid var(--warning);border-left:3px solid var(--warning);background:#fffbeb;border-radius:6px;padding:14px 18px;margin:18px 0}
+  .truth-note .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#B45309;margin-bottom:5px;font-weight:500}
+  .truth-note p{margin:0;color:#78350F;font-size:13.5px}
+  .term .layer-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;font-weight:500}
+  .lt-mkt{background:#EFF4FB;color:#2563EB}
+  .lt-lease{background:#F0FDF4;color:#16A34A}
+  .lt-ops{background:#FEF3C7;color:#B45309}
+
+  /* cross-reference card: points to canonical definition elsewhere */
+  .xref{border:1px solid var(--line);border-left:3px solid var(--line-2);background:var(--bg);border-radius:6px;padding:14px 18px;margin:0}
+  .xref .xt{font-size:15px;font-weight:600;color:var(--primary);margin:0 0 3px}
+  .xref p{margin:0;color:var(--ink-2);font-size:13.5px}
+  .xref .goto{font-family:var(--mono);font-size:11px;margin-top:6px;display:inline-block}
+
+
+  /* parent term with nested views */
+  .parent{border-bottom:2px solid var(--primary);padding:26px 0 10px;margin-top:8px}
+  .parent h3{font-size:19px;margin:0 0 5px}
+  .parent .def{font-size:15px;color:var(--ink);margin:0;max-width:82ch}
+  .views{margin:0 0 8px}
+  .view{border-bottom:1px solid var(--line);padding:16px 0 16px 22px;border-left:2px solid var(--line-2);margin-left:2px;padding-left:20px}
+  .view h4{font-size:15px;margin:0 0 3px;color:var(--primary);display:flex;align-items:baseline;gap:10px}
+  .view h4 .layer-tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500}
+  .view p{margin:0;color:var(--ink-2);font-size:14px;max-width:78ch}
+  .view .sa{font-size:12.5px;margin-top:5px}
+  /* boxed thesis */
+  .thesis{border:2px solid var(--primary);border-radius:8px;padding:20px 24px;margin:24px 0;background:var(--bg)}
+  .thesis p{margin:0;font-size:17px;font-weight:500;color:var(--primary);max-width:none;text-align:center}
+  /* subgroup heading within a category */
+  .subgroup{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 4px;font-weight:500}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+  @media(max-width:1000px){
+    .shell{grid-template-columns:1fr}
+    aside{display:none}
+    .term .row{grid-template-columns:1fr;gap:2px}
+    .term .row .lbl{padding-top:8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <a class="logo" href="index.html" aria-label="NorthStar home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19 13 L30 16 L19 19 L16 30 L13 19 L2 16 L13 13 Z" fill="#0D1B2A"/></svg>
+    <span>NORTHSTAR<small>METADATA PORTAL</small></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="NorthStar_About.html">About</a>
+    <a href="index.html" aria-current="page">Business</a>
+    <a href="NorthStar_Data_Model_Dictionary.html">Data</a>
+    <a href="NorthStar_Executive_Index_Framework.html">Analytics</a>
+    <a href="NorthStar_Pipeline_Architecture.html">Technical</a>
+  </nav>
+  <div class="right">v1.0</div>
+</header>
+
+<div class="shell">
+<aside aria-label="Documentation navigation">
+  <div class="search"><input type="search" placeholder="Search the metadata portal…" aria-label="Search documentation"></div>
+<div class="grp"><h5>Overview</h5>
+<a href="NorthStar_About.html">About NorthStar</a>
+<a href="NorthStar_Platform_Overview.html">Platform Overview</a>
+</div>
+<div class="grp"><h5>Business</h5>
+<a href="NorthStar_Business_Glossary.html" aria-current="page">Business Glossary</a>
+<a href="NorthStar_Business_Rules.html">Business Rules</a>
+<a href="NorthStar_Data_Generation_Engine.html">Data Generation Engine</a>
+</div>
+<div class="grp"><h5>Executive</h5>
+<a href="NorthStar_Executive_Index_Framework.html">Decision Framework</a>
+<a href="NorthStar_GPI.html">GPI</a>
+<a href="NorthStar_OPI.html">OPI</a>
+<a href="NorthStar_VPI.html">VPI</a>
+<a href="NorthStar_PHI.html">PHI</a>
+<a href="NorthStar_Executive_Dashboard.html">Executive Dashboard</a>
+<a href="NorthStar_Attribution_Lab.html">Attribution Lab</a>
+</div>
+<div class="grp"><h5>Technical</h5>
+<a href="NorthStar_Pipeline_Architecture.html">Pipeline Architecture</a>
+<a href="NorthStar_Pipeline_Dashboard.html">Pipeline Dashboard</a>
+<a href="NorthStar_Pipeline_Reliability.html">Pipeline Reliability</a>
+<a href="NorthStar_Data_Flow.html">Data Flow</a>
+<a href="NorthStar_Data_Model_Dictionary.html">Data Dictionary</a>
+<a href="NorthStar_Measures_Reference.html">Measure Catalog</a>
+<a href="NorthStar_Semantic_Model.html">Semantic Model</a>
+<a href="NorthStar_Platform_Specifications.html">Platform Specifications</a>
+</div>
+</aside>
+
+<main>
+<div class="doc">
+
+  <div class="crumb"><a href="index.html">Home</a><span>›</span><a href="index.html">Business</a><span>›</span>Business Glossary</div>
+
+  <div class="page-head">
+    <div class="eyebrow">Business · Stable · v1.0</div>
+    <h1>Business Glossary</h1>
+    <p class="subtitle">The vocabulary of the NorthStar platform. These terms define the concepts the data model, measures, and dashboards assume. The Data Dictionary defines tables and columns; this glossary defines the business meaning behind them.</p>
+  </div>
+
+    <div class="jump" aria-label="Jump to category">
+    <a href="#perspectives">Business Perspectives</a>
+    <a href="#structure">Business Structure</a>
+    <a href="#process">Business Processes</a>
+    <a href="#metrics">Business Metrics</a>
+    <a href="#index">Executive Indexes</a>
+    <a href="#platform">Platform Concepts</a>
+  </div>
+
+  <div class="thesis"><p>A term used without its qualifying context is ambiguous.</p></div>
+  <section class="cat" id="perspectives">
+    <div class="cat-head"><h2>Business Perspectives</h2></div>
+    <p class="cat-intro">Several concepts in NorthStar are observed by more than one part of the business. Marketing, leasing, attribution, and operations record the same lifecycle event from different positions, so a single term can hold a different value in each. These are not different truths. They are different perspectives on one event, defined here and referenced throughout the glossary.</p>
+    <div class="lifecycle"><svg viewBox="0 0 820 130" xmlns="http://www.w3.org/2000/svg" font-family="'Inter',sans-serif" role="img" aria-label="Lease lifecycle: Marketing Activity, Lead, Property Tour, Signed Lease, Scheduled Move-In, Move-In, Occupied Unit. Marketing stages, leasing stages, and operations stages are distinct events.">
+<defs><marker id="lc" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#94A3B8"/></marker></defs>
+<!-- layer bands legend -->
+<text x="10" y="16" font-family="'IBM Plex Mono'" font-size="9" fill="#2563EB">MARKETING</text>
+<text x="330" y="16" font-family="'IBM Plex Mono'" font-size="9" fill="#16A34A">LEASING</text>
+<text x="560" y="16" font-family="'IBM Plex Mono'" font-size="9" fill="#B45309">OPERATIONS</text>
+
+<rect x="-13" y="50.0" width="86" height="40" rx="4" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.3"/>
+<text x="30" y="67" text-anchor="middle" font-size="11" font-weight="500" fill="#0D1B2A">Marketing</text>
+<text x="30" y="81" text-anchor="middle" font-size="11" font-weight="500" fill="#0D1B2A">Activity</text>
+<line x1="73.0" y1="70" x2="104" y2="70" stroke="#94A3B8" stroke-width="1.2" marker-end="url(#lc)"/>
+<rect x="107" y="50.0" width="86" height="40" rx="4" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.3"/>
+<text x="150" y="74" text-anchor="middle" font-size="11" font-weight="500" fill="#0D1B2A">Lead</text>
+<line x1="193.0" y1="70" x2="224" y2="70" stroke="#94A3B8" stroke-width="1.2" marker-end="url(#lc)"/>
+<rect x="227" y="50.0" width="86" height="40" rx="4" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.3"/>
+<text x="270" y="67" text-anchor="middle" font-size="11" font-weight="500" fill="#0D1B2A">Property</text>
+<text x="270" y="81" text-anchor="middle" font-size="11" font-weight="500" fill="#0D1B2A">Tour</text>
+<line x1="313.0" y1="70" x2="344" y2="70" stroke="#94A3B8" stroke-width="1.2" marker-end="url(#lc)"/>
+<rect x="347" y="50.0" width="86" height="40" rx="4" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.3"/>
+<text x="390" y="67" text-anchor="middle" font-size="11" font-weight="500" fill="#0D1B2A">Signed</text>
+<text x="390" y="81" text-anchor="middle" font-size="11" font-weight="500" fill="#0D1B2A">Lease</text>
+<line x1="433.0" y1="70" x2="464" y2="70" stroke="#94A3B8" stroke-width="1.2" marker-end="url(#lc)"/>
+<rect x="467" y="50.0" width="86" height="40" rx="4" fill="#FFFFFF" stroke="#B45309" stroke-width="1.3"/>
+<text x="510" y="67" text-anchor="middle" font-size="11" font-weight="500" fill="#0D1B2A">Scheduled</text>
+<text x="510" y="81" text-anchor="middle" font-size="11" font-weight="500" fill="#0D1B2A">Move-In</text>
+<line x1="553.0" y1="70" x2="584" y2="70" stroke="#94A3B8" stroke-width="1.2" marker-end="url(#lc)"/>
+<rect x="587" y="50.0" width="86" height="40" rx="4" fill="#FFFFFF" stroke="#B45309" stroke-width="1.3"/>
+<text x="630" y="74" text-anchor="middle" font-size="11" font-weight="500" fill="#0D1B2A">Move-In</text>
+<line x1="673.0" y1="70" x2="684" y2="70" stroke="#94A3B8" stroke-width="1.2" marker-end="url(#lc)"/>
+<rect x="687" y="50.0" width="86" height="40" rx="4" fill="#FFFFFF" stroke="#B45309" stroke-width="1.3"/>
+<text x="730" y="67" text-anchor="middle" font-size="11" font-weight="500" fill="#0D1B2A">Occupied</text>
+<text x="730" y="81" text-anchor="middle" font-size="11" font-weight="500" fill="#0D1B2A">Unit</text>
+</svg>
+      <p style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);margin:14px 0 0">The lease lifecycle. Each stage is recorded by a different process.</p>
+    </div>
+    <div class="truth-note">
+      <div class="ct">Governing rule</div>
+      <p>A New Lease and a Move-In are separate events. A lease is signed on one date; occupancy begins on another. Marketing counts, signed leases, attributed leases, and move-ins are expected to differ.</p>
+    </div>
+    <div class="parent" id="new-lease">
+      <h3>New Lease</h3>
+      <p class="def">A signed lease agreement. The business observes it from three perspectives, which can carry different values for the same period.</p>
+    </div>
+    <div class="views">
+      <div class="view" id="marketing-new-lease">
+        <h4>Marketing View <span class="layer-tag lt-mkt">Marketing</span></h4>
+        <p>Lease production credited to marketing activity within the funnel.</p>
+        <p class="sa"><span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">See also </span><a href="#gpi">GPI</a>, <a href="#vpi">VPI</a>, <a href="#cpl-lease">Cost per Lease</a></p>
+      </div>
+      <div class="view" id="actual-new-lease">
+        <h4>Leasing View <span class="layer-tag lt-lease">Leasing</span></h4>
+        <p>The authoritative signed lease agreement recorded in leasing. The basis for leasing performance and the reconciliation baseline.</p>
+        <p class="sa"><span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">See also </span><a href="#lead-to-lease">Lead-to-Lease Rate</a>, <a href="#move-in">Move-In</a></p>
+      </div>
+      <div class="view" id="attributed-new-lease">
+        <h4>Attribution View <span class="layer-tag lt-mkt">Attribution</span></h4>
+        <p>A signed lease split by whether a tracked marketing journey earns credit: attributed or unattributed.</p>
+        <p class="sa"><span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">See also </span><a href="#attribution-coverage">Attribution Coverage</a>, <a href="#attribution">Attribution</a></p>
+      </div>
+    </div>
+    <div class="parent" id="lead">
+      <h3>Lead</h3>
+      <p class="def">A prospect who has expressed interest in a property. Observed from two perspectives.</p>
+    </div>
+    <div class="views">
+      <div class="view" id="marketing-lead">
+        <h4>Marketing View <span class="layer-tag lt-mkt">Marketing</span></h4>
+        <p>A lead with a known digital origin in a tracked channel or vendor.</p>
+        <p class="sa"><span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">See also </span><a href="#cpl">Cost per Lead</a>, <a href="#attribution-coverage">Attribution Coverage</a></p>
+      </div>
+      <div class="view" id="actual-lead">
+        <h4>Leasing View <span class="layer-tag lt-lease">Leasing</span></h4>
+        <p>The complete lead count, including untracked sources such as referrals, walk-ins, and direct inquiries.</p>
+        <p class="sa"><span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">See also </span><a href="#lead-to-lease">Lead-to-Lease Rate</a></p>
+      </div>
+    </div>
+    <div class="parent" id="visit">
+      <h3>Visit</h3>
+      <p class="def">A prospect engagement with a property. Marketing and leasing observe different events under this name.</p>
+    </div>
+    <div class="views">
+      <div class="view" id="marketing-visit">
+        <h4>Marketing View <span class="layer-tag lt-mkt">Marketing</span></h4>
+        <p>A digital engagement with a property listing or page, between Click and Lead.</p>
+        <p class="sa"><span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">See also </span><a href="#cpv">Cost per Visit</a></p>
+      </div>
+      <div class="view" id="leasing-visit">
+        <h4>Leasing View <span class="layer-tag lt-lease">Leasing</span></h4>
+        <p>A physical or scheduled property tour, later in the funnel, with its own conversion to signed lease.</p>
+        <p class="sa"><span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">See also </span><a href="#new-lease">New Lease</a></p>
+      </div>
+    </div>
+    <div class="term" id="move-in">
+      <h3>Move-In <span class="layer-tag lt-ops">Operations</span></h3>
+      <p class="def">The physical occupancy event that converts an available unit to occupied. It follows lease signing and may fall on a different date.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">An operational event, distinct from the New Lease that precedes it.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#actual-new-lease">New Lease (Leasing View)</a>, <a href="#scheduled-move-in">Scheduled Move-In</a>, <a href="#occupancy">Occupancy</a></span></div>
+    </div>
+    <div class="term" id="scheduled-move-in">
+      <h3>Scheduled Move-In <span class="layer-tag lt-ops">Operations</span></h3>
+      <p class="def">A signed lease with a planned occupancy date that has not yet arrived. Represents committed incoming supply.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#move-in">Move-In</a>, <a href="#move-in-coverage">Move-In Coverage Ratio</a></span></div>
+    </div>
+  </section>
+  <section class="cat" id="structure">
+    <div class="cat-head"><h2>Business Structure</h2></div>
+    <p class="cat-intro">The dimensions the portfolio is organized and reported by: where properties sit, and where marketing spend goes. Every fact rolls up through this structure.</p>
+
+    <div class="subgroup">Geography</div>
+    <div class="term" id="property">
+      <h3>Property</h3>
+      <p class="def">A single apartment community. The lowest level of the geographic hierarchy. The portfolio contains 120 properties totaling 35,753 units.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#market">Market</a>, <a href="#performance-tier">Performance Tier</a></span></div>
+    </div>
+    <div class="term" id="market">
+      <h3>Market</h3>
+      <p class="def">A metropolitan area containing several properties. The level at which most competitive comparison occurs. The portfolio spans 12 markets.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#region">Region</a>, <a href="#market-strength">Market Strength</a></span></div>
+    </div>
+    <div class="term" id="region">
+      <h3>Region</h3>
+      <p class="def">The top of the geographic hierarchy, grouping markets into four areas: East, Central, West, and South.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#market">Market</a></span></div>
+    </div>
+    <div class="term" id="unit">
+      <h3>Unit</h3>
+      <p class="def">A single rentable apartment. The atomic element of capacity.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#occupancy">Occupancy</a></span></div>
+    </div>
+    <div class="term" id="performance-tier">
+      <h3>Performance Tier</h3>
+      <p class="def">A property classification describing quality and expected behavior: Star, Good, Average, or Struggler.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Sets the benchmark a property is measured against. Strugglers do not appear in the strongest markets, nor Stars in the weakest.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#market-strength">Market Strength</a></span></div>
+    </div>
+    <div class="term" id="market-strength">
+      <h3>Market Strength</h3>
+      <p class="def">A market classification of demand environment: Strong, Mid, or Weak. A separate axis from a property’s Performance Tier.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#performance-tier">Performance Tier</a></span></div>
+    </div>
+    <div class="subgroup">Vendor &amp; Channel</div>
+    <div class="term" id="channel">
+      <h3>Channel</h3>
+      <p class="def">A category of marketing activity. NorthStar defines six: ILS, Paid Search, Paid Social, Display, Email, and Organic.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">A channel sets the performance envelope its vendors operate within. Organic carries no paid spend and captures walk-ins, search, and direct traffic.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#vendor">Vendor</a>, <a href="#ils">ILS</a></span></div>
+    </div>
+    <div class="term" id="vendor">
+      <h3>Vendor</h3>
+      <p class="def">A specific marketing platform within a channel, such as Zillow, Google Ads, or Meta. The portfolio works with 11 vendors across the six channels.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">The same vendor performs differently across properties and markets, which is why the Vendor Performance Index scores vendors in context.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#channel">Channel</a>, <a href="#vpi">VPI</a></span></div>
+    </div>
+    <div class="term" id="ils">
+      <h3>ILS</h3>
+      <p class="def">An internet listing service where renters search for apartments, such as Zillow, Apartments.com, or Apartment List. Typically the highest-volume channel, priced by subscription.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#channel">Channel</a></span></div>
+    </div>
+  </section>
+  <section class="cat" id="process">
+    <div class="cat-head"><h2>Business Processes</h2></div>
+    <p class="cat-intro">How a prospect moves from first exposure to a signed lease and an occupied unit: the marketing funnel, the leasing and occupancy events, and the attribution that connects spend to outcome.</p>
+
+    <div class="subgroup">Marketing Funnel</div>
+    <div class="term" id="funnel">
+      <h3>Marketing Funnel</h3>
+      <p class="def">The ordered sequence a prospect passes through: Impressions, Clicks, Visits, Leads, New Leases. Volume decreases at each stage.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Marketing efficiency and vendor-quality measures derive from movement between stages.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#conversion-rate">Conversion Rate</a>, <a href="#new-lease">New Lease</a></span></div>
+    </div>
+    <div class="term" id="impression">
+      <h3>Impression</h3>
+      <p class="def">One display of a marketing asset to a potential renter. The top of the funnel and the broadest measure of reach.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#ctr">Click-Through Rate</a>, <a href="#cpm">Cost per Thousand</a></span></div>
+    </div>
+    <div class="term" id="click">
+      <h3>Click</h3>
+      <p class="def">A prospect action on a marketing asset that moves them toward a listing or landing page.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#ctr">Click-Through Rate</a>, <a href="#visit">Visit</a></span></div>
+    </div>
+    <div class="term" id="conversion-rate">
+      <h3>Conversion Rate</h3>
+      <p class="def">The proportion of prospects advancing from one funnel stage to the next. Each transition has its own rate.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Conversion rates isolate where a funnel succeeds or breaks, which volume figures do not show.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#ctr">Click-Through Rate</a>, <a href="#lead-to-lease">Lead-to-Lease Rate</a></span></div>
+    </div>
+    <div class="subgroup">Leasing &amp; Occupancy</div>
+    <div class="term" id="occupancy">
+      <h3>Occupancy</h3>
+      <p class="def">The proportion of a property’s units currently occupied.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">The primary indicator of operational health. Read with lease pricing and Absorption.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#move-in">Move-In</a>, <a href="#vacant-ready">Vacant Ready</a>, <a href="#absorption">Absorption</a></span></div>
+    </div>
+    <div class="term" id="move-out">
+      <h3>Move-Out</h3>
+      <p class="def">A resident vacating a unit, at lease end or early. Creates the vacancy leasing must refill.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#lease-expiration">Lease Expiration</a>, <a href="#turnover">Turnover</a></span></div>
+    </div>
+    <div class="term" id="vacant-ready">
+      <h3>Vacant Ready</h3>
+      <p class="def">Unoccupied units prepared for immediate move-in. Distinct from vacant units still being turned.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Revenue that leasing can capture now. A high count signals a leasing gap rather than an operational one.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#occupancy">Occupancy</a>, <a href="#absorption">Absorption</a></span></div>
+    </div>
+    <div class="term" id="absorption">
+      <h3>Absorption</h3>
+      <p class="def">The rate at which available units are leased. Net Absorption is leases signed minus units vacated; Absorption Days estimates time to lease current vacant-ready inventory.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#vacant-ready">Vacant Ready</a>, <a href="#occupancy">Occupancy</a></span></div>
+    </div>
+    <div class="term" id="lease-expiration">
+      <h3>Lease Expiration</h3>
+      <p class="def">The scheduled end of a lease term. Each expiration is future vacancy risk. Tracked over a forward 60-day window.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#move-in-coverage">Move-In Coverage Ratio</a>, <a href="#renewal">Renewal</a></span></div>
+    </div>
+    <div class="term" id="move-in-coverage">
+      <h3>Move-In Coverage Ratio</h3>
+      <p class="def">Scheduled move-ins measured against lease expirations over the same forward window.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">At or above 1.0, committed move-ins cover expirations. Below 1.0 signals a coming occupancy gap. Its marketing counterpart is Marketing Pipeline Coverage.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#lease-expiration">Lease Expiration</a>, <a href="#pipeline-coverage">Marketing Pipeline Coverage</a></span></div>
+    </div>
+    <div class="term" id="turnover">
+      <h3>Turnover</h3>
+      <p class="def">The annual rate at which residents leave and units must be refilled. Higher turnover raises marketing and make-ready cost.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#move-out">Move-Out</a>, <a href="#renewal">Renewal</a></span></div>
+    </div>
+    <div class="term" id="renewal">
+      <h3>Renewal</h3>
+      <p class="def">An existing resident signing a new term rather than vacating. Retains an occupied unit and is not counted as a New Lease.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Renewals reduce the vacancy leasing must refill. The platform models renewal rates by property tier.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#lease-expiration">Lease Expiration</a>, <a href="#turnover">Turnover</a></span></div>
+    </div>
+    <div class="subgroup">Attribution</div>
+    <div class="term" id="attribution">
+      <h3>Attribution</h3>
+      <p class="def">The assignment of credit for a conversion to the marketing touchpoints that contributed to it.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Budget decisions depend on it. The same leases can favor different vendors depending on the model applied, which is why the platform compares several.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#attribution-model">Attribution Model</a>, <a href="#prospect-journey">Prospect Journey</a></span></div>
+    </div>
+    <div class="term" id="prospect-journey">
+      <h3>Prospect Journey</h3>
+      <p class="def">The full sequence of marketing touches a prospect experiences before converting or dropping off. The unit attribution operates on.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#touchpoint">Touchpoint</a>, <a href="#attribution-model">Attribution Model</a></span></div>
+    </div>
+    <div class="term" id="touchpoint">
+      <h3>Touchpoint</h3>
+      <p class="def">A single marketing interaction within a journey, attributed to a vendor. Touches are ordered.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#direct-credit">Direct Credit</a>, <a href="#assisted-credit">Assisted Credit</a></span></div>
+    </div>
+    <div class="term" id="attribution-model">
+      <h3>Attribution Model</h3>
+      <p class="def">A rule for distributing credit across touchpoints. NorthStar supports six: First Touch, Last Touch, Linear, Time Decay, U-Shaped, W-Shaped.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">No model is objectively correct. Each encodes a different theory of influence; the Attribution Lab compares them on the same data.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#direct-credit">Direct Credit</a>, <a href="#attribution">Attribution</a></span></div>
+    </div>
+    <div class="term" id="direct-credit">
+      <h3>Direct Credit</h3>
+      <p class="def">Credit assigned to the final touch before conversion. Each converted journey has exactly one.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#assisted-credit">Assisted Credit</a></span></div>
+    </div>
+    <div class="term" id="assisted-credit">
+      <h3>Assisted Credit</h3>
+      <p class="def">Credit assigned to earlier touches that contributed to but did not close the conversion.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#direct-credit">Direct Credit</a></span></div>
+    </div>
+    <div class="term" id="attribution-coverage">
+      <h3>Attribution Coverage</h3>
+      <p class="def">The share of actual leases carrying a tracked marketing journey.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Full coverage is not expected. A range of 60 to 80 percent reflects the normal tracking gap; the remainder is real leasing activity.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#attributed-new-lease">New Lease (Attribution View)</a></span></div>
+    </div>
+  </section>
+  <section class="cat" id="metrics">
+    <div class="cat-head"><h2>Business Metrics</h2></div>
+    <p class="cat-intro">The rates and costs derived from the funnel and leasing events. Several carry multiple forms; the reporting context determines which applies.</p>
+    <div class="term" id="ctr">
+      <h3>Click-Through Rate</h3>
+      <p class="def">The share of impressions that result in a click.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val"><span class="formula" style="margin:0">Clicks ÷ Impressions</span></span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#impression">Impression</a></span></div>
+    </div>
+    <div class="term" id="lead-to-lease">
+      <h3>Lead-to-Lease Rate</h3>
+      <p class="def">The share of leads that become signed leases. Because Lead and New Lease each hold multiple forms, this is a family of rates; numerator and denominator must share the same form.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Valid pairings: Marketing over Marketing, or Actual over Actual. Read with Cost per Lease and Occupancy.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#marketing-lead">Lead</a>, <a href="#new-lease">New Lease</a></span></div>
+    </div>
+    <div class="term" id="cpl">
+      <h3>Cost per Lead</h3>
+      <p class="def">Marketing spend divided by leads produced.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val"><span class="formula" style="margin:0">Marketing Spend ÷ Leads</span> Interpret with lead quality: a low figure with weak Lead-to-Lease produces expensive leases.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#cpl-lease">Cost per Lease</a></span></div>
+    </div>
+    <div class="term" id="cpl-lease">
+      <h3>Cost per Lease</h3>
+      <p class="def">Marketing spend divided by the approved lease count for the reporting context. The denominator’s form must be stated.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Cost per Lease (Actual) uses Actual New Leases. Cost per Lease (Vendor) measures a vendor’s spend against its attributed leases. In some scoring measures, CPL abbreviates cost per lease, not cost per lead.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#cpl">Cost per Lead</a>, <a href="#lead-to-lease">Lead-to-Lease Rate</a></span></div>
+    </div>
+    <div class="term" id="cpv">
+      <h3>Cost per Visit</h3>
+      <p class="def">Marketing spend divided by listing visits.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val"><span class="formula" style="margin:0">Marketing Spend ÷ Visits</span></span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#visit">Visit</a></span></div>
+    </div>
+    <div class="term" id="cpm">
+      <h3>Cost per Thousand</h3>
+      <p class="def">Marketing spend per thousand impressions. The standard top-of-funnel pricing measure.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val"><span class="formula" style="margin:0">(Marketing Spend ÷ Impressions) × 1,000</span></span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#impression">Impression</a>, <a href="#ctr">Click-Through Rate</a></span></div>
+    </div>
+    <div class="term" id="pipeline-coverage">
+      <h3>Marketing Pipeline Coverage</h3>
+      <p class="def">Funnel lease pace measured against upcoming lease expirations over the same forward window. The marketing counterpart to Move-In Coverage Ratio.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Where Move-In Coverage measures committed supply, this measures projected demand. The gap between them is a sustainability signal.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#move-in-coverage">Move-In Coverage Ratio</a></span></div>
+    </div>
+  </section>
+  <section class="cat" id="index">
+    <div class="cat-head"><h2>Executive Indexes</h2></div>
+    <p class="cat-intro">The four composite scores that condense the platform’s measures into figures an executive can act on. Each combines several measures on a common scale and supports a specific decision. Construction is documented in the Executive Index Framework.</p>
+    <div class="term" id="composite-index">
+      <h3>Composite Index</h3>
+      <p class="def">A single score built from several weighted, normalized measures. Makes properties, markets, and vendors comparable despite differing size.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Reduces many measures to one number while preserving drill-down. The design choice is which measures to include and how to weight them.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#gpi">GPI</a>, <a href="#opi">OPI</a>, <a href="#vpi">VPI</a>, <a href="#phi">PHI</a></span></div>
+    </div>
+    <div class="term" id="gpi">
+      <h3>Geographic Performance Index</h3>
+      <p class="def">A composite ranking geographies on marketing performance, combining outcome, influence, and cost efficiency, weighting results above spend.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Supports deciding where marketing performs well and where it needs attention.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#phi">PHI</a></span></div>
+    </div>
+    <div class="term" id="opi">
+      <h3>Operations Performance Index</h3>
+      <p class="def">A composite describing operations health, split into a current-state and a future-state score.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Keeping both visible shows whether a property healthy now is trending toward difficulty.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#occupancy">Occupancy</a>, <a href="#phi">PHI</a></span></div>
+    </div>
+    <div class="term" id="vpi">
+      <h3>Vendor Performance Index</h3>
+      <p class="def">A composite ranking vendors on how effectively they move prospects through the funnel, weighting conversion most heavily and judging vendors against the field.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Supports deciding which vendors to invest in, optimize, or cut.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#vendor">Vendor</a>, <a href="#phi">PHI</a></span></div>
+    </div>
+    <div class="term" id="phi">
+      <h3>Portfolio Health Index</h3>
+      <p class="def">The executive summary score for the portfolio, combining the geographic, operations, and vendor indexes.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val"><span class="formula" style="margin:0">GPI × 0.45 + OPI × 0.30 + VPI × 0.25</span> Weights geography most heavily as the spine of marketing performance.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#gpi">GPI</a>, <a href="#opi">OPI</a>, <a href="#vpi">VPI</a></span></div>
+    </div>
+  </section>
+  <section class="cat" id="platform">
+    <div class="cat-head"><h2>Platform Concepts</h2></div>
+    <p class="cat-intro">Terms required to read the platform’s data correctly. These are not business vocabulary; they describe how the data is produced and governed.</p>
+    <div class="term" id="datasource">
+      <h3>DataSource</h3>
+      <p class="def">A tag on every fact record identifying which process produced it. DataSource 1 is the canonical truth; 2, 3, and 4 are pipeline reconstructions.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">A query not filtered on DataSource averages truth with reconstructions and returns a meaningless figure. All reporting uses DataSource 1.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#canonical-truth">Canonical Truth</a>, <a href="#reconciliation">Reconciliation</a></span></div>
+    </div>
+    <div class="term" id="canonical-truth">
+      <h3>Canonical Truth</h3>
+      <p class="def">The authoritative data written directly by the generator as DataSource 1. The answer key for pipeline reconstructions.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#datasource">DataSource</a>, <a href="#reconciliation">Reconciliation</a></span></div>
+    </div>
+    <div class="term" id="reconciliation">
+      <h3>Reconciliation</h3>
+      <p class="def">The comparison of a pipeline’s reconstructed facts against canonical truth, producing a measured variance.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#datasource">DataSource</a>, <a href="#canonical-truth">Canonical Truth</a></span></div>
+    </div>
+    <div class="term" id="semantic-model">
+      <h3>Semantic Model</h3>
+      <p class="def">The governed layer between warehouse and reports, holding relationships, reusable measures, and scoring logic.</p>
+      <div class="row"><span class="lbl">Business Context</span><span class="val">Business definitions live here once, so every report reads the same figure.</span></div>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#measure">Measure</a>, <a href="#grain">Grain</a></span></div>
+    </div>
+    <div class="term" id="measure">
+      <h3>Measure</h3>
+      <p class="def">A defined calculation in the semantic model, computed at query time. The Measure Catalog documents each.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#semantic-model">Semantic Model</a></span></div>
+    </div>
+    <div class="term" id="grain">
+      <h3>Grain</h3>
+      <p class="def">The level of detail one record represents, such as one row per property per day. Determines what a table can answer.</p>
+      <div class="row"><span class="lbl">See Also</span><span class="val"><a href="#measure">Measure</a></span></div>
+    </div>
+  </section>
+
+  <div class="callout">
+    <div class="ct">Related documentation</div>
+    <p>The Data Dictionary defines the tables and columns these terms are stored in. The Measure Catalog defines their calculations. The Executive Index Framework documents how the four indexes are constructed.</p>
+  </div>
+<nav class="pagenav" aria-label="Document navigation">
+    <a href="NorthStar_Platform_Overview.html"><span class="dir">Previous</span><span class="lbl">Platform Overview</span></a>
+    <a class="next" href="NorthStar_Business_Rules.html"><span class="dir">Next</span><span class="lbl">Business Rules</span></a>
+  </nav>
+
+</div>
+</main>
+</div>
+
+<footer>NORTHSTAR INTELLIGENCE PLATFORM · METADATA PORTAL · VERSION 1.0 &nbsp;·&nbsp; One source. Trusted data. Better decisions.</footer>
+
+</body>
+</html>

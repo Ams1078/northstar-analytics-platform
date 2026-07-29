@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipeline Dashboard — NorthStar Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0D1B2A; --secondary:#18263B; --accent:#2563EB;
+    --success:#16A34A; --warning:#F59E0B; --info:#0EA5E9; --muted:#64748B;
+    --surface:#FFFFFF; --bg:#F8FAFC;
+    --line:#E2E8F0; --line-2:#CBD5E1; --ink:#0D1B2A; --ink-2:#475569;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+    --sidebar:280px; --topnav:72px; --maxw:1440px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  h1,h2,h3,h4{color:var(--primary);font-weight:600;line-height:1.3}
+
+  .topnav{position:sticky;top:0;z-index:30;height:var(--topnav);background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:28px}
+  .topnav .logo{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;color:var(--primary)}
+  .topnav .logo .mark{width:26px;height:26px;flex:none}
+  .topnav .logo small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);font-weight:400;margin-top:1px}
+  .topnav nav{display:flex;gap:22px;margin-left:8px;font-size:13.5px}
+  .topnav nav a{color:var(--ink-2)}
+  .topnav nav a[aria-current]{color:var(--primary);font-weight:500}
+  .topnav .right{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  .shell{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) 1fr}
+  aside{border-right:1px solid var(--line);background:var(--surface);position:sticky;top:var(--topnav);height:calc(100vh - var(--topnav));overflow-y:auto;padding:28px 0}
+  aside .grp{padding:0 24px;margin-bottom:22px}
+  aside .grp h5{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+  aside a{display:block;color:var(--ink-2);font-size:13.5px;padding:5px 0}
+  aside a:hover{color:var(--primary);text-decoration:none}
+  aside a[aria-current]{color:var(--accent);font-weight:500}
+  aside .search{padding:0 24px 22px}
+  aside .search input{width:100%;padding:8px 11px;border:1px solid var(--line-2);border-radius:6px;font-family:var(--sans);font-size:13px;background:var(--bg);color:var(--ink)}
+
+  main{background:var(--surface);min-width:0}
+  .doc{max-width:860px;padding:34px clamp(28px,4vw,56px) 90px}
+
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:26px}
+  .crumb a{color:var(--muted)} .crumb span{margin:0 7px;color:var(--line-2)}
+
+  .page-head{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+  .page-head .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  h1{font-size:32px;margin:0 0 14px}
+  .subtitle{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0;font-weight:400;line-height:1.5}
+
+  /* category jump bar */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px}
+  .jump a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 12px;border:1px solid var(--line-2);border-radius:20px;color:var(--ink-2)}
+  .jump a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+  section.cat{margin:40px 0;scroll-margin-top:90px}
+  .cat-head{border-bottom:2px solid var(--primary);padding-bottom:8px;margin-bottom:6px}
+  .cat-head h2{font-size:22px;margin:0}
+  .cat-intro{color:var(--ink-2);font-size:14.5px;margin:12px 0 8px;max-width:80ch}
+
+  /* term entry */
+  .term{border-bottom:1px solid var(--line);padding:24px 0;scroll-margin-top:90px}
+  .term:last-child{border-bottom:none}
+  .term h3{font-size:17px;margin:0 0 3px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .term h3 .also{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
+  .term .def{font-size:15px;color:var(--ink);margin:6px 0 0;max-width:82ch}
+  .term .row{margin-top:12px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:baseline}
+  .term .row .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+  .term .row .val{font-size:14px;color:var(--ink-2);max-width:72ch}
+  .term .row .val a{font-weight:500}
+  .term .formula{font-family:var(--mono);font-size:13px;color:var(--secondary);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:8px 12px;display:inline-block;margin-top:2px}
+  .term code{font-family:var(--mono);font-size:.88em;color:var(--secondary);background:var(--bg);padding:1px 5px;border-radius:2px}
+
+  .callout{border:1px solid var(--line);border-left:3px solid var(--info);background:var(--bg);border-radius:6px;padding:16px 20px;margin:20px 0}
+  .callout .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--info);margin-bottom:6px;font-weight:500}
+  .callout p{margin:0;color:var(--ink-2);font-size:13.5px}
+
+  .pagenav{display:flex;justify-content:space-between;margin-top:56px;padding-top:24px;border-top:1px solid var(--line);gap:16px}
+  .pagenav a{display:block;max-width:48%}
+  .pagenav .dir{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .pagenav .lbl{font-weight:600;color:var(--primary)}
+  .pagenav .next{text-align:right;margin-left:auto}
+  footer{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:var(--mono);font-size:11px;padding:22px 32px;text-align:center}
+  /* layers of business truth */
+  .lifecycle{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:24px 20px;margin:22px 0}
+  .lifecycle svg{display:block;width:100%;height:auto;max-width:820px;margin:0 auto}
+  .truth-note{border:1px solid var(--warning);border-left:3px solid var(--warning);background:#fffbeb;border-radius:6px;padding:14px 18px;margin:18px 0}
+  .truth-note .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#B45309;margin-bottom:5px;font-weight:500}
+  .truth-note p{margin:0;color:#78350F;font-size:13.5px}
+  .term .layer-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;font-weight:500}
+  .lt-mkt{background:#EFF4FB;color:#2563EB}
+  .lt-lease{background:#F0FDF4;color:#16A34A}
+  .lt-ops{background:#FEF3C7;color:#B45309}
+
+  /* cross-reference card: points to canonical definition elsewhere */
+  .xref{border:1px solid var(--line);border-left:3px solid var(--line-2);background:var(--bg);border-radius:6px;padding:14px 18px;margin:0}
+  .xref .xt{font-size:15px;font-weight:600;color:var(--primary);margin:0 0 3px}
+  .xref p{margin:0;color:var(--ink-2);font-size:13.5px}
+  .xref .goto{font-family:var(--mono);font-size:11px;margin-top:6px;display:inline-block}
+
+
+  /* parent term with nested views */
+  .parent{border-bottom:2px solid var(--primary);padding:26px 0 10px;margin-top:8px}
+  .parent h3{font-size:19px;margin:0 0 5px}
+  .parent .def{font-size:15px;color:var(--ink);margin:0;max-width:82ch}
+  .views{margin:0 0 8px}
+  .view{border-bottom:1px solid var(--line);padding:16px 0 16px 22px;border-left:2px solid var(--line-2);margin-left:2px;padding-left:20px}
+  .view h4{font-size:15px;margin:0 0 3px;color:var(--primary);display:flex;align-items:baseline;gap:10px}
+  .view h4 .layer-tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500}
+  .view p{margin:0;color:var(--ink-2);font-size:14px;max-width:78ch}
+  .view .sa{font-size:12.5px;margin-top:5px}
+  /* boxed thesis */
+  .thesis{border:2px solid var(--primary);border-radius:8px;padding:20px 24px;margin:24px 0;background:var(--bg)}
+  .thesis p{margin:0;font-size:17px;font-weight:500;color:var(--primary);max-width:none;text-align:center}
+  /* subgroup heading within a category */
+  .subgroup{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 4px;font-weight:500}
+
+
+  /* ============ pipeline reference manuals (Microsoft-Learn register) ============ */
+  .page-head{margin-bottom:20px}
+  .page-head .subtitle{font-size:16px;line-height:1.6;max-width:70ch;color:var(--ink-2)}
+  .page-head .subtitle code{font-family:var(--mono);font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--accent)}
+
+  .metastrip{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:0 0 8px;background:var(--surface)}
+  .ms-item{flex:1;min-width:120px;padding:12px 16px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+  .ms-item:last-child{border-right:none}
+  .ms-k{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .ms-v{font-size:14px;font-weight:600;color:var(--primary)}
+  .ms-v.mono{font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--accent)}
+  @media(max-width:640px){.ms-item{min-width:45%}}
+
+  .ref{margin:40px 0 0}
+  .ref h2{font-size:20px;font-weight:700;color:var(--primary);margin:0 0 12px;letter-spacing:-0.01em;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .ref p{font-size:14.5px;line-height:1.7;color:var(--ink);margin:0 0 14px;max-width:74ch}
+  .ref code{font-family:var(--mono);font-size:12.5px;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--accent)}
+
+  .reftable{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:13.5px}
+  .reftable th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:8px 12px;border-bottom:2px solid var(--primary);background:var(--surface)}
+  .reftable td{padding:9px 12px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:top;line-height:1.5}
+  .reftable td.mono{font-family:var(--mono);font-size:12.5px;color:var(--accent);white-space:nowrap}
+  .reftable tr:last-child td{border-bottom:none}
+
+  .callout{display:flex;gap:12px;align-items:baseline;border:1px solid var(--line);border-left:3px solid #CBB26B;border-radius:8px;padding:13px 16px;background:#FBF7EC;margin:12px 0 0}
+  .co-k{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:#9A7B1F;font-weight:700;flex-shrink:0}
+  .co-v{font-size:13.5px;line-height:1.55;color:var(--ink)}
+
+  .navcards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin:14px 0 0}
+  .navc{border:1px solid var(--line);border-radius:8px;padding:14px 17px;text-decoration:none;background:var(--surface);transition:all .15s;display:block}
+  .navc:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(37,99,235,0.08)}
+  .navc .nvt{display:block;font-size:14px;font-weight:600;color:var(--accent)}
+  .navc .nvd{display:block;font-size:12px;color:var(--ink-2);margin-top:2px}
+  @media(max-width:640px){.navcards{grid-template-columns:1fr}}
+
+  .mock-cap{font-size:12px;color:var(--muted);font-style:italic;margin:-8px 0 16px;line-height:1.5}
+  /* annotated interface mock */
+  .mock{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--bg);margin:6px 0 16px;display:flex;flex-direction:column;gap:8px}
+  .mock-region{border:1px dashed var(--line);border-radius:6px;padding:11px 14px;background:var(--surface);font-size:12.5px;color:var(--ink-2);position:relative;display:flex;align-items:center;gap:10px}
+  .mock-row{display:flex;gap:8px}
+  .mock-row .mock-kpi{flex:1}
+  .mock-row .mock-refresh{width:110px;flex-shrink:0}
+  .mock-alert{border-color:#CBB26B;background:#FBF7EC;color:#9A7B1F}
+  .mock-tabs{border-style:solid;border-color:var(--accent);color:var(--accent);font-weight:500}
+  .mock-table{min-height:52px;align-items:flex-start}
+  .mk-tag{font-family:var(--mono);font-size:10px;font-weight:700;color:#fff;background:var(--accent);width:18px;height:18px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+  .mock-alert .mk-tag{background:#9A7B1F}
+  @media(max-width:560px){.mock-row{flex-direction:column}.mock-row .mock-refresh{width:auto}}
+
+  /* per-tab manual entries */
+  .tabref{margin-top:32px}
+  .tabtag{font-size:14px;font-weight:500;color:var(--accent);margin:-4px 0 12px;font-style:italic}
+  .tabmeta{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px}
+  .tm-k{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .tm-v{font-size:12.5px}
+  .tabgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:16px 18px;background:var(--surface)}
+  .tg-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:5px}
+  .tg-body{font-size:13px;line-height:1.55;color:var(--ink-2);margin:0}
+  .tg-list{list-style:none;margin:0;padding:0}
+  .tg-list li{font-size:13px;line-height:1.5;color:var(--ink-2);padding-left:14px;position:relative;margin-bottom:3px}
+  .tg-list li:before{content:"";position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:1px;background:var(--accent)}
+  @media(max-width:600px){.tabgrid{grid-template-columns:1fr}}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+  @media(max-width:1000px){
+    .shell{grid-template-columns:1fr}
+    aside{display:none}
+    .term .row{grid-template-columns:1fr;gap:2px}
+    .term .row .lbl{padding-top:8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <a class="logo" href="index.html" aria-label="NorthStar home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19 13 L30 16 L19 19 L16 30 L13 19 L2 16 L13 13 Z" fill="#0D1B2A"/></svg>
+    <span>NORTHSTAR<small>METADATA PORTAL</small></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="NorthStar_About.html">About</a>
+    <a href="index.html" aria-current="page">Business</a>
+    <a href="NorthStar_Data_Model_Dictionary.html">Data</a>
+    <a href="NorthStar_Executive_Index_Framework.html">Analytics</a>
+    <a href="NorthStar_Pipeline_Architecture.html">Technical</a>
+  </nav>
+  <div class="right">v1.0</div>
+</header>
+
+<div class="shell">
+<aside aria-label="Documentation navigation">
+  <div class="search"><input type="search" placeholder="Search the metadata portal…" aria-label="Search documentation"></div>
+<div class="grp"><h5>Overview</h5>
+<a href="NorthStar_About.html">About NorthStar</a>
+<a href="NorthStar_Platform_Overview.html">Platform Overview</a>
+</div>
+<div class="grp"><h5>Business</h5>
+<a href="NorthStar_Business_Glossary.html">Business Glossary</a>
+<a href="NorthStar_Business_Rules.html">Business Rules</a>
+<a href="NorthStar_Data_Generation_Engine.html">Data Generation Engine</a>
+</div>
+<div class="grp"><h5>Executive</h5>
+<a href="NorthStar_Executive_Index_Framework.html">Decision Framework</a>
+<a href="NorthStar_GPI.html">GPI</a>
+<a href="NorthStar_OPI.html">OPI</a>
+<a href="NorthStar_VPI.html">VPI</a>
+<a href="NorthStar_PHI.html">PHI</a>
+<a href="NorthStar_Executive_Dashboard.html">Executive Dashboard</a>
+<a href="NorthStar_Attribution_Lab.html">Attribution Lab</a>
+</div>
+<div class="grp"><h5>Technical</h5>
+<a href="NorthStar_Pipeline_Architecture.html">Pipeline Architecture</a>
+<a href="NorthStar_Pipeline_Dashboard.html" aria-current="page">Pipeline Dashboard</a>
+<a href="NorthStar_Pipeline_Reliability.html">Pipeline Reliability</a>
+<a href="NorthStar_Data_Flow.html">Data Flow</a>
+<a href="NorthStar_Data_Model_Dictionary.html">Data Dictionary</a>
+<a href="NorthStar_Measures_Reference.html">Measure Catalog</a>
+<a href="NorthStar_Semantic_Model.html">Semantic Model</a>
+<a href="NorthStar_Platform_Specifications.html">Platform Specifications</a>
+</div>
+</aside>
+
+<main>
+<div class="doc">
+
+  <div class="crumb"><a href="index.html">Home</a><span>›</span><a href="index.html">Technical</a><span>›</span>Pipeline Dashboard</div>
+  <div class="page-head">
+    <div class="eyebrow">Technical Reference · Operator Interface</div>
+    <h1>Pipeline Dashboard</h1>
+    <p class="subtitle">A user manual for the NorthStar operations dashboard: the interface an operator uses to see whether the pipeline is healthy, investigate what failed, and clear reconciliation work. Served by the <code>/api/dashboard</code> endpoint as a self-contained HTML page.</p>
+  </div>
+  <div class="metastrip">
+    <div class="ms-item"><span class="ms-k">Endpoint</span><span class="ms-v mono">/api/dashboard</span></div>
+    <div class="ms-item"><span class="ms-k">Tabs</span><span class="ms-v">5</span></div>
+    <div class="ms-item"><span class="ms-k">Alt view</span><span class="ms-v mono">/api/narrative</span></div>
+    <div class="ms-item"><span class="ms-k">Auth</span><span class="ms-v">Function key</span></div>
+    <div class="ms-item"><span class="ms-k">Refresh</span><span class="ms-v">On load + manual</span></div>
+  </div>
+  <section class="ref" id="anatomy">
+    <h2>Anatomy of the interface</h2>
+    <p>Every tab renders inside the same page frame. The banner and tab bar are constant; the body below the tab bar changes per tab. The diagram shows the fixed regions an operator sees on load.</p>
+    <div class="mock">
+      <div class="mock-region mock-alert"><span class="mk-tag">A</span> Alert banner &mdash; evaluated on every load</div>
+      <div class="mock-region mock-tabs"><span class="mk-tag">B</span> Tab bar &nbsp;·&nbsp; Overview · Run history · Reconciliation · Attribution gap · Activity log</div>
+      <div class="mock-row">
+        <div class="mock-region mock-kpi"><span class="mk-tag">C</span> KPI cards</div>
+        <div class="mock-region mock-refresh"><span class="mk-tag">D</span> Refresh</div>
+      </div>
+      <div class="mock-region mock-trend"><span class="mk-tag">E</span> Rows-loaded trend chart</div>
+      <div class="mock-region mock-filters"><span class="mk-tag">F</span> Filters (pipeline · status · range · severity · rstatus)</div>
+      <div class="mock-region mock-table"><span class="mk-tag">G</span> Data table (runs, actions, or events for the active tab)</div>
+    </div>
+    <p class="mock-cap">Composite interface map. Not every region appears simultaneously; availability varies by the active tab, as noted below.</p>
+    <table class="reftable">
+      <thead><tr><th>Region</th><th>Element</th><th>Present on</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">A</td><td>Alert banner</td><td>All tabs</td></tr>
+        <tr><td class="mono">B</td><td>Tab bar</td><td>All tabs</td></tr>
+        <tr><td class="mono">C</td><td>KPI cards</td><td>Overview</td></tr>
+        <tr><td class="mono">D</td><td>Manual refresh</td><td>All tabs</td></tr>
+        <tr><td class="mono">E</td><td>Rows-loaded trend</td><td>Overview</td></tr>
+        <tr><td class="mono">F</td><td>Filters</td><td>Run history, Reconciliation</td></tr>
+        <tr><td class="mono">G</td><td>Data table</td><td>Run history, Reconciliation, Activity log</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="ref" id="alerts">
+    <h2>Alert banner</h2>
+    <p>Produced by <code>_render_alert_banner()</code>, which calls <code>_check_alerts()</code> on every page load. If no condition is met, no banner renders, so a quiet banner means a quiet system. Each alert links to the tab and filter that isolates it.</p>
+    <table class="reftable">
+      <thead><tr><th>Check</th><th>Condition</th><th>Links to</th></tr></thead>
+      <tbody>
+        <tr><td>Pipeline failures</td><td>Runs with <code>Status = 'FAILED'</code> in the last 24 hours.</td><td class="mono">tab=runs&amp;status=FAILED&amp;range=7d</td></tr>
+        <tr><td>High-severity actions</td><td><code>Severity = 'high' AND Status = 'OPEN'</code> in reconciliation_actions.</td><td class="mono">tab=reconciliation&amp;severity=high&amp;rstatus=OPEN</td></tr>
+        <tr><td>Bronze coverage gap</td><td>Missing bronze coverage in the last 7 days.</td><td class="mono">tab=runs&amp;pipeline=bronze&amp;range=7d</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="ref tabref" id="tab-overview">
+    <h2>Overview</h2>
+    <div class="tabtag">The morning health check</div>
+    <div class="tabmeta"><span class="tm-k">Query</span><span class="tm-v mono">tab=overview</span></div>
+    <div class="tabgrid">
+      <div class="tg-cell"><div class="tg-label">Purpose</div><p class="tg-body">The morning glance. Confirms at a glance whether last night&#x27;s loads were normal before any detail is opened.</p></div>
+      <div class="tg-cell"><div class="tg-label">Questions it answers</div><ul class="tg-list"><li>Did last night run?</li><li>Did it load about the volume it should have?</li><li>Is there reconciliation work waiting?</li></ul></div>
+      <div class="tg-cell"><div class="tg-label">What it shows</div><p class="tg-body">KPI cards (Open actions, Coverage gap) and a rows-loaded trend chart showing load volume over time.</p></div>
+      <div class="tg-cell"><div class="tg-label">When an operator uses it</div><p class="tg-body">First thing, every day. If the cards and trend look normal and the banner is quiet, no further tab is needed.</p></div>
+    </div>
+  </section>  <section class="ref tabref" id="tab-runs">
+    <h2>Run history</h2>
+    <div class="tabtag">Investigating pipeline executions</div>
+    <div class="tabmeta"><span class="tm-k">Query</span><span class="tm-v mono">tab=runs</span></div>
+    <div class="tabgrid">
+      <div class="tg-cell"><div class="tg-label">Purpose</div><p class="tg-body">The investigation surface. Lists individual pipeline runs so a failure or an abnormal load can be traced to a specific run.</p></div>
+      <div class="tg-cell"><div class="tg-label">Questions it answers</div><ul class="tg-list"><li>Which run failed, and when?</li><li>How long did a run take?</li><li>How many rows did a given run move?</li></ul></div>
+      <div class="tg-cell"><div class="tg-label">What it shows</div><p class="tg-body">A table of runs with pipeline, date, status badge, duration, and row counts. Filterable by pipeline, status, and date range.</p></div>
+      <div class="tg-cell"><div class="tg-label">When an operator uses it</div><p class="tg-body">When the banner reports a failure, or when the Overview trend shows an abnormal day worth explaining.</p></div>
+    </div>
+  </section>  <section class="ref tabref" id="tab-reconciliation">
+    <h2>Reconciliation</h2>
+    <div class="tabtag">Resolving data-quality actions</div>
+    <div class="tabmeta"><span class="tm-k">Query</span><span class="tm-v mono">tab=reconciliation</span></div>
+    <div class="tabgrid">
+      <div class="tg-cell"><div class="tg-label">Purpose</div><p class="tg-body">The work queue. Surfaces reconciliation actions the pipeline raised for a human to triage, so divergences are resolved rather than ignored.</p></div>
+      <div class="tg-cell"><div class="tg-label">Questions it answers</div><ul class="tg-list"><li>What discrepancies were detected?</li><li>Which are high-severity and still open?</li><li>Which have already been handled?</li></ul></div>
+      <div class="tg-cell"><div class="tg-label">What it shows</div><p class="tg-body">A table of actions with severity and status badges. Supports bulk acknowledgment and CSV export of the current filtered list.</p></div>
+      <div class="tg-cell"><div class="tg-label">When an operator uses it</div><p class="tg-body">Daily triage, and immediately when the banner flags open high-severity actions.</p></div>
+    </div>
+  </section>  <section class="ref tabref" id="tab-attribution">
+    <h2>Attribution gap</h2>
+    <div class="tabtag">Watching the integrity of attribution</div>
+    <div class="tabmeta"><span class="tm-k">Query</span><span class="tm-v mono">tab=attribution</span></div>
+    <div class="tabgrid">
+      <div class="tg-cell"><div class="tg-label">Purpose</div><p class="tg-body">The integrity watch. Monitors the gap between signed leases and leases tied back to a marketing journey, so a widening gap cannot hide in the totals.</p></div>
+      <div class="tg-cell"><div class="tg-label">Questions it answers</div><ul class="tg-list"><li>Is the unattributed-lease gap stable?</li><li>Is it widening over time?</li><li>Did it jump on a particular date?</li></ul></div>
+      <div class="tg-cell"><div class="tg-label">What it shows</div><p class="tg-body">A trend of the unattributed-lease gap over time, monitored on its own rather than blended into aggregate metrics.</p></div>
+      <div class="tg-cell"><div class="tg-label">When an operator uses it</div><p class="tg-body">Periodically, and whenever attribution figures look lower than expected on the analytics side.</p></div>
+    </div>
+  </section>  <section class="ref tabref" id="tab-activity">
+    <h2>Activity log</h2>
+    <div class="tabtag">The audit trail of record</div>
+    <div class="tabmeta"><span class="tm-k">Query</span><span class="tm-v mono">tab=activity</span></div>
+    <div class="tabgrid">
+      <div class="tg-cell"><div class="tg-label">Purpose</div><p class="tg-body">The record of record. A chronological audit trail of pipeline events, kept so any number can be explained after the fact.</p></div>
+      <div class="tg-cell"><div class="tg-label">Questions it answers</div><ul class="tg-list"><li>What happened, in what order?</li><li>When did a specific event occur?</li><li>What is the evidence behind a reported number?</li></ul></div>
+      <div class="tg-cell"><div class="tg-label">What it shows</div><p class="tg-body">A time-ordered list of pipeline events, the raw audit trail beneath the summarized tabs.</p></div>
+      <div class="tg-cell"><div class="tg-label">When an operator uses it</div><p class="tg-body">When a number has to be defended or an incident reconstructed after it has passed.</p></div>
+    </div>
+  </section>  <section class="ref" id="filters">
+    <h2>Filters</h2>
+    <p>Run history and Reconciliation accept query-string filters. Omitted or unrecognized parameters fall back to defaults.</p>
+    <table class="reftable">
+      <thead><tr><th>Parameter</th><th>Applies to</th><th>Values</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">pipeline</td><td>Run history</td><td class="mono">canonical · crm · spend · ops · bronze</td></tr>
+        <tr><td class="mono">status</td><td>Run history</td><td class="mono">SUCCESS · RUNNING · FAILED · PARTIAL · SKIPPED</td></tr>
+        <tr><td class="mono">range</td><td>Run history, trends</td><td class="mono">7d · 30d · (date window)</td></tr>
+        <tr><td class="mono">severity</td><td>Reconciliation</td><td class="mono">high · med · low</td></tr>
+        <tr><td class="mono">rstatus</td><td>Reconciliation</td><td class="mono">OPEN · ACKNOWLEDGED · RESOLVED · IGNORED</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="ref" id="badges">
+    <h2>Status and severity badges</h2>
+    <p>Values render as colored badges via <code>status_pill()</code> and <code>severity_pill()</code>. A null value renders as a neutral gray dash.</p>
+    <table class="reftable">
+      <thead><tr><th>Kind</th><th>Value</th><th>Color</th></tr></thead>
+      <tbody>
+        <tr><td>Run status</td><td class="mono">SUCCESS</td><td>Green</td></tr>
+        <tr><td>Run status</td><td class="mono">RUNNING</td><td>Blue</td></tr>
+        <tr><td>Run status</td><td class="mono">FAILED</td><td>Red</td></tr>
+        <tr><td>Run status</td><td class="mono">PARTIAL</td><td>Amber</td></tr>
+        <tr><td>Action status</td><td class="mono">OPEN · ACKNOWLEDGED · RESOLVED · IGNORED</td><td>Blue · Amber · Green · Gray</td></tr>
+        <tr><td>Severity</td><td class="mono">high · med · low</td><td>Red · Amber · Green</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="ref" id="controls">
+    <h2>Controls</h2>
+    <table class="reftable">
+      <thead><tr><th>Control</th><th>Tab</th><th>Behavior</th></tr></thead>
+      <tbody>
+        <tr><td>Manual refresh</td><td>All</td><td>Reloads the page and re-evaluates the alert banner.</td></tr>
+        <tr><td>Bulk acknowledgment</td><td>Reconciliation</td><td>Moves multiple selected actions to <code>ACKNOWLEDGED</code> at once.</td></tr>
+        <tr><td>CSV export</td><td>Reconciliation</td><td>Exports the current filtered action list as CSV.</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="ref" id="related">
+    <h2>See also</h2>
+    <div class="navcards">
+      <a class="navc" href="NorthStar_Pipeline_Architecture.html"><span class="nvt">Pipeline Architecture</span><span class="nvd">Why the pipeline exists</span></a>
+      <a class="navc" href="NorthStar_Pipeline_Reliability.html"><span class="nvt">Pipeline Reliability</span><span class="nvd">Run logging, retries, recovery, health</span></a>
+      <a class="navc" href="NorthStar_Data_Flow.html"><span class="nvt">Data Flow</span><span class="nvd">Bronze → Canonical → Gold</span></a>
+      <a class="navc" href="NorthStar_Data_Model_Dictionary.html"><span class="nvt">Data Dictionary</span><span class="nvd">The published tables</span></a>
+    </div>
+  </section>
+
+  <nav class="pagenav" aria-label="Document navigation">
+    <a href="NorthStar_Pipeline_Architecture.html"><span class="dir">Previous</span><span class="lbl">Pipeline Architecture</span></a>
+    <a class="next" href="NorthStar_Pipeline_Reliability.html"><span class="dir">Next</span><span class="lbl">Pipeline Reliability</span></a>
+  </nav>
+
+</div>
+</main>
+</div>
+
+<footer>NORTHSTAR INTELLIGENCE PLATFORM · METADATA PORTAL · VERSION 1.0 &nbsp;·&nbsp; One source. Trusted data. Better decisions.</footer>
+
+</body>
+</html>

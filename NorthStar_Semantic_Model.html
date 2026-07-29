@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semantic Model — NorthStar Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0D1B2A; --secondary:#18263B; --accent:#2563EB;
+    --success:#16A34A; --warning:#F59E0B; --info:#0EA5E9; --muted:#64748B;
+    --surface:#FFFFFF; --bg:#F8FAFC;
+    --line:#E2E8F0; --line-2:#CBD5E1; --ink:#0D1B2A; --ink-2:#475569;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+    --sidebar:280px; --topnav:72px; --maxw:1440px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  h1,h2,h3,h4{color:var(--primary);font-weight:600;line-height:1.3}
+
+  .topnav{position:sticky;top:0;z-index:30;height:var(--topnav);background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:28px}
+  .topnav .logo{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;color:var(--primary)}
+  .topnav .logo .mark{width:26px;height:26px;flex:none}
+  .topnav .logo small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);font-weight:400;margin-top:1px}
+  .topnav nav{display:flex;gap:22px;margin-left:8px;font-size:13.5px}
+  .topnav nav a{color:var(--ink-2)}
+  .topnav nav a[aria-current]{color:var(--primary);font-weight:500}
+  .topnav .right{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  .shell{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) 1fr}
+  aside{border-right:1px solid var(--line);background:var(--surface);position:sticky;top:var(--topnav);height:calc(100vh - var(--topnav));overflow-y:auto;padding:28px 0}
+  aside .grp{padding:0 24px;margin-bottom:22px}
+  aside .grp h5{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+  aside a{display:block;color:var(--ink-2);font-size:13.5px;padding:5px 0}
+  aside a:hover{color:var(--primary);text-decoration:none}
+  aside a[aria-current]{color:var(--accent);font-weight:500}
+  aside .search{padding:0 24px 22px}
+  aside .search input{width:100%;padding:8px 11px;border:1px solid var(--line-2);border-radius:6px;font-family:var(--sans);font-size:13px;background:var(--bg);color:var(--ink)}
+
+  main{background:var(--surface);min-width:0}
+  .doc{max-width:860px;padding:34px clamp(28px,4vw,56px) 90px}
+
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:26px}
+  .crumb a{color:var(--muted)} .crumb span{margin:0 7px;color:var(--line-2)}
+
+  .page-head{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+  .page-head .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  h1{font-size:32px;margin:0 0 14px}
+  .subtitle{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0;font-weight:400;line-height:1.5}
+
+  /* category jump bar */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px}
+  .jump a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 12px;border:1px solid var(--line-2);border-radius:20px;color:var(--ink-2)}
+  .jump a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+  section.cat{margin:40px 0;scroll-margin-top:90px}
+  .cat-head{border-bottom:2px solid var(--primary);padding-bottom:8px;margin-bottom:6px}
+  .cat-head h2{font-size:22px;margin:0}
+  .cat-intro{color:var(--ink-2);font-size:14.5px;margin:12px 0 8px;max-width:80ch}
+
+  /* term entry */
+  .term{border-bottom:1px solid var(--line);padding:24px 0;scroll-margin-top:90px}
+  .term:last-child{border-bottom:none}
+  .term h3{font-size:17px;margin:0 0 3px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .term h3 .also{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
+  .term .def{font-size:15px;color:var(--ink);margin:6px 0 0;max-width:82ch}
+  .term .row{margin-top:12px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:baseline}
+  .term .row .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+  .term .row .val{font-size:14px;color:var(--ink-2);max-width:72ch}
+  .term .row .val a{font-weight:500}
+  .term .formula{font-family:var(--mono);font-size:13px;color:var(--secondary);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:8px 12px;display:inline-block;margin-top:2px}
+  .term code{font-family:var(--mono);font-size:.88em;color:var(--secondary);background:var(--bg);padding:1px 5px;border-radius:2px}
+
+  .callout{border:1px solid var(--line);border-left:3px solid var(--info);background:var(--bg);border-radius:6px;padding:16px 20px;margin:20px 0}
+  .callout .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--info);margin-bottom:6px;font-weight:500}
+  .callout p{margin:0;color:var(--ink-2);font-size:13.5px}
+
+  .pagenav{display:flex;justify-content:space-between;margin-top:56px;padding-top:24px;border-top:1px solid var(--line);gap:16px}
+  .pagenav a{display:block;max-width:48%}
+  .pagenav .dir{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .pagenav .lbl{font-weight:600;color:var(--primary)}
+  .pagenav .next{text-align:right;margin-left:auto}
+  footer{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:var(--mono);font-size:11px;padding:22px 32px;text-align:center}
+  /* layers of business truth */
+  .lifecycle{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:24px 20px;margin:22px 0}
+  .lifecycle svg{display:block;width:100%;height:auto;max-width:820px;margin:0 auto}
+  .truth-note{border:1px solid var(--warning);border-left:3px solid var(--warning);background:#fffbeb;border-radius:6px;padding:14px 18px;margin:18px 0}
+  .truth-note .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#B45309;margin-bottom:5px;font-weight:500}
+  .truth-note p{margin:0;color:#78350F;font-size:13.5px}
+  .term .layer-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;font-weight:500}
+  .lt-mkt{background:#EFF4FB;color:#2563EB}
+  .lt-lease{background:#F0FDF4;color:#16A34A}
+  .lt-ops{background:#FEF3C7;color:#B45309}
+
+  /* cross-reference card: points to canonical definition elsewhere */
+  .xref{border:1px solid var(--line);border-left:3px solid var(--line-2);background:var(--bg);border-radius:6px;padding:14px 18px;margin:0}
+  .xref .xt{font-size:15px;font-weight:600;color:var(--primary);margin:0 0 3px}
+  .xref p{margin:0;color:var(--ink-2);font-size:13.5px}
+  .xref .goto{font-family:var(--mono);font-size:11px;margin-top:6px;display:inline-block}
+
+
+  /* parent term with nested views */
+  .parent{border-bottom:2px solid var(--primary);padding:26px 0 10px;margin-top:8px}
+  .parent h3{font-size:19px;margin:0 0 5px}
+  .parent .def{font-size:15px;color:var(--ink);margin:0;max-width:82ch}
+  .views{margin:0 0 8px}
+  .view{border-bottom:1px solid var(--line);padding:16px 0 16px 22px;border-left:2px solid var(--line-2);margin-left:2px;padding-left:20px}
+  .view h4{font-size:15px;margin:0 0 3px;color:var(--primary);display:flex;align-items:baseline;gap:10px}
+  .view h4 .layer-tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500}
+  .view p{margin:0;color:var(--ink-2);font-size:14px;max-width:78ch}
+  .view .sa{font-size:12.5px;margin-top:5px}
+  /* boxed thesis */
+  .thesis{border:2px solid var(--primary);border-radius:8px;padding:20px 24px;margin:24px 0;background:var(--bg)}
+  .thesis p{margin:0;font-size:17px;font-weight:500;color:var(--primary);max-width:none;text-align:center}
+  /* subgroup heading within a category */
+  .subgroup{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 4px;font-weight:500}
+
+
+  /* ============ technical-manual aesthetic (colors unchanged) ============ */
+  .secnum{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:500}
+  .cat{margin:48px 0 0}
+  .cat-intro{max-width:66ch}
+
+  /* KPI panel (kept per request) */
+  .statpanel{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:26px 0}
+  .statpanel .sp{background:var(--surface);padding:16px 18px;display:flex;flex-direction:column;gap:3px}
+  .statpanel .spv{font-size:24px;font-weight:600;color:var(--primary)}
+  .statpanel .spl{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  @media(max-width:700px){.statpanel{grid-template-columns:repeat(2,1fr)}}
+
+  /* 01 figure (rule-framed, not boxed) */
+  .figure{margin:24px 0;padding:8px 0 0}
+  .figure svg{display:block;width:100%;height:auto;margin:0 auto}
+  .figlegend{display:flex;flex-wrap:wrap;gap:8px 20px;margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line)}
+  .figlegend span{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10.5px;color:var(--ink-2)}
+  .figlegend i{width:16px;height:2px;border-radius:1px;display:inline-block}
+  .figcap{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line)}
+
+  /* 02 design principles — two-column text, no boxes */
+  .principles{columns:2;column-gap:44px;margin:22px 0}
+  .prin{break-inside:avoid;display:block;padding:0 0 16px}
+  .prin .print{display:block;font-size:14px;font-weight:600;color:var(--primary)}
+  .prin .prind{display:block;font-size:13px;color:var(--ink-2);margin-top:2px;line-height:1.5}
+  @media(max-width:640px){.principles{columns:1}}
+
+  /* 03 fact tables — typographic documentation entries, no cards */
+  .deftable{margin:24px 0}
+  .defentry{padding:0 0 22px;margin:0 0 22px;border-bottom:1px solid var(--line)}
+  .defentry:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
+  .defname{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--primary);margin:0 0 6px}
+  .defpurpose{font-size:14px;color:var(--ink);margin:0 0 12px;max-width:64ch;line-height:1.55}
+  .defrow{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:4px 0;font-size:13.5px;align-items:baseline}
+  .defrow .dk{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .defrow .dv{color:var(--ink);line-height:1.5}
+  @media(max-width:600px){.defrow{grid-template-columns:1fr;gap:2px}}
+
+  /* 04 dimensions — compact matrix */
+  .matrix{width:100%;border-collapse:collapse;margin:22px 0;font-size:13px}
+  .matrix th{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);text-align:left;padding:9px 14px 9px 0;border-bottom:2px solid var(--primary);font-weight:500}
+  .matrix td{padding:10px 14px 10px 0;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45;color:var(--ink-2)}
+  .matrix td:first-child{font-family:var(--mono);font-size:12px;color:var(--primary);font-weight:500;white-space:nowrap}
+  .matrix td:nth-child(2){font-family:var(--mono);font-size:11.5px;color:var(--secondary);white-space:nowrap}
+  .matrix td:nth-child(3){font-family:var(--mono);font-size:11px;color:var(--ink-2);white-space:nowrap}
+
+  /* inline note */
+  .note{font-size:13.5px;color:var(--ink-2);max-width:66ch;margin:20px 0 0;padding-left:16px;border-left:2px solid var(--line);line-height:1.55}
+  .note .notelabel{font-weight:600;color:var(--primary)}
+  .note code{font-family:var(--mono);font-size:12px;color:var(--secondary)}
+
+  /* 05 interactive filter walk (a boxed demo — allowed) */
+  .filterwalk{border:1px solid var(--line);border-radius:8px;padding:24px;margin:24px 0}
+  .fwsteps{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;justify-content:center}
+  .fws{font-family:var(--mono);font-size:12px;font-weight:500;padding:8px 15px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink);cursor:pointer;transition:all .15s}
+  .fws:hover{border-color:var(--accent);color:var(--accent)}
+  .fws.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .fwchain{display:flex;flex-direction:column;align-items:center}
+  .fwnode{border:1px solid var(--line);border-radius:6px;padding:11px 22px;min-width:280px;text-align:center;background:var(--surface);transition:all .2s;opacity:.45}
+  .fwnode .fwn{display:block;font-size:15px;font-weight:600;color:var(--primary)}
+  .fwnode .fwd{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:2px}
+  .fwnode.lit{opacity:1;border-color:var(--accent)}
+  .fwnode.head{opacity:1;border-color:var(--accent);border-width:2px;background:var(--accent)}
+  .fwnode.head .fwn{color:#fff}.fwnode.head .fwd{color:#DBEAFE}
+  .fwarrow{font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--line-2);margin:6px 0;opacity:.4;transition:all .2s;text-transform:uppercase}
+  .fwarrow.lit{opacity:1;color:var(--accent)}
+  .fwhint{text-align:center;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin:20px 0 0}
+
+  /* 06 date intelligence — side-by-side comparison, no boxes */
+  .compare{margin:22px 0}
+  .comprow{display:grid;grid-template-columns:130px 1fr 1fr;gap:24px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px;align-items:baseline}
+  .comprow .ck{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .comprow .cv{color:var(--ink-2)}
+  .comprow.comphead{border-bottom:2px solid var(--primary);padding-bottom:9px}
+  .comprow.comphead .cv{font-family:var(--mono);font-size:13px;color:var(--primary);font-weight:600}
+  @media(max-width:640px){.comprow{grid-template-columns:1fr;gap:3px}.comprow .ck{color:var(--accent)}}
+
+  /* 07 decisions — Q&A */
+  .decisions{margin:22px 0}
+  .dec{padding:0 0 18px;margin:0 0 18px;border-bottom:1px solid var(--line)}
+  .dec:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
+  .dec .decq{font-size:15px;font-weight:600;color:var(--primary);margin-bottom:5px}
+  .dec .deca{font-size:14px;color:var(--ink-2);max-width:66ch;line-height:1.55}
+
+  /* 08 naming — technical table */
+  .stdtable{width:100%;border-collapse:collapse;margin:22px 0}
+  .stdtable th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:9px 0;border-bottom:2px solid var(--primary);font-weight:500}
+  .stdtable td{padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px;vertical-align:top;color:var(--ink-2)}
+  .stdtable td:first-child{width:34%;padding-right:24px}
+  .stdtable code{font-family:var(--mono);font-size:12px;color:var(--accent)}
+
+  /* 09 performance — checklist */
+  .checklist{list-style:none;margin:22px 0;padding:0}
+  .checklist li{position:relative;padding:8px 0 8px 28px;font-size:14px;color:var(--ink);border-bottom:1px solid var(--line)}
+  .checklist li:last-child{border-bottom:none}
+  .checklist li:before{content:"✓";position:absolute;left:4px;top:8px;color:var(--accent);font-weight:600;font-size:13px}
+
+  /* 10 nav cards */
+  .navcards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin:22px 0}
+  .navc{border:1px solid var(--line);border-radius:8px;padding:15px 18px;text-decoration:none;background:var(--surface);transition:all .15s;display:block}
+  .navc:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(37,99,235,0.08)}
+  .navc .nvt{display:block;font-size:14.5px;font-weight:600;color:var(--accent)}
+  .navc .nvd{display:block;font-size:12.5px;color:var(--ink-2);margin-top:2px}
+  @media(max-width:640px){.navcards{grid-template-columns:1fr}}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+  @media(max-width:1000px){
+    .shell{grid-template-columns:1fr}
+    aside{display:none}
+    .term .row{grid-template-columns:1fr;gap:2px}
+    .term .row .lbl{padding-top:8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <a class="logo" href="index.html" aria-label="NorthStar home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19 13 L30 16 L19 19 L16 30 L13 19 L2 16 L13 13 Z" fill="#0D1B2A"/></svg>
+    <span>NORTHSTAR<small>METADATA PORTAL</small></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="NorthStar_About.html">About</a>
+    <a href="index.html">Business</a>
+    <a href="NorthStar_Data_Model_Dictionary.html">Data</a>
+    <a href="NorthStar_Executive_Index_Framework.html">Analytics</a>
+    <a href="NorthStar_Pipeline_Architecture.html">Technical</a>
+  </nav>
+  <div class="right">v1.0</div>
+</header>
+
+<div class="shell">
+<aside aria-label="Documentation navigation">
+  <div class="search"><input type="search" placeholder="Search the metadata portal…" aria-label="Search documentation"></div>
+<div class="grp"><h5>Overview</h5>
+<a href="NorthStar_About.html">About NorthStar</a>
+<a href="NorthStar_Platform_Overview.html">Platform Overview</a>
+</div>
+<div class="grp"><h5>Business</h5>
+<a href="NorthStar_Business_Glossary.html">Business Glossary</a>
+<a href="NorthStar_Business_Rules.html">Business Rules</a>
+<a href="NorthStar_Data_Generation_Engine.html">Data Generation Engine</a>
+</div>
+<div class="grp"><h5>Executive</h5>
+<a href="NorthStar_Executive_Index_Framework.html">Decision Framework</a>
+<a href="NorthStar_GPI.html">GPI</a>
+<a href="NorthStar_OPI.html">OPI</a>
+<a href="NorthStar_VPI.html">VPI</a>
+<a href="NorthStar_PHI.html">PHI</a>
+<a href="NorthStar_Executive_Dashboard.html">Executive Dashboard</a>
+<a href="NorthStar_Attribution_Lab.html">Attribution Lab</a>
+</div>
+<div class="grp"><h5>Technical</h5>
+<a href="NorthStar_Pipeline_Architecture.html">Pipeline Architecture</a>
+<a href="NorthStar_Pipeline_Dashboard.html">Pipeline Dashboard</a>
+<a href="NorthStar_Pipeline_Reliability.html">Pipeline Reliability</a>
+<a href="NorthStar_Data_Flow.html">Data Flow</a>
+<a href="NorthStar_Data_Model_Dictionary.html">Data Dictionary</a>
+<a href="NorthStar_Measures_Reference.html">Measure Catalog</a>
+<a href="NorthStar_Semantic_Model.html" aria-current="page">Semantic Model</a>
+<a href="NorthStar_Platform_Specifications.html">Platform Specifications</a>
+</div>
+</aside>
+
+<main>
+<div class="doc">
+
+  <div class="crumb"><a href="index.html">Home</a><span>›</span><a href="index.html">Data</a><span>›</span>Semantic Model</div>
+
+  <div class="page-head">
+    <div class="eyebrow">Data</div>
+    <h1>Semantic Model</h1>
+    <p class="subtitle">The NorthStar semantic model organizes marketing, leasing, and operational data into a dimensional star schema optimized for Power BI. It provides a single analytical layer where every measure resolves through conformed dimensions, allowing consistent reporting from the property level to the portfolio.</p>
+  </div>
+  <div class="statpanel">
+    <div class="sp"><span class="spv">13</span><span class="spl">Tables</span></div>
+    <div class="sp"><span class="spv">5</span><span class="spl">Fact tables</span></div>
+    <div class="sp"><span class="spv">6</span><span class="spl">Dimensions</span></div>
+    <div class="sp"><span class="spv">2</span><span class="spl">Attribute tables</span></div>
+    <div class="sp"><span class="spv">120</span><span class="spl">Properties</span></div>
+    <div class="sp"><span class="spv">28,295</span><span class="spl">Units</span></div>
+    <div class="sp"><span class="spv">830</span><span class="spl">Daily snapshots</span></div>
+    <div class="sp"><span class="spv">1</span><span class="spl">Active date dimension</span></div>
+  </div>
+  <section class="cat" id="overview">
+    <div class="cat-head"><h2><span class="secnum">01</span> &nbsp;Model Overview</h2></div>
+    <p class="cat-intro">Property and date are the two conformed dimensions of the model, and property is its analytical hub. Every fact carries PropertyKey and relates directly to property; geographic filtering reaches the facts only through it, flowing region to market to property. Date connects to every fact through its own separate relationship. The process-specific marketing dimensions connect selectively on the right. Dimensions filter facts; facts never filter dimensions.</p>
+    <div class="figure"><svg viewBox="0 0 760 500" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif" role="img" aria-label="NorthStar star schema. Property and date are the two conformed dimensions. Region filters market filters property; every fact carries PropertyKey and hangs directly off dim_property, not off market or region. dim_date connects to every fact through its own separate relationship. Marketing dimensions connect selectively on the right: vendor to three facts, funnel stage to two, lease date and channel to the prospect journey only. Arrowheads show filter direction into the facts."><defs><marker id="gN" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0D1B2A"/></marker><marker id="gT" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0891B2"/></marker><marker id="gA" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2563EB"/></marker><marker id="gS" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#94A3B8"/></marker></defs><path d="M 38 232.0 L 32 232.0 L 32 362.0 L 38 362.0" fill="none" stroke="#64748B" stroke-width="1"/><text x="28" y="297.0" text-anchor="middle" transform="rotate(-90 28 297.0)" font-family="IBM Plex Mono,monospace" font-size="8" letter-spacing="0.08em" fill="#64748B">CONFORMED</text><rect x="40" y="52.0" width="150" height="30" rx="4" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/><text x="115.0" y="71.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#0D1B2A">dim_region</text><rect x="40" y="144.0" width="150" height="30" rx="4" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/><text x="115.0" y="163.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#0D1B2A">dim_market</text><rect x="40" y="236.0" width="150" height="30" rx="4" fill="#E6F6F9" stroke="#0891B2" stroke-width="1.3"/><text x="115.0" y="255.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#0D1B2A">dim_property</text><line x1="115.0" y1="82.0" x2="115.0" y2="144.0" stroke="#0D1B2A" stroke-width="1.3" marker-end="url(#gN)"/><line x1="115.0" y1="174.0" x2="115.0" y2="236.0" stroke="#0D1B2A" stroke-width="1.3" marker-end="url(#gN)"/><rect x="40" y="328.0" width="150" height="30" rx="4" fill="#EEF3FD" stroke="#2563EB" stroke-width="1.3"/><text x="115.0" y="347.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#0D1B2A">dim_date</text><line x1="262.0" y1="67.0" x2="262.0" y2="435.0" stroke="#0891B2" stroke-width="1.4"/><path d="M 190 251.0 L 262.0 251.0" fill="none" stroke="#0891B2" stroke-width="1.4"/><path d="M 262.0 67.0 L 292.0 67.0" fill="none" stroke="#0891B2" stroke-width="1.5" marker-end="url(#gT)"/><path d="M 262.0 159.0 L 292.0 159.0" fill="none" stroke="#0891B2" stroke-width="1.5" marker-end="url(#gT)"/><path d="M 262.0 251.0 L 292.0 251.0" fill="none" stroke="#0891B2" stroke-width="1.5" marker-end="url(#gT)"/><path d="M 262.0 343.0 L 292.0 343.0" fill="none" stroke="#0891B2" stroke-width="1.5" marker-end="url(#gT)"/><path d="M 262.0 435.0 L 292.0 435.0" fill="none" stroke="#0891B2" stroke-width="1.5" marker-end="url(#gT)"/><text x="260.0" y="457.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="#0891B2">every fact carries PropertyKey</text><line x1="238.0" y1="59.0" x2="238.0" y2="427.0" stroke="#2563EB" stroke-width="1.2"/><path d="M 190 343.0 L 238.0 343.0" fill="none" stroke="#2563EB" stroke-width="1.2"/><path d="M 238.0 59.0 L 292.0 59.0" fill="none" stroke="#2563EB" stroke-width="1.2" marker-end="url(#gA)"/><path d="M 238.0 151.0 L 292.0 151.0" fill="none" stroke="#2563EB" stroke-width="1.2" marker-end="url(#gA)"/><path d="M 238.0 243.0 L 292.0 243.0" fill="none" stroke="#2563EB" stroke-width="1.2" marker-end="url(#gA)"/><path d="M 238.0 335.0 L 292.0 335.0" fill="none" stroke="#2563EB" stroke-width="1.2" marker-end="url(#gA)"/><path d="M 238.0 427.0 L 292.0 427.0" fill="none" stroke="#2563EB" stroke-width="1.2" marker-end="url(#gA)"/><text x="236.0" y="469.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#2563EB">DateKey to every fact</text><rect x="570" y="52.0" width="150" height="30" rx="4" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/><text x="645.0" y="71.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#0D1B2A">dim_vendor</text><rect x="570" y="144.0" width="150" height="30" rx="4" fill="#F8FAFC" stroke="#64748B" stroke-width="1.3"/><text x="645.0" y="163.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#0D1B2A">dim_funnel_stage</text><rect x="570" y="236.0" width="150" height="30" rx="4" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/><text x="645.0" y="255.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#0D1B2A">dim_lease_date</text><rect x="570" y="328.0" width="150" height="30" rx="4" fill="#F8FAFC" stroke="#64748B" stroke-width="1.3"/><text x="645.0" y="347.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#0D1B2A">dim_channel</text><path d="M 570 67.0 L 554 67.0 L 554 60.0 L 468.0 60.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#gS)"/><path d="M 570 67.0 L 548 67.0 L 548 152.0 L 468.0 152.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#gS)"/><path d="M 570 67.0 L 542 67.0 L 542 242.0 L 468.0 242.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#gS)"/><path d="M 570 159.0 L 536 159.0 L 536 166.0 L 468.0 166.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#gS)"/><path d="M 570 159.0 L 530 159.0 L 530 249.0 L 468.0 249.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#gS)"/><path d="M 570 251.0 L 564 251.0 L 564 256.0 L 468.0 256.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#gS)"/><path d="M 570 343.0 L 558 343.0 L 558 260.0 L 468.0 260.0" fill="none" stroke="#94A3B8" stroke-width="1" marker-end="url(#gS)"/><rect x="292.0" y="48" width="176" height="38" rx="4" fill="#EFF4FB" stroke="#2563EB" stroke-width="1.5"/><text x="380.0" y="71.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#0D1B2A">fact_marketing_spend_daily</text><rect x="292.0" y="140" width="176" height="38" rx="4" fill="#EFF4FB" stroke="#2563EB" stroke-width="1.5"/><text x="380.0" y="163.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#0D1B2A">fact_marketing_funnel_daily</text><rect x="292.0" y="232" width="176" height="38" rx="4" fill="#EFF4FB" stroke="#2563EB" stroke-width="1.5"/><text x="380.0" y="255.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#0D1B2A">fact_prospect_journey</text><rect x="292.0" y="324" width="176" height="38" rx="4" fill="#EFF4FB" stroke="#2563EB" stroke-width="1.5"/><text x="380.0" y="347.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#0D1B2A">fact_leasing_daily</text><rect x="292.0" y="416" width="176" height="38" rx="4" fill="#EFF4FB" stroke="#2563EB" stroke-width="1.5"/><text x="380.0" y="439.0" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="#0D1B2A">fact_property_ops_daily</text></svg>
+      <div class="figlegend"><span><i style="background:#0891B2"></i>Conformed Property</span><span><i style="background:#2563EB"></i>Conformed Date</span><span><i style="background:#0D1B2A"></i>Geographic Hierarchy</span><span><i style="background:#94A3B8"></i>Process-Specific Dimensions</span></div><p class="figcap">Figure 1. Property is the analytical hub: every fact relates at property grain. Region and market reach the facts only through property. Arrowheads show filter direction.</p>
+    </div>
+  </section>
+  <section class="cat" id="principles">
+    <div class="cat-head"><h2><span class="secnum">02</span> &nbsp;Design Principles</h2></div>
+    <p class="cat-intro">The model follows standard enterprise star-schema practice, enforced across every table and relationship.</p>
+    <div class="principles">
+      <div class="prin"><span class="print">Star schema</span><span class="prind">Facts at the center, dimensions on the edges. No flattening into wide tables.</span></div>
+      <div class="prin"><span class="print">Conformed dimensions</span><span class="prind">Shared dimensions filter every fact consistently, so a region or property means the same thing everywhere.</span></div>
+      <div class="prin"><span class="print">Single-direction filtering</span><span class="prind">Dimensions filter facts, never the reverse. Filter direction is always explicit.</span></div>
+      <div class="prin"><span class="print">One fact, one process</span><span class="prind">Each fact table models a single business process at a single grain.</span></div>
+      <div class="prin"><span class="print">Shared calendar</span><span class="prind">A single active date dimension governs all daily facts.</span></div>
+      <div class="prin"><span class="print">Controlled geographic snowflake</span><span class="prind">Region and market are kept as separate lookup tables for governed geographic filtering, while facts connect at property grain. This is a deliberate hybrid, not a pure flat star.</span></div>
+      <div class="prin"><span class="print">No bidirectional filters</span><span class="prind">Bidirectional relationships are never used.</span></div>
+      <div class="prin"><span class="print">Dimension-driven slicing</span><span class="prind">All filtering originates from dimensions, not from the facts.</span></div>
+    </div>
+  </section>
+  <section class="cat" id="facts">
+    <div class="cat-head"><h2><span class="secnum">03</span> &nbsp;Fact Tables</h2></div>
+    <p class="cat-intro">Each fact table models one business process at a stated grain. The stored columns are the physical fields in the table; the common measures are DAX calculations evaluated over them, some of which combine more than one fact.</p>
+    <div class="deftable">
+    
+    <div class="defentry">
+      <div class="defname">fact_marketing_spend_daily</div>
+      <p class="defpurpose">Daily marketing spend by vendor and property.</p>
+      <div class="defrow"><span class="dk">Grain</span><span class="dv">Property × Vendor × Date</span></div><div class="defrow"><span class="dk">Keys</span><span class="dv">DateKey, PropertyKey, VendorKey</span></div><div class="defrow"><span class="dk">Stored</span><span class="dv">Spend</span></div><div class="defrow"><span class="dk">Common measures</span><span class="dv">Cost per Lead, Cost per Visit, Cost per New Lease (cross-fact)</span></div>
+    </div>    <div class="defentry">
+      <div class="defname">fact_marketing_funnel_daily</div>
+      <p class="defpurpose">Daily funnel activity, stored in long format by stage.</p>
+      <div class="defrow"><span class="dk">Grain</span><span class="dv">Property × Vendor × Funnel Stage × Date</span></div><div class="defrow"><span class="dk">Keys</span><span class="dv">DateKey, PropertyKey, VendorKey, FunnelStageKey</span></div><div class="defrow"><span class="dk">Stored</span><span class="dv">MetricValue (one row per funnel stage)</span></div><div class="defrow"><span class="dk">Common measures</span><span class="dv">Impressions, Clicks, Visits, Leads, Leases (stage filters of MetricValue); CTR, conversion rates</span></div>
+    </div>    <div class="defentry">
+      <div class="defname">fact_prospect_journey</div>
+      <p class="defpurpose">Individual prospect touch sequences, the basis for attribution.</p>
+      <div class="defrow"><span class="dk">Grain</span><span class="dv">Prospect × Touch</span></div><div class="defrow"><span class="dk">Keys</span><span class="dv">DateKey, LeaseDateKey, PropertyKey, VendorKey, ChannelKey, FunnelStageKey</span></div><div class="defrow"><span class="dk">Stored</span><span class="dv">TouchNumber, Converted, AttributedCredit</span></div><div class="defrow"><span class="dk">Common measures</span><span class="dv">Attributed Leases, Touch Count, credit by model</span></div>
+    </div>    <div class="defentry">
+      <div class="defname">fact_leasing_daily</div>
+      <p class="defpurpose">Daily leasing funnel outcomes by property.</p>
+      <div class="defrow"><span class="dk">Grain</span><span class="dv">Property × Date</span></div><div class="defrow"><span class="dk">Keys</span><span class="dv">DateKey, PropertyKey</span></div><div class="defrow"><span class="dk">Stored</span><span class="dv">Leads, Visits, NewLeases, AttributedNewLeases, UnattributedLeases</span></div><div class="defrow"><span class="dk">Common measures</span><span class="dv">Lead-to-lease rate, attribution share</span></div>
+    </div>    <div class="defentry">
+      <div class="defname">fact_property_ops_daily</div>
+      <p class="defpurpose">Daily operational state of each property.</p>
+      <div class="defrow"><span class="dk">Grain</span><span class="dv">Property × Date</span></div><div class="defrow"><span class="dk">Keys</span><span class="dv">DateKey, PropertyKey</span></div><div class="defrow"><span class="dk">Stored</span><span class="dv">OccupiedUnits, VacantUnits, AvailableUnits, MoveIns, MoveOuts, LeaseExpirations, ScheduledMoveIns</span></div><div class="defrow"><span class="dk">Common measures</span><span class="dv">Occupancy %, Vacancy %</span></div>
+    </div>
+    </div>
+  </section>
+  <section class="cat" id="dims">
+    <div class="cat-head"><h2><span class="secnum">04</span> &nbsp;Dimensions</h2></div>
+    <p class="cat-intro">Six conformed dimensions filter the facts. Each carries a surrogate integer key and the attributes used for slicing and grouping.</p>
+    <table class="matrix">
+      <thead><tr><th>Dimension</th><th>Key</th><th>Hierarchy</th><th>Key attributes</th></tr></thead>
+      <tbody>
+        <tr><td>dim_date</td><td>DateKey</td><td>Year → Quarter → Month → Date</td><td>Year, Quarter, Month, Week, Day of Week, IsWeekend</td></tr>
+        <tr><td>dim_lease_date</td><td>LeaseDateKey</td><td>Year → Quarter → Month → Date</td><td>Separate lease-event calendar, extended through 2027</td></tr>
+        <tr><td>dim_property</td><td>PropertyKey</td><td>Region → Market → Property</td><td>Property Name, Market, Region, State, City, Total Units</td></tr>
+        <tr><td>dim_market</td><td>MarketKey</td><td>Region → Market</td><td>Market Name, Region</td></tr>
+        <tr><td>dim_region</td><td>RegionKey</td><td>—</td><td>Region Name (East, Central, West, South)</td></tr>
+        <tr><td>dim_vendor</td><td>VendorKey</td><td>Channel → Vendor</td><td>Vendor Name, Channel, Sort Order</td></tr>
+      </tbody>
+    </table>
+    <p class="note"><span class="notelabel">Channel path.</span> <code>dim_channel</code> and <code>dim_funnel_stage</code> are small lookup tables supporting channel and funnel-stage reporting. The prospect journey carries its own <code>ChannelKey</code>, the channel recorded on the individual touch, which is the active path for channel analysis. The vendor also has an assigned channel, carried as a descriptive attribute on <code>dim_vendor</code>, not as a second active relationship into the same fact. Keeping one active channel path per fact avoids an ambiguous relationship path.</p>
+  </section>
+  <section class="cat" id="relationships">
+    <div class="cat-head"><h2><span class="secnum">05</span> &nbsp;Relationships</h2></div>
+    <p class="cat-intro">Filtering flows one way, from the geographic hierarchy down through the dimensions into the facts, and from the facts into the measures. Selecting a value in a dimension propagates through the model in a single direction. The walk below steps through that chain. Select a level to see what it filters.</p>
+
+    <div class="filterwalk" id="fwalk">
+      <div class="fwsteps">
+        <button class="fws" data-step="0">Region</button>
+        <button class="fws" data-step="1">Market</button>
+        <button class="fws" data-step="2">Property</button>
+        <button class="fws" data-step="3">Fact Tables</button>
+        <button class="fws" data-step="4">Measures</button>
+        <button class="fws" data-step="5">Visuals</button>
+      </div>
+      <div class="fwchain">
+        <div class="fwnode" data-node="0"><span class="fwn">Region</span><span class="fwd">e.g. West</span></div>
+        <div class="fwarrow" data-arr="0">filters ↓</div>
+        <div class="fwnode" data-node="1"><span class="fwn">Market</span><span class="fwd">markets in that region</span></div>
+        <div class="fwarrow" data-arr="1">filters ↓</div>
+        <div class="fwnode" data-node="2"><span class="fwn">Property</span><span class="fwd">properties in those markets</span></div>
+        <div class="fwarrow" data-arr="2">filters ↓</div>
+        <div class="fwnode" data-node="3"><span class="fwn">Fact rows</span><span class="fwd">filtered to those properties</span></div>
+        <div class="fwarrow" data-arr="3">measures evaluate ↓</div>
+        <div class="fwnode" data-node="4"><span class="fwn">Measures evaluate</span><span class="fwd">under the current filter context</span></div>
+        <div class="fwarrow" data-arr="4">visuals render ↓</div>
+        <div class="fwnode" data-node="5"><span class="fwn">Visuals render</span><span class="fwd">the numbers on the page</span></div>
+      </div>
+      <p class="fwhint">Click a level above to highlight the propagation chain. Click again to reset.</p>
+    </div>
+  </section>
+  <section class="cat" id="dates">
+    <div class="cat-head"><h2><span class="secnum">06</span> &nbsp;Date Intelligence</h2></div>
+    <p class="cat-intro">The model carries two date tables, which is deliberate. A single calendar cannot serve both daily reporting and lease-dated events without one distorting the other. Separating them keeps both clean, and lets the lease calendar extend further into the future than the fact data without leaving gaps in daily reporting.</p>
+    <div class="compare">
+      <div class="comprow comphead"><span class="ck"></span><span class="cv">dim_date</span><span class="cv">dim_lease_date</span></div>
+      <div class="comprow"><span class="ck">Role</span><span class="cv">Active daily calendar</span><span class="cv">Lease-event calendar</span></div>
+      <div class="comprow"><span class="ck">Used by</span><span class="cv">Spend, funnel, leasing, operations</span><span class="cv">Prospect journey</span></div>
+      <div class="comprow"><span class="ck">Relationship</span><span class="cv">One active per fact</span><span class="cv">Role-playing on lease date</span></div>
+      <div class="comprow"><span class="ck">Range</span><span class="cv">Matches the fact data</span><span class="cv">Extended through 2027</span></div>
+    </div>
+  </section>
+  <section class="cat" id="decisions">
+    <div class="cat-head"><h2><span class="secnum">07</span> &nbsp;Model Decisions</h2></div>
+    <p class="cat-intro">The structural choices below were made deliberately and hold across the model.</p>
+    <div class="decisions">      <div class="dec"><div class="decq">Why separate fact tables?</div><div class="deca">Marketing, leasing, and operations run at different grains, refresh on different cadences, and answer to different business owners. Splitting them keeps each fact honest to its own process rather than forcing a single wide table.</div></div>      <div class="dec"><div class="decq">Why conformed dimensions?</div><div class="deca">Shared dimensions give consistent filtering across every fact, reduce model size, and guarantee that a region or property means the same thing everywhere.</div></div>      <div class="dec"><div class="decq">Why a vendor dimension?</div><div class="deca">It supports attribution, marketing rollups, and channel reporting from one place, and keeps vendor attributes out of the facts.</div></div>      <div class="dec"><div class="decq">Why keep separate region and market tables?</div><div class="deca">Property already carries market and region as columns, but region and market are also kept as separate lookup tables so geographic entities can be governed and filtered on their own. This is a deliberate hybrid: a controlled geographic snowflake layered on an otherwise flat star, chosen because reporting needs region-, market-, and property-level logic.</div></div>      <div class="dec"><div class="decq">Why two date tables?</div><div class="deca">A single calendar cannot serve both daily reporting and lease-dated events without one distorting the other. Separating them keeps both clean.</div></div>    </div>
+  </section>
+  <section class="cat" id="naming">
+    <div class="cat-head"><h2><span class="secnum">08</span> &nbsp;Naming Standards</h2></div>
+    <p class="cat-intro">Object names follow a fixed convention, so the role of any object is readable from its name. This maps directly to the conventions documented in the Measure Catalog.</p>
+    <table class="stdtable">
+      <thead><tr><th>Prefix or suffix</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>fact_</code></td><td>Fact table, one business process, daily grain</td></tr>
+        <tr><td><code>dim_</code></td><td>Dimension or attribute table</td></tr>
+        <tr><td>Measure</td><td>Business-facing measure, plain name</td></tr>
+        <tr><td><code>_Base</code></td><td>Base calculation, hidden, reused by display measures</td></tr>
+        <tr><td>Display</td><td>Formatted measure for visuals</td></tr>
+        <tr><td>Index</td><td>Composite score (GPI, OPI, VPI, PHI)</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="cat" id="performance">
+    <div class="cat-head"><h2><span class="secnum">09</span> &nbsp;Performance</h2></div>
+    <p class="cat-intro">The model is built for query performance and maintainability, following the practices below.</p>
+    <ul class="checklist">
+      <li>Star schema over flattened tables</li>
+      <li>Integer surrogate keys on every relationship</li>
+      <li>Single-direction filters throughout</li>
+      <li>Shared dimensions to reduce model size</li>
+      <li>Technical columns hidden from the field list</li>
+      <li>Measures over calculated columns</li>
+      <li>Variable-driven DAX to avoid recomputation</li>
+      <li>Display measures separated from base measures</li>
+    </ul>
+  </section>
+  <section class="cat" id="navigation">
+    <div class="cat-head"><h2><span class="secnum">10</span> &nbsp;Related Documentation</h2></div>
+    <div class="navcards">
+      <a class="navc" href="NorthStar_Data_Model_Dictionary.html"><span class="nvt">Data Dictionary</span><span class="nvd">Physical tables and columns</span></a>
+      <a class="navc" href="NorthStar_Measures_Reference.html"><span class="nvt">Measure Catalog</span><span class="nvd">DAX calculations and conventions</span></a>
+      <a class="navc" href="NorthStar_Business_Rules.html"><span class="nvt">Business Rules</span><span class="nvd">Counting and governance</span></a>
+      <a class="navc" href="NorthStar_Data_Generation_Engine.html"><span class="nvt">Simulation Engine</span><span class="nvd">How the data is produced</span></a>
+    </div>
+  </section>
+
+  <nav class="pagenav" aria-label="Document navigation">
+    <a href="NorthStar_Data_Generation_Engine.html"><span class="dir">Previous</span><span class="lbl">Data Generation Engine</span></a>
+    <a class="next" href="NorthStar_Data_Model_Dictionary.html"><span class="dir">Next</span><span class="lbl">Data Dictionary</span></a>
+  </nav>
+
+</div>
+</main>
+</div>
+
+<footer>NORTHSTAR INTELLIGENCE PLATFORM · METADATA PORTAL · VERSION 1.0 &nbsp;·&nbsp; One source. Trusted data. Better decisions.</footer>
+
+<script>
+(function(){
+  var walk=document.getElementById('fwalk');
+  if(!walk) return;
+  var steps=walk.querySelectorAll('.fws');
+  var nodes=walk.querySelectorAll('.fwnode');
+  var arrows=walk.querySelectorAll('.fwarrow');
+  var current=-1;
+  function reset(){
+    steps.forEach(function(s){s.classList.remove('active');});
+    nodes.forEach(function(n){n.classList.remove('lit','head');});
+    arrows.forEach(function(a){a.classList.remove('lit');});
+  }
+  function light(step){
+    reset();
+    for(var i=0;i<=step;i++){
+      if(nodes[i]) nodes[i].classList.add('lit');
+      if(i<step && arrows[i]) arrows[i].classList.add('lit');
+    }
+    if(nodes[step]) nodes[step].classList.add('head');
+    steps[step].classList.add('active');
+  }
+  steps.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var step=parseInt(btn.getAttribute('data-step'),10);
+      if(step===current){ reset(); current=-1; }
+      else { light(step); current=step; }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

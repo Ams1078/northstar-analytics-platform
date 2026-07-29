@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Platform Specifications — NorthStar Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0D1B2A; --secondary:#18263B; --accent:#2563EB;
+    --success:#16A34A; --warning:#F59E0B; --info:#0EA5E9; --muted:#64748B;
+    --surface:#FFFFFF; --bg:#F8FAFC;
+    --line:#E2E8F0; --line-2:#CBD5E1; --ink:#0D1B2A; --ink-2:#475569;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+    --sidebar:280px; --topnav:72px; --maxw:1440px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  h1,h2,h3,h4{color:var(--primary);font-weight:600;line-height:1.3}
+
+  .topnav{position:sticky;top:0;z-index:30;height:var(--topnav);background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:28px}
+  .topnav .logo{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;color:var(--primary)}
+  .topnav .logo .mark{width:26px;height:26px;flex:none}
+  .topnav .logo small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);font-weight:400;margin-top:1px}
+  .topnav nav{display:flex;gap:22px;margin-left:8px;font-size:13.5px}
+  .topnav nav a{color:var(--ink-2)}
+  .topnav nav a[aria-current]{color:var(--primary);font-weight:500}
+  .topnav .right{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  .shell{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) 1fr}
+  aside{border-right:1px solid var(--line);background:var(--surface);position:sticky;top:var(--topnav);height:calc(100vh - var(--topnav));overflow-y:auto;padding:28px 0}
+  aside .grp{padding:0 24px;margin-bottom:22px}
+  aside .grp h5{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:500}
+  aside a{display:block;color:var(--ink-2);font-size:13.5px;padding:5px 0}
+  aside a:hover{color:var(--primary);text-decoration:none}
+  aside a[aria-current]{color:var(--accent);font-weight:500}
+  aside .search{padding:0 24px 22px}
+  aside .search input{width:100%;padding:8px 11px;border:1px solid var(--line-2);border-radius:6px;font-family:var(--sans);font-size:13px;background:var(--bg);color:var(--ink)}
+
+  main{background:var(--surface);min-width:0}
+  .doc{max-width:860px;padding:34px clamp(28px,4vw,56px) 90px}
+
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:26px}
+  .crumb a{color:var(--muted)} .crumb span{margin:0 7px;color:var(--line-2)}
+
+  .page-head{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+  .page-head .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  h1{font-size:32px;margin:0 0 14px}
+  .subtitle{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0;font-weight:400;line-height:1.5}
+
+  /* category jump bar */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px}
+  .jump a{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 12px;border:1px solid var(--line-2);border-radius:20px;color:var(--ink-2)}
+  .jump a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+  section.cat{margin:40px 0;scroll-margin-top:90px}
+  .cat-head{border-bottom:2px solid var(--primary);padding-bottom:8px;margin-bottom:6px}
+  .cat-head h2{font-size:22px;margin:0}
+  .cat-intro{color:var(--ink-2);font-size:14.5px;margin:12px 0 8px;max-width:80ch}
+
+  /* term entry */
+  .term{border-bottom:1px solid var(--line);padding:24px 0;scroll-margin-top:90px}
+  .term:last-child{border-bottom:none}
+  .term h3{font-size:17px;margin:0 0 3px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .term h3 .also{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
+  .term .def{font-size:15px;color:var(--ink);margin:6px 0 0;max-width:82ch}
+  .term .row{margin-top:12px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:baseline}
+  .term .row .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+  .term .row .val{font-size:14px;color:var(--ink-2);max-width:72ch}
+  .term .row .val a{font-weight:500}
+  .term .formula{font-family:var(--mono);font-size:13px;color:var(--secondary);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:8px 12px;display:inline-block;margin-top:2px}
+  .term code{font-family:var(--mono);font-size:.88em;color:var(--secondary);background:var(--bg);padding:1px 5px;border-radius:2px}
+
+  .callout{border:1px solid var(--line);border-left:3px solid var(--info);background:var(--bg);border-radius:6px;padding:16px 20px;margin:20px 0}
+  .callout .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--info);margin-bottom:6px;font-weight:500}
+  .callout p{margin:0;color:var(--ink-2);font-size:13.5px}
+
+  .pagenav{display:flex;justify-content:space-between;margin-top:56px;padding-top:24px;border-top:1px solid var(--line);gap:16px}
+  .pagenav a{display:block;max-width:48%}
+  .pagenav .dir{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .pagenav .lbl{font-weight:600;color:var(--primary)}
+  .pagenav .next{text-align:right;margin-left:auto}
+  footer{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:var(--mono);font-size:11px;padding:22px 32px;text-align:center}
+  /* layers of business truth */
+  .lifecycle{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:24px 20px;margin:22px 0}
+  .lifecycle svg{display:block;width:100%;height:auto;max-width:820px;margin:0 auto}
+  .truth-note{border:1px solid var(--warning);border-left:3px solid var(--warning);background:#fffbeb;border-radius:6px;padding:14px 18px;margin:18px 0}
+  .truth-note .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#B45309;margin-bottom:5px;font-weight:500}
+  .truth-note p{margin:0;color:#78350F;font-size:13.5px}
+  .term .layer-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;font-weight:500}
+  .lt-mkt{background:#EFF4FB;color:#2563EB}
+  .lt-lease{background:#F0FDF4;color:#16A34A}
+  .lt-ops{background:#FEF3C7;color:#B45309}
+
+  /* cross-reference card: points to canonical definition elsewhere */
+  .xref{border:1px solid var(--line);border-left:3px solid var(--line-2);background:var(--bg);border-radius:6px;padding:14px 18px;margin:0}
+  .xref .xt{font-size:15px;font-weight:600;color:var(--primary);margin:0 0 3px}
+  .xref p{margin:0;color:var(--ink-2);font-size:13.5px}
+  .xref .goto{font-family:var(--mono);font-size:11px;margin-top:6px;display:inline-block}
+
+
+  /* parent term with nested views */
+  .parent{border-bottom:2px solid var(--primary);padding:26px 0 10px;margin-top:8px}
+  .parent h3{font-size:19px;margin:0 0 5px}
+  .parent .def{font-size:15px;color:var(--ink);margin:0;max-width:82ch}
+  .views{margin:0 0 8px}
+  .view{border-bottom:1px solid var(--line);padding:16px 0 16px 22px;border-left:2px solid var(--line-2);margin-left:2px;padding-left:20px}
+  .view h4{font-size:15px;margin:0 0 3px;color:var(--primary);display:flex;align-items:baseline;gap:10px}
+  .view h4 .layer-tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500}
+  .view p{margin:0;color:var(--ink-2);font-size:14px;max-width:78ch}
+  .view .sa{font-size:12.5px;margin-top:5px}
+  /* boxed thesis */
+  .thesis{border:2px solid var(--primary);border-radius:8px;padding:20px 24px;margin:24px 0;background:var(--bg)}
+  .thesis p{margin:0;font-size:17px;font-weight:500;color:var(--primary);max-width:none;text-align:center}
+  /* subgroup heading within a category */
+  .subgroup{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 4px;font-weight:500}
+
+
+  /* ============ pipeline reference manuals (Microsoft-Learn register) ============ */
+  .page-head{margin-bottom:20px}
+  .page-head .subtitle{font-size:16px;line-height:1.6;max-width:70ch;color:var(--ink-2)}
+  .page-head .subtitle code{font-family:var(--mono);font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--accent)}
+
+  .metastrip{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:0 0 8px;background:var(--surface)}
+  .ms-item{flex:1;min-width:120px;padding:12px 16px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+  .ms-item:last-child{border-right:none}
+  .ms-k{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .ms-v{font-size:14px;font-weight:600;color:var(--primary)}
+  .ms-v.mono{font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--accent)}
+  @media(max-width:640px){.ms-item{min-width:45%}}
+
+  .ref{margin:40px 0 0}
+  .ref h2{font-size:20px;font-weight:700;color:var(--primary);margin:0 0 12px;letter-spacing:-0.01em;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .ref p{font-size:14.5px;line-height:1.7;color:var(--ink);margin:0 0 14px;max-width:74ch}
+  .ref code{font-family:var(--mono);font-size:12.5px;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--accent)}
+
+  .reftable{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:13.5px}
+  .reftable th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:8px 12px;border-bottom:2px solid var(--primary);background:var(--surface)}
+  .reftable td{padding:9px 12px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:top;line-height:1.5}
+  .reftable td.mono{font-family:var(--mono);font-size:12.5px;color:var(--accent);white-space:nowrap}
+  .reftable tr:last-child td{border-bottom:none}
+
+  .callout{display:flex;gap:12px;align-items:baseline;border:1px solid var(--line);border-left:3px solid #CBB26B;border-radius:8px;padding:13px 16px;background:#FBF7EC;margin:12px 0 0}
+  .co-k{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:#9A7B1F;font-weight:700;flex-shrink:0}
+  .co-v{font-size:13.5px;line-height:1.55;color:var(--ink)}
+
+  .navcards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin:14px 0 0}
+  .navc{border:1px solid var(--line);border-radius:8px;padding:14px 17px;text-decoration:none;background:var(--surface);transition:all .15s;display:block}
+  .navc:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(37,99,235,0.08)}
+  .navc .nvt{display:block;font-size:14px;font-weight:600;color:var(--accent)}
+  .navc .nvd{display:block;font-size:12px;color:var(--ink-2);margin-top:2px}
+  @media(max-width:640px){.navcards{grid-template-columns:1fr}}
+
+  .mock-cap{font-size:12px;color:var(--muted);font-style:italic;margin:-8px 0 16px;line-height:1.5}
+  /* annotated interface mock */
+  .mock{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--bg);margin:6px 0 16px;display:flex;flex-direction:column;gap:8px}
+  .mock-region{border:1px dashed var(--line);border-radius:6px;padding:11px 14px;background:var(--surface);font-size:12.5px;color:var(--ink-2);position:relative;display:flex;align-items:center;gap:10px}
+  .mock-row{display:flex;gap:8px}
+  .mock-row .mock-kpi{flex:1}
+  .mock-row .mock-refresh{width:110px;flex-shrink:0}
+  .mock-alert{border-color:#CBB26B;background:#FBF7EC;color:#9A7B1F}
+  .mock-tabs{border-style:solid;border-color:var(--accent);color:var(--accent);font-weight:500}
+  .mock-table{min-height:52px;align-items:flex-start}
+  .mk-tag{font-family:var(--mono);font-size:10px;font-weight:700;color:#fff;background:var(--accent);width:18px;height:18px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+  .mock-alert .mk-tag{background:#9A7B1F}
+  @media(max-width:560px){.mock-row{flex-direction:column}.mock-row .mock-refresh{width:auto}}
+
+  /* per-tab manual entries */
+  .tabref{margin-top:32px}
+  .tabtag{font-size:14px;font-weight:500;color:var(--accent);margin:-4px 0 12px;font-style:italic}
+  .tabmeta{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px}
+  .tm-k{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .tm-v{font-size:12.5px}
+  .tabgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:16px 18px;background:var(--surface)}
+  .tg-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:5px}
+  .tg-body{font-size:13px;line-height:1.55;color:var(--ink-2);margin:0}
+  .tg-list{list-style:none;margin:0;padding:0}
+  .tg-list li{font-size:13px;line-height:1.5;color:var(--ink-2);padding-left:14px;position:relative;margin-bottom:3px}
+  .tg-list li:before{content:"";position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:1px;background:var(--accent)}
+  @media(max-width:600px){.tabgrid{grid-template-columns:1fr}}
+
+  /* spec sheet: two-column key/value tables */
+  .spectable td:first-child{width:42%;color:var(--ink);font-weight:500}
+  .spectable td:last-child{color:var(--ink-2)}
+  .spec-note{font-size:12.5px;color:var(--muted);font-style:italic;margin:8px 0 0}
+  .spectable-todo td:last-child{color:#9A7B1F}
+  #confirm h2{color:var(--primary)}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+  @media(max-width:1000px){
+    .shell{grid-template-columns:1fr}
+    aside{display:none}
+    .term .row{grid-template-columns:1fr;gap:2px}
+    .term .row .lbl{padding-top:8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <a class="logo" href="index.html" aria-label="NorthStar home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19 13 L30 16 L19 19 L16 30 L13 19 L2 16 L13 13 Z" fill="#0D1B2A"/></svg>
+    <span>NORTHSTAR<small>METADATA PORTAL</small></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="NorthStar_About.html">About</a>
+    <a href="index.html" aria-current="page">Business</a>
+    <a href="NorthStar_Data_Model_Dictionary.html">Data</a>
+    <a href="NorthStar_Executive_Index_Framework.html">Analytics</a>
+    <a href="NorthStar_Pipeline_Architecture.html">Technical</a>
+  </nav>
+  <div class="right">v1.0</div>
+</header>
+
+<div class="shell">
+<aside aria-label="Documentation navigation">
+  <div class="search"><input type="search" placeholder="Search the metadata portal…" aria-label="Search documentation"></div>
+<div class="grp"><h5>Overview</h5>
+<a href="NorthStar_About.html">About NorthStar</a>
+<a href="NorthStar_Platform_Overview.html">Platform Overview</a>
+</div>
+<div class="grp"><h5>Business</h5>
+<a href="NorthStar_Business_Glossary.html">Business Glossary</a>
+<a href="NorthStar_Business_Rules.html">Business Rules</a>
+<a href="NorthStar_Data_Generation_Engine.html">Data Generation Engine</a>
+</div>
+<div class="grp"><h5>Executive</h5>
+<a href="NorthStar_Executive_Index_Framework.html">Decision Framework</a>
+<a href="NorthStar_GPI.html">GPI</a>
+<a href="NorthStar_OPI.html">OPI</a>
+<a href="NorthStar_VPI.html">VPI</a>
+<a href="NorthStar_PHI.html">PHI</a>
+<a href="NorthStar_Executive_Dashboard.html">Executive Dashboard</a>
+<a href="NorthStar_Attribution_Lab.html">Attribution Lab</a>
+</div>
+<div class="grp"><h5>Technical</h5>
+<a href="NorthStar_Pipeline_Architecture.html">Pipeline Architecture</a>
+<a href="NorthStar_Pipeline_Dashboard.html">Pipeline Dashboard</a>
+<a href="NorthStar_Pipeline_Reliability.html">Pipeline Reliability</a>
+<a href="NorthStar_Data_Flow.html">Data Flow</a>
+<a href="NorthStar_Data_Model_Dictionary.html">Data Dictionary</a>
+<a href="NorthStar_Measures_Reference.html">Measure Catalog</a>
+<a href="NorthStar_Semantic_Model.html">Semantic Model</a>
+<a href="NorthStar_Platform_Specifications.html" aria-current="page">Platform Specifications</a>
+</div>
+</aside>
+
+<main>
+<div class="doc">
+
+  <div class="crumb"><a href="index.html">Home</a><span>›</span><a href="index.html">Technical</a><span>›</span>Platform Specifications</div>
+  <div class="page-head">
+    <div class="eyebrow">Technical Reference · Specification Sheet</div>
+    <h1>Platform Specifications</h1>
+    <p class="subtitle">The concrete facts about the NorthStar platform in one place: stack, scale, data model, pipeline, and interfaces. This page is a specification sheet, not a narrative. For the reasoning behind any of these choices, follow the linked page.</p>
+  </div>
+  <div class="metastrip">
+    <div class="ms-item"><span class="ms-k">Properties</span><span class="ms-v">120</span></div>
+    <div class="ms-item"><span class="ms-k">Units</span><span class="ms-v">28,295</span></div>
+    <div class="ms-item"><span class="ms-k">Measures</span><span class="ms-v">1,289</span></div>
+    <div class="ms-item"><span class="ms-k">Indexes</span><span class="ms-v">4</span></div>
+    <div class="ms-item"><span class="ms-k">Pipelines</span><span class="ms-v">5</span></div>
+  </div>
+  <section class="ref" id="stack">
+    <h2>Technology stack</h2>
+    <table class="reftable spectable">
+      <tbody><tr><td>Data warehouse</td><td class="">Azure SQL Database (Serverless, General Purpose)</td></tr><tr><td>Object storage</td><td class="">Azure Blob Storage (bronze container)</td></tr><tr><td>Compute</td><td class="">Azure Functions (Flex Consumption)</td></tr><tr><td>Semantic model &amp; reports</td><td class="">Power BI</td></tr><tr><td>Model tooling</td><td class="">Tabular Editor 2</td></tr><tr><td>Pipeline language</td><td class="">Python</td></tr><tr><td>Portal hosting</td><td class="">Azure Static Web Apps</td></tr></tbody>
+    </table>
+    
+  </section>  <section class="ref" id="scale">
+    <h2>Scale</h2>
+    <table class="reftable spectable">
+      <tbody><tr><td>Properties</td><td class="mono">120</td></tr><tr><td>Units</td><td class="mono">28,295</td></tr><tr><td>Markets</td><td class="mono">12</td></tr><tr><td>Regions</td><td class="mono">4</td></tr><tr><td>Vendors</td><td class="mono">11</td></tr><tr><td>Calendar</td><td class="">Daily date dimension, beginning 2024-01-01</td></tr><tr><td>Executive indexes</td><td class="">4 (GPI · OPI · VPI · PHI)</td></tr><tr><td>Semantic measures</td><td class="mono">1,289</td></tr></tbody>
+    </table>
+    
+  </section>  <section class="ref" id="architecture">
+    <h2>Architecture</h2>
+    <table class="reftable spectable">
+      <tbody><tr><td>Model shape</td><td class="">Star schema</td></tr><tr><td>Fact tables</td><td class="mono">5</td></tr><tr><td>Dimension tables</td><td class="mono">8</td></tr><tr><td>Date handling</td><td class="">Role-playing date dimension (dim_date, dim_lease_date)</td></tr><tr><td>Geography</td><td class="">Property denormalizes market and region; lookups also present</td></tr><tr><td>Semantic model</td><td class="">Power BI Import model</td></tr><tr><td>Truth rule</td><td class="">DataSource 1 = canonical; all metrics filter to it</td></tr></tbody>
+    </table>
+    
+  </section>  <section class="ref" id="model">
+    <h2>Data model</h2>
+    <p>Published tables read by the semantic model, described by grain rather than row count so the specification stays correct as the warehouse grows. Full column definitions are in the <a href="NorthStar_Data_Model_Dictionary.html">Data Dictionary</a>.</p>
+    <table class="reftable">
+      <thead><tr><th>Table</th><th>Type</th><th>Grain</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">fact_leasing_daily</td><td>Fact</td><td>Property × Date</td></tr>
+        <tr><td class="mono">fact_property_ops_daily</td><td>Fact</td><td>Property × Date</td></tr>
+        <tr><td class="mono">fact_marketing_spend_daily</td><td>Fact</td><td>Property × Vendor × Date</td></tr>
+        <tr><td class="mono">fact_marketing_funnel_daily</td><td>Fact</td><td>Property × Funnel Stage × Date</td></tr>
+        <tr><td class="mono">fact_prospect_journey</td><td>Fact</td><td>Prospect × Touchpoint</td></tr>
+        <tr><td class="mono">dim_property</td><td>Dimension</td><td>One row per property</td></tr>
+        <tr><td class="mono">dim_market</td><td>Dimension</td><td>One row per market</td></tr>
+        <tr><td class="mono">dim_region</td><td>Dimension</td><td>One row per region</td></tr>
+        <tr><td class="mono">dim_vendor</td><td>Dimension</td><td>One row per vendor</td></tr>
+        <tr><td class="mono">dim_date</td><td>Dimension</td><td>One row per day</td></tr>
+        <tr><td class="mono">dim_lease_date</td><td>Dimension</td><td>Role-playing date</td></tr>
+        <tr><td class="mono">dim_channel</td><td>Dimension</td><td>One row per channel</td></tr>
+        <tr><td class="mono">dim_funnel_stage</td><td>Dimension</td><td>One row per funnel stage</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="ref" id="pipeline">
+    <h2>Pipeline</h2>
+    <p>Five pipelines write to the warehouse through a Bronze → Canonical → Gold lifecycle. See <a href="NorthStar_Pipeline_Reliability.html">Pipeline Reliability</a> for run logging, watermarks, and recovery.</p>
+    <table class="reftable">
+      <thead><tr><th>Key</th><th>Pipeline</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">1</td><td class="mono">CANONICAL</td><td>Authoritative truth (DataSource 1)</td></tr>
+        <tr><td class="mono">2</td><td class="mono">CRM</td><td>CRM reconstruction</td></tr>
+        <tr><td class="mono">3</td><td class="mono">SPEND</td><td>Marketing-spend reconstruction</td></tr>
+        <tr><td class="mono">4</td><td class="mono">OPS</td><td>Operational reconstruction</td></tr>
+        <tr><td class="mono">5</td><td class="mono">BRONZE</td><td>Raw ingestion</td></tr>
+      </tbody>
+    </table>
+    <table class="reftable spectable">
+      <tbody>
+        <tr><td>Lifecycle stages</td><td class="mono">Bronze · Canonical · Gold</td></tr>
+        <tr><td>Idempotency</td><td>MERGE writes + audit clear per re-run</td></tr>
+        <tr><td>Connection retry backoff</td><td class="mono">5 · 15 · 30 · 60 s</td></tr>
+        <tr><td>Reconciliation timer</td><td class="mono">05:00 UTC daily</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="ref" id="apis">
+    <h2>Interfaces</h2>
+    <table class="reftable spectable">
+      <tbody><tr><td>Operations dashboard</td><td class="mono">/api/dashboard</td></tr><tr><td>Scrolling narrative</td><td class="mono">/api/narrative</td></tr><tr><td>Reconciliation trigger</td><td class="mono">/api/recon</td></tr><tr><td>Health check</td><td class="mono">/api/health</td></tr></tbody>
+    </table>
+    
+  </section>  <section class="ref" id="coverage">
+    <h2>Data coverage</h2>
+    <table class="reftable spectable">
+      <tbody><tr><td>Coverage begins</td><td class="mono">2024-01-01</td></tr><tr><td>Cadence</td><td class="">Daily snapshots, growing nightly</td></tr><tr><td>Extent</td><td class="">Beginning 2024-01-01 through the present</td></tr><tr><td>Fact grain</td><td class="">One row per property per day (ops, leasing)</td></tr></tbody>
+    </table>
+    
+  </section>  <section class="ref" id="related">
+    <h2>See also</h2>
+    <div class="navcards">
+      <a class="navc" href="NorthStar_Data_Model_Dictionary.html"><span class="nvt">Data Dictionary</span><span class="nvd">Full column definitions</span></a>
+      <a class="navc" href="NorthStar_Measures_Reference.html"><span class="nvt">Measure Catalog</span><span class="nvd">The 1,289 measures</span></a>
+      <a class="navc" href="NorthStar_Pipeline_Reliability.html"><span class="nvt">Pipeline Reliability</span><span class="nvd">Runtime and recovery</span></a>
+      <a class="navc" href="NorthStar_Platform_Overview.html"><span class="nvt">Platform Overview</span><span class="nvd">The narrative introduction</span></a>
+    </div>
+  </section>
+
+  <nav class="pagenav" aria-label="Document navigation">
+    <a href="NorthStar_Measures_Reference.html"><span class="dir">Previous</span><span class="lbl">Measure Catalog</span></a>
+    <a class="next" href="NorthStar_Platform_Overview.html"><span class="dir">Next</span><span class="lbl">Platform Overview</span></a>
+  </nav>
+
+</div>
+</main>
+</div>
+
+<footer>NORTHSTAR INTELLIGENCE PLATFORM · METADATA PORTAL · VERSION 1.0 &nbsp;·&nbsp; One source. Trusted data. Better decisions.</footer>
+
+</body>
+</html>

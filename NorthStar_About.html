@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About NorthStar — NorthStar Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0D1B2A; --secondary:#18263B; --accent:#2563EB;
+    --success:#16A34A; --warning:#F59E0B; --info:#0EA5E9; --muted:#64748B;
+    --surface:#FFFFFF; --bg:#F8FAFC;
+    --line:#E2E8F0; --line-2:#CBD5E1; --ink:#0D1B2A; --ink-2:#475569;
+    --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+    --sidebar:280px; --topnav:72px; --maxw:1440px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  h1,h2,h3,h4{color:var(--primary);font-weight:600;line-height:1.3}
+
+  /* ── top nav ── */
+  .topnav{position:sticky;top:0;z-index:30;height:var(--topnav);background:var(--surface);
+    border-bottom:1px solid var(--line);display:flex;align-items:center;
+    padding:0 32px;gap:28px}
+  .topnav .logo{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;color:var(--primary)}
+  .topnav .logo .mark{width:26px;height:26px;flex:none}
+  .topnav .logo small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+    color:var(--muted);font-weight:400;margin-top:1px}
+  .topnav nav{display:flex;gap:22px;margin-left:8px;font-size:13.5px}
+  .topnav nav a{color:var(--ink-2)}
+  .topnav nav a[aria-current]{color:var(--primary);font-weight:500}
+  .topnav .right{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  /* ── shell ── */
+  .shell{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:var(--sidebar) 1fr}
+  aside{border-right:1px solid var(--line);background:var(--surface);
+    position:sticky;top:var(--topnav);height:calc(100vh - var(--topnav));overflow-y:auto;padding:28px 0}
+  aside .grp{padding:0 24px;margin-bottom:22px}
+  aside .grp h5{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 8px;font-weight:500}
+  aside a{display:block;color:var(--ink-2);font-size:13.5px;padding:5px 0;border-radius:4px}
+  aside a:hover{color:var(--primary);text-decoration:none}
+  aside a[aria-current]{color:var(--accent);font-weight:500}
+  aside .search{padding:0 24px 22px}
+  aside .search input{width:100%;padding:8px 11px;border:1px solid var(--line-2);border-radius:6px;
+    font-family:var(--sans);font-size:13px;background:var(--bg);color:var(--ink)}
+  aside .search input::placeholder{color:var(--muted)}
+
+  main{background:var(--surface);min-width:0}
+  .doc{max-width:820px;padding:34px clamp(28px,4vw,56px) 90px}
+
+  /* ── breadcrumb ── */
+  .crumb{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:26px;letter-spacing:.02em}
+  .crumb a{color:var(--muted)} .crumb a:hover{color:var(--accent)}
+  .crumb span{margin:0 7px;color:var(--line-2)}
+
+  /* ── page header ── */
+  .page-head{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:34px}
+  .page-head .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:12px}
+  h1{font-size:32px;margin:0 0 14px}
+  .subtitle{font-size:17px;color:var(--ink-2);max-width:64ch;margin:0;font-weight:400;line-height:1.5}
+
+  section{margin:44px 0}
+  h2{font-size:24px;margin:0 0 16px;padding-top:8px}
+  h3{font-size:18px;margin:28px 0 6px}
+  h4{font-size:16px;margin:22px 0 4px}
+  p{max-width:82ch;margin:0 0 15px;color:var(--ink)}
+  .lead-p{font-size:16px;color:var(--ink)}
+  em{font-style:italic}
+
+  /* ── opening statement block ── */
+  .opening{border-left:3px solid var(--accent);padding:4px 0 4px 24px;margin:8px 0 8px}
+  .opening .q{font-size:18px;color:var(--primary);font-weight:500;margin:0 0 14px;max-width:60ch}
+
+  /* ── career: editorial entries ── */
+  .career-entry{display:grid;grid-template-columns:200px 1fr;gap:36px;padding:30px 0;border-top:1px solid var(--line)}
+  .career-entry:last-child{border-bottom:1px solid var(--line)}
+  .career-entry .who{position:sticky;top:calc(var(--topnav) + 20px);align-self:start}
+  .career-entry .org{font-size:16px;font-weight:600;color:var(--primary);margin:0 0 4px}
+  .career-entry .role{font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:var(--muted);line-height:1.5}
+  .career-entry .body p{margin:0 0 12px}
+  .career-entry .body p:last-child{margin-bottom:0}
+  .career-entry.final{background:var(--bg);grid-template-columns:1fr;gap:0;padding:30px;border:1px solid var(--line);border-radius:8px;margin-top:8px}
+  .career-entry.final .org{font-size:18px}
+
+  /* ── components: editorial list ── */
+  .comp{border-top:1px solid var(--line);padding:20px 0;display:grid;grid-template-columns:1fr;gap:4px}
+  .comp:last-child{border-bottom:1px solid var(--line)}
+  .comp .cn{font-size:16px;font-weight:600;color:var(--primary);display:flex;align-items:baseline;gap:12px}
+  .comp .cn .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+    padding:2px 8px;border-radius:3px;font-weight:500;color:var(--muted);border:1px solid var(--line-2)}
+  .comp p{margin:0;color:var(--ink-2);max-width:80ch}
+
+  /* ── principles ── */
+  .principle{border-top:1px solid var(--line);padding:18px 0}
+  .principle:last-child{border-bottom:1px solid var(--line)}
+  .principle h4{margin:0 0 4px;color:var(--primary)}
+  .principle p{margin:0;color:var(--ink-2)}
+
+  /* ── callout ── */
+  .callout{border:1px solid var(--line);border-left:3px solid var(--info);background:var(--bg);
+    border-radius:6px;padding:16px 20px;margin:22px 0}
+  .callout .ct{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--info);margin-bottom:6px;font-weight:500}
+  .callout p{margin:0;color:var(--ink-2);font-size:13.5px}
+
+  /* ── explore next ── */
+  .explore a.doc-link{display:grid;grid-template-columns:220px 1fr;gap:24px;padding:15px 0;
+    border-top:1px solid var(--line);color:var(--ink)}
+  .explore a.doc-link:last-child{border-bottom:1px solid var(--line)}
+  .explore a.doc-link:hover{text-decoration:none;background:var(--bg)}
+  .explore .dl-name{font-weight:600;color:var(--accent)}
+  .explore .dl-desc{color:var(--ink-2);font-size:13.5px}
+
+  /* ── prev/next + footer ── */
+  .pagenav{display:flex;justify-content:space-between;margin-top:56px;padding-top:24px;border-top:1px solid var(--line);gap:16px}
+  .pagenav a{display:block;max-width:48%}
+  .pagenav .dir{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .pagenav .lbl{font-weight:600;color:var(--primary)}
+  .pagenav .next{text-align:right;margin-left:auto}
+  footer{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);
+    font-family:var(--mono);font-size:11px;padding:22px 32px;text-align:center;letter-spacing:.02em}
+
+  /* ── prologue ── */
+  .prologue{margin:34px 0 4px;max-width:70ch}
+  .prologue p{font-size:16px;color:var(--ink);line-height:1.7}
+  .prologue .pull{font-size:19px;color:var(--primary);font-weight:500;line-height:1.5;
+    margin:18px 0;max-width:56ch}
+
+  /* ── spine diagram ── */
+  .spine{border:1px solid var(--line);background:var(--bg);border-radius:8px;
+    padding:36px 24px;margin:30px 0 8px;display:flex;justify-content:center}
+  .spine figcaption{margin-top:0}
+  .spine svg{max-width:340px;width:100%;height:auto}
+
+  /* ── career: role→component pairing ── */
+  .career-entry .became{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-2);
+    display:flex;align-items:baseline;gap:10px;font-size:13px}
+  .career-entry .became .arw{font-family:var(--mono);color:var(--muted);font-size:14px}
+  .career-entry .became .to{font-weight:600;color:var(--accent)}
+  .career-entry .became .from{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted)}
+
+  /* ── numbered components ── */
+  .comp{border-top:1px solid var(--line);padding:24px 0;display:grid;
+    grid-template-columns:52px 1fr;gap:24px;align-items:start}
+  .comp:last-child{border-bottom:1px solid var(--line)}
+  .comp .idx{font-family:var(--mono);font-size:15px;color:var(--muted);font-weight:500;padding-top:2px}
+  .comp .cbody .cn{font-size:16px;font-weight:600;color:var(--primary);display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+  .comp .cbody .cn .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+    padding:2px 8px;border-radius:3px;font-weight:500;color:var(--muted);border:1px solid var(--line-2)}
+  .comp .cbody p{margin:0;color:var(--ink-2);max-width:78ch}
+
+  /* ── concluding architecture diagram ── */
+  .arch{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:32px 20px 24px;margin:24px 0 0}
+  .arch svg{display:block;width:100%;height:auto;margin:0 auto;max-width:760px}
+  .closing{font-size:17px;color:var(--primary);font-weight:500;line-height:1.6;
+    max-width:60ch;margin:32px 0 0}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+
+  @media(max-width:1000px){
+    .shell{grid-template-columns:1fr}
+    aside{display:none}
+    .career-entry{grid-template-columns:1fr;gap:10px}
+    .career-entry .who{position:static}
+    .explore a.doc-link{grid-template-columns:1fr;gap:2px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <a class="logo" href="index.html" aria-label="NorthStar home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19 13 L30 16 L19 19 L16 30 L13 19 L2 16 L13 13 Z" fill="#0D1B2A"/></svg>
+    <span>NORTHSTAR<small>METADATA PORTAL</small></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="index.html" aria-current="page">About</a>
+    <a href="NorthStar_Business_Glossary.html">Business</a>
+    <a href="NorthStar_Data_Model_Dictionary.html">Data</a>
+    <a href="NorthStar_Executive_Index_Framework.html">Analytics</a>
+    <a href="NorthStar_Pipeline_Architecture.html">Technical</a>
+  </nav>
+  <div class="right">v1.0</div>
+</header>
+
+<div class="shell">
+<aside aria-label="Documentation navigation">
+  <div class="search"><input type="search" placeholder="Search the metadata portal…" aria-label="Search documentation"></div>
+<div class="grp"><h5>Overview</h5>
+<a href="NorthStar_About.html" aria-current="page">About NorthStar</a>
+<a href="NorthStar_Platform_Overview.html">Platform Overview</a>
+</div>
+<div class="grp"><h5>Business</h5>
+<a href="NorthStar_Business_Glossary.html">Business Glossary</a>
+<a href="NorthStar_Business_Rules.html">Business Rules</a>
+<a href="NorthStar_Data_Generation_Engine.html">Data Generation Engine</a>
+</div>
+<div class="grp"><h5>Executive</h5>
+<a href="NorthStar_Executive_Index_Framework.html">Decision Framework</a>
+<a href="NorthStar_GPI.html">GPI</a>
+<a href="NorthStar_OPI.html">OPI</a>
+<a href="NorthStar_VPI.html">VPI</a>
+<a href="NorthStar_PHI.html">PHI</a>
+<a href="NorthStar_Executive_Dashboard.html">Executive Dashboard</a>
+<a href="NorthStar_Attribution_Lab.html">Attribution Lab</a>
+</div>
+<div class="grp"><h5>Technical</h5>
+<a href="NorthStar_Pipeline_Architecture.html">Pipeline Architecture</a>
+<a href="NorthStar_Pipeline_Dashboard.html">Pipeline Dashboard</a>
+<a href="NorthStar_Pipeline_Reliability.html">Pipeline Reliability</a>
+<a href="NorthStar_Data_Flow.html">Data Flow</a>
+<a href="NorthStar_Data_Model_Dictionary.html">Data Dictionary</a>
+<a href="NorthStar_Measures_Reference.html">Measure Catalog</a>
+<a href="NorthStar_Semantic_Model.html">Semantic Model</a>
+<a href="NorthStar_Platform_Specifications.html">Platform Specifications</a>
+</div>
+</aside>
+
+<main>
+<div class="doc">
+
+  <div class="crumb">
+    <a href="index.html">Home</a><span>›</span><a href="index.html">Overview</a><span>›</span>About NorthStar
+  </div>
+
+  <div class="page-head">
+    <div class="eyebrow">Overview</div>
+    <h1>About NorthStar</h1>
+    <p class="subtitle">How a career across data quality, reporting, product management, business intelligence, and marketing analytics became one connected platform.</p>
+  </div>
+
+  <!-- 1 · PROLOGUE -->
+  <section aria-labelledby="prologue">
+    <div class="prologue">
+      <p>Every project has a story behind it. NorthStar did not begin as an attempt to build the perfect dashboard. It began as an attempt to answer a question I had been asking, in one form or another, throughout my career:</p>
+      <p class="pull">Why do we spend so much time looking at reports, and so little time understanding the systems that make those reports possible?</p>
+      <p>The answer eventually became this platform.</p>
+    </div>
+  </section>
+
+  <!-- 2 · OPENING -->
+  <section aria-labelledby="opening">
+    <h2 id="opening">More Than a Dashboard</h2>
+    <div class="opening">
+      <p class="q">NorthStar started with a simple question: what would a business intelligence platform look like if I built the entire ecosystem instead of only the dashboard?</p>
+    </div>
+    <p>Throughout my career, I found that reporting projects often focused on the finished visuals while much of the work underneath remained invisible. The business rules, data quality processes, warehouse structure, semantic model, validation logic, and documentation were treated as supporting work rather than part of the product itself.</p>
+    <p>NorthStar was built around the opposite idea.</p>
+    <p>Instead of beginning with a dashboard, I began with the data. Instead of writing isolated calculations, I created a reusable semantic layer. Instead of documenting only the database or the final report, I documented the entire environment.</p>
+    <p>The result is a connected analytics platform that reflects the different responsibilities I have held throughout my career and the lessons each role added to the way I approach data.</p>
+  </section>
+
+  <!-- 3 · CAREER -->
+  <section aria-labelledby="career">
+    <h2 id="career">How My Experience Shaped NorthStar</h2>
+    <p>NorthStar did not come from a single job. It came from a sequence of them, each one changing how I understood the work. What follows is less an employment history than an account of how my thinking evolved, and how each shift became a specific part of the platform.</p>
+
+    <div class="career-entry">
+      <div class="who">
+        <p class="org">Dell Software</p>
+        <p class="role">Data Quality · Master Data Management · Stewardship</p>
+      </div>
+      <div class="body">
+        <p>My career began at Dell Software, working with customer and business data during company acquisitions. Using IBM InfoSphere, I supported the consolidation of acquisition data through fuzzy matching, duplicate identification, record comparison, and entity resolution, deciding when two records that did not match on name or address nevertheless represented the same organization. With DQUI I maintained the quality of existing records, and I trained the data stewards responsible for keeping that quality from eroding once the cleanup was done.</p>
+        <p>The tools mattered, but they were not the lesson. What I took from Dell was that <em>data has a lifecycle</em>. It flows through organizations, changes ownership, and degrades quietly whenever that ownership is unclear. Governance is not bureaucracy; it is the thing that keeps a dataset trustworthy after the people who cleaned it have moved on. Quality is never a one-time event, it is a condition you have to maintain.</p>
+        <p>That conviction is the reason NorthStar begins with the data rather than the dashboard. It reflects the belief that reliable reporting depends on controlled inputs, defined ownership, and a clear account of what each record represents.</p>
+        <div class="became"><span class="from">Became</span><span class="arw">→</span><span class="to">The validation framework, business rules, metadata philosophy, and synthetic-data controls</span></div>
+      </div>
+    </div>
+
+    <div class="career-entry">
+      <div class="who">
+        <p class="org">Hyundai Motor America</p>
+        <p class="role">Executive Reporting · System Integration</p>
+      </div>
+      <div class="body">
+        <p>At Hyundai, my focus moved from governing data to communicating performance, but the deeper lesson was about where reporting actually comes from. The reporting I built for sales, after-sales, operations, and marketing was never sourced from a single dataset. It was assembled: CRM and ERP systems joined together, moved through MicroStrategy and Alteryx, shaped by workflow automation, and reconciled into something an executive could read as one coherent picture.</p>
+        <p>That taught me that <em>analytics is integration</em>. An executive report is not built from one table; it is composed from many systems that were never designed to agree with one another, and most of the real work is in making them agree. A metric on a page is the visible end of a long assembly line.</p>
+        <p>That understanding is what pushed NorthStar toward a warehouse and a semantic layer rather than a collection of reports, toward ETL thinking and reusable definitions instead of one-off queries.</p>
+        <div class="became"><span class="from">Became</span><span class="arw">→</span><span class="to">The warehouse architecture, ETL approach, and semantic modeling</span></div>
+      </div>
+    </div>
+
+    <div class="career-entry">
+      <div class="who">
+        <p class="org">Station Digital Media</p>
+        <p class="role">Analytics Product Ownership</p>
+      </div>
+      <div class="body">
+        <p>Station Digital Media is where my thinking changed the most. Analytics stopped being an internal reporting function and became part of a customer-facing software product, and I stopped thinking like an analyst and started thinking like a product owner. I designed KPI frameworks as product features, worked directly with senior leadership to define requirements, built roadmaps, managed work in Jira, collaborated with engineering and UX, and QA-tested what shipped.</p>
+        <p>The shift was in what a dashboard <em>was</em>. It was no longer a report made for one request; it was a feature with consistent logic, predictable behavior, and a life after release, something that had to be maintained, versioned, and documented like any other software.</p>
+        <p>That is where platform thinking entered NorthStar. Its applications, the Executive Dashboard, the Attribution Lab, the Pipeline Operations Dashboard, are built as independent, maintainable products that happen to share one foundation, not as pages in a single file.</p>
+        <div class="became"><span class="from">Became</span><span class="arw">→</span><span class="to">The modular architecture, independent applications, and platform thinking</span></div>
+      </div>
+    </div>
+
+    <div class="career-entry">
+      <div class="who">
+        <p class="org">Mid-America Apartment Communities</p>
+        <p class="role">Enterprise BI · Reporting Modernization</p>
+      </div>
+      <div class="body">
+        <p>I joined MAA to help modernize enterprise reporting, to translate a large body of tabular SSRS reports into Power BI. On paper it was a visualization project. In practice it was something else entirely.</p>
+        <p>Working alongside two full-time consultants, I sourced data from the warehouse, worked through business definitions, and built out the semantic layer. And after roughly a year of that effort, the semantic model was still the primary deliverable. The dashboards were waiting on it. That fact reorganized my entire understanding of enterprise business intelligence.</p>
+        <p>The dashboard was never the hard part. The warehouse, the pipelines, the agreed-upon business definitions, the semantic modeling, and the reusable logic underneath were the hard part, and the part that determined whether any of the reporting on top could be trusted or maintained. The visible layer was a small fraction of the actual system.</p>
+        <p>That realization is, more than any other, why NorthStar exists. It is a deliberate attempt to build the part of the work that usually stays invisible, and to treat the semantic model, not the dashboard, as the center of gravity.</p>
+        <div class="became"><span class="from">Became</span><span class="arw">→</span><span class="to">The dimensional warehouse, semantic model, and the core philosophy of NorthStar itself</span></div>
+      </div>
+    </div>
+
+    <div class="career-entry">
+      <div class="who">
+        <p class="org">Wondros</p>
+        <p class="role">Marketing Analytics · Automation · Storytelling</p>
+      </div>
+      <div class="body">
+        <p>At Wondros I supported analytics for healthcare, public-sector, and nonprofit clients, automating vendor reporting in Python, requesting and defining the grain of external data, and building campaign, website, and social analysis across very different programs. But the technical work was in service of something else.</p>
+        <p>What Wondros taught me is that <em>data only becomes valuable once it becomes a recommendation</em>. Clients did not want metrics; they wanted to know what to do. My job was to turn paid-media, campaign, and audience data into executive narratives and strategic recommendations, to stand in front of a client and translate numbers into a decision. A report that does not lead to an action is unfinished.</p>
+        <p>That is the origin of NorthStar's emphasis on interpretation: the executive narratives, the index framework built around decisions rather than available metrics, and the insistence that every measure exist to answer a business question.</p>
+        <div class="became"><span class="from">Became</span><span class="arw">→</span><span class="to">NorthStar Insights, executive narratives, and decision support</span></div>
+      </div>
+    </div>
+
+    <div class="career-entry final">
+      <p class="org">NorthStar, Where It Converges</p>
+      <div class="body">
+        <p>NorthStar is not an attempt to recreate any one of these environments. It is an independent platform assembled from what each of them taught me: the data-lifecycle discipline of Dell, the integration mindset of Hyundai, the product ownership of Station, the semantic-first understanding of enterprise BI from MAA, and the decision-focused analytics of Wondros. Each lesson became a specific layer, and the layers only work together.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · WHAT IT IS -->
+  <section aria-labelledby="whatis">
+    <h2 id="whatis">What NorthStar Is</h2>
+    <p class="lead-p">NorthStar is a self-contained analytics platform that combines synthetic data generation, dimensional modeling, semantic design, executive reporting, attribution analysis, pipeline monitoring, and metadata management into a single documented system. It is built around a synthetic multifamily housing environment: it generates marketing, prospect, leasing, property, vendor, and operational data; organizes that data into a dimensional warehouse; centralizes business logic in a reusable semantic model; and delivers the results through several analytical applications.</p>
+    <p>Although the data is synthetic, the platform is designed around realistic business processes, dependencies, constraints, and reporting requirements. The goal was not to create a fictional company or simulate every aspect of property management. The goal was to create a controlled environment complex enough to demonstrate how analytical systems are designed, tested, documented, and maintained.</p>
+  </section>
+
+  <!-- 5 · COMPONENTS -->
+  <section aria-labelledby="components">
+    <h2 id="components">The NorthStar Platform</h2>
+    <p>The platform is composed of seven assets. Each is a distinct application or layer, and each is designed to be consumed by the others rather than to stand alone.</p>
+
+    <div class="comp"><div class="idx">01</div>
+      <div class="cbody"><div class="cn">Synthetic Data Generation Engine <span class="tag">Data</span></div>
+      <p>Creates controlled marketing, prospect, leasing, and property operations data using business rules, dependencies, seasonality, property characteristics, and validation constraints.</p></div></div>
+    <div class="comp"><div class="idx">02</div>
+      <div class="cbody"><div class="cn">Data Warehouse <span class="tag">Data</span></div>
+      <p>Stores the generated data in a dimensional structure built around reusable dimensions and subject-specific fact tables.</p></div></div>
+    <div class="comp"><div class="idx">03</div>
+      <div class="cbody"><div class="cn">Semantic Model <span class="tag">Analytics</span></div>
+      <p>Provides relationships, business definitions, reusable measures, scoring logic, and shared calculations consumed by the reporting applications.</p></div></div>
+    <div class="comp"><div class="idx">04</div>
+      <div class="cbody"><div class="cn">Executive Dashboard <span class="tag">Analytics</span></div>
+      <p>Presents portfolio, geography, property, vendor, marketing, leasing, and operational performance for executive and management audiences.</p></div></div>
+    <div class="comp"><div class="idx">05</div>
+      <div class="cbody"><div class="cn">Attribution Lab <span class="tag">Analytics</span></div>
+      <p>Provides a dedicated environment for comparing attribution models, reviewing prospect journeys, and evaluating how marketing influence is assigned across touchpoints.</p></div></div>
+    <div class="comp"><div class="idx">06</div>
+      <div class="cbody"><div class="cn">Pipeline Operations Dashboard <span class="tag">Technical</span></div>
+      <p>Monitors ETL execution, reconciliation, data freshness, validation outcomes, and failures within the synthetic data and publication process.</p></div></div>
+    <div class="comp"><div class="idx">07</div>
+      <div class="cbody"><div class="cn">Metadata &amp; Documentation Portal <span class="tag">Technical</span></div>
+      <p>Documents the business, technical, analytical, operational, application, and governance assets across the entire platform.</p></div></div>
+  </section>
+
+  <!-- 6 · PRINCIPLES -->
+  <section aria-labelledby="principles">
+    <h2 id="principles">Principles Behind the Build</h2>
+    <div class="principle"><h4>Business logic should have one home</h4>
+      <p>Important definitions and calculations should be created once, validated once, and reused across applications rather than rewritten in multiple reports.</p></div>
+    <div class="principle"><h4>Data quality is an operating process</h4>
+      <p>Quality cannot depend on a one-time cleanup. It requires validation, ownership, stewardship, monitoring, and clearly defined exceptions.</p></div>
+    <div class="principle"><h4>A visual should answer a question</h4>
+      <p>Charts and KPIs should exist because they help the reader understand performance or make a decision, not simply because the data is available.</p></div>
+    <div class="principle"><h4>Documentation is part of the system</h4>
+      <p>A platform is incomplete when its logic cannot be traced, explained, or maintained by someone other than the original developer.</p></div>
+    <div class="principle"><h4>Architecture should support change</h4>
+      <p>The platform should be able to accommodate new measures, applications, business rules, and data sources without requiring the entire system to be rebuilt.</p></div>
+    <div class="principle"><h4>Synthetic data should still behave like a business</h4>
+      <p>Artificial data is only useful when its relationships, constraints, timing, and variation are realistic enough to test analytical logic.</p></div>
+  </section>
+
+  <!-- 7 · PERSONAL NOTE -->
+  <section aria-labelledby="note">
+    <h2 id="note">A Personal Note</h2>
+    <p>NorthStar was supposed to be a Power BI project.</p>
+    <p>Every time I solved one problem, I discovered another one underneath it. Building a dashboard required reusable measures. Reusable measures required a semantic model. The semantic model required a dimensional warehouse. The warehouse required reliable data. Reliable data required validation, governance, and documentation.</p>
+    <p>Eventually I realized I was not building a report anymore. I was building an analytics platform.</p>
+    <p>That expansion was not accidental, it was the shape of the problem itself. Each layer only worked if the layer beneath it was built properly, and following those dependencies down changed the nature of the project. NorthStar now represents the full range of work I have performed across my career, but it also represents how my thinking has developed: a belief that useful analytics depends equally on business understanding, technical structure, data quality, and clear communication.</p>
+    <p>The platform is presented here not only to show what I built, but to make the reasoning behind it visible.</p>
+  </section>
+
+  <!-- 8 · CONCLUSION: architecture of experience -->
+  <section aria-labelledby="conclusion">
+    <h2 id="conclusion">The Architecture of Experience</h2>
+    <p>Every layer of NorthStar traces back to a stage of this work. The diagram below follows each role down through the lessons it taught and into the part of the platform it became, and shows how all of them converge into a single system.</p>
+    <figure class="arch">
+      <svg viewBox="0 0 760 640" xmlns="http://www.w3.org/2000/svg" font-family="'Inter',sans-serif" role="img" aria-label="Architecture of experience: each role descends through the lessons it taught into the NorthStar component it became, all converging on the platform.">
+<defs><marker id="ad" markerWidth="8" markerHeight="8" refX="4" refY="6" orient="auto"><path d="M1,1 L4,6 L7,1" fill="none" stroke="#94A3B8" stroke-width="1.2"/></marker></defs>
+<text x="380" y="20" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="10" letter-spacing="1.5" fill="#64748B">THE ARCHITECTURE OF EXPERIENCE</text>
+<rect x="12" y="40" width="128" height="30" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/>
+<text x="76" y="60" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0D1B2A">Dell Software</text>
+<line x1="76" y1="70" x2="76" y2="90" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="76" y="110" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Data Quality</text>
+<line x1="76" y1="118" x2="76" y2="138" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="76" y="158" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Governance</text>
+<line x1="76" y1="166" x2="76" y2="186" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="76" y="206" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Validation Framework</text>
+<line x1="76" y1="214" x2="76" y2="234" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="76" y="254" text-anchor="middle" font-size="10.5" fill="#2563EB" font-weight="600">Synthetic-Data Controls</text>
+<line x1="76" y1="262" x2="76" y2="470" stroke="#CBD5E1" stroke-width="1.1"/>
+<rect x="164" y="40" width="128" height="30" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/>
+<text x="228" y="60" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0D1B2A">Hyundai</text>
+<line x1="228" y1="70" x2="228" y2="90" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="228" y="110" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">System Integration</text>
+<line x1="228" y1="118" x2="228" y2="138" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="228" y="158" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Executive Reporting</text>
+<line x1="228" y1="166" x2="228" y2="186" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="228" y="206" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Warehouse Architecture</text>
+<line x1="228" y1="214" x2="228" y2="234" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="228" y="254" text-anchor="middle" font-size="10.5" fill="#2563EB" font-weight="600">Semantic Thinking</text>
+<line x1="228" y1="262" x2="228" y2="470" stroke="#CBD5E1" stroke-width="1.1"/>
+<rect x="316" y="40" width="128" height="30" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/>
+<text x="380" y="60" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0D1B2A">Station Digital</text>
+<line x1="380" y1="70" x2="380" y2="90" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="380" y="110" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Product Ownership</text>
+<line x1="380" y1="118" x2="380" y2="138" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="380" y="158" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Requirements</text>
+<line x1="380" y1="166" x2="380" y2="186" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="380" y="206" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Platform Design</text>
+<line x1="380" y1="214" x2="380" y2="234" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="380" y="254" text-anchor="middle" font-size="10.5" fill="#2563EB" font-weight="600">Application Architecture</text>
+<line x1="380" y1="262" x2="380" y2="470" stroke="#CBD5E1" stroke-width="1.1"/>
+<rect x="468" y="40" width="128" height="30" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/>
+<text x="532" y="60" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0D1B2A">MAA</text>
+<line x1="532" y1="70" x2="532" y2="90" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="532" y="110" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Enterprise BI</text>
+<line x1="532" y1="118" x2="532" y2="138" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="532" y="158" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Warehouse</text>
+<line x1="532" y1="166" x2="532" y2="186" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="532" y="206" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Semantic Layer</text>
+<line x1="532" y1="214" x2="532" y2="234" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="532" y="254" text-anchor="middle" font-size="10.5" fill="#2563EB" font-weight="600">NorthStar Philosophy</text>
+<line x1="532" y1="262" x2="532" y2="470" stroke="#CBD5E1" stroke-width="1.1"/>
+<rect x="620" y="40" width="128" height="30" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.3"/>
+<text x="684" y="60" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0D1B2A">Wondros</text>
+<line x1="684" y1="70" x2="684" y2="90" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="684" y="110" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Automation</text>
+<line x1="684" y1="118" x2="684" y2="138" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="684" y="158" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Marketing Analytics</text>
+<line x1="684" y1="166" x2="684" y2="186" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="684" y="206" text-anchor="middle" font-size="10.5" fill="#334155" font-weight="400">Insights</text>
+<line x1="684" y1="214" x2="684" y2="234" stroke="#CBD5E1" stroke-width="1.1" marker-end="url(#ad)"/>
+<text x="684" y="254" text-anchor="middle" font-size="10.5" fill="#2563EB" font-weight="600">Decision Support</text>
+<line x1="684" y1="262" x2="684" y2="470" stroke="#CBD5E1" stroke-width="1.1"/>
+<line x1="76" y1="470" x2="684" y2="470" stroke="#94A3B8" stroke-width="1.3"/>
+<line x1="380" y1="470" x2="380" y2="492" stroke="#64748B" stroke-width="1.4" marker-end="url(#ad)"/>
+<rect x="250" y="500" width="260" height="149" fill="#FFFFFF" stroke="#0D1B2A" stroke-width="1.4"/>
+<text x="380" y="518" text-anchor="middle" font-family="'IBM Plex Mono'" font-size="9.5" letter-spacing="1.5" fill="#64748B">THE NORTHSTAR PLATFORM</text>
+<text x="380" y="538" text-anchor="middle" font-size="11.5" fill="#0D1B2A">Synthetic Data Engine</text>
+<text x="380" y="557" text-anchor="middle" font-size="11.5" fill="#0D1B2A">Data Warehouse</text>
+<text x="380" y="576" text-anchor="middle" font-size="11.5" fill="#0D1B2A">Semantic Model</text>
+<text x="380" y="595" text-anchor="middle" font-size="11.5" fill="#0D1B2A">Executive Dashboard</text>
+<text x="380" y="614" text-anchor="middle" font-size="11.5" fill="#0D1B2A">Attribution Lab</text>
+<text x="380" y="633" text-anchor="middle" font-size="11.5" fill="#0D1B2A">Pipeline Operations</text>
+<text x="380" y="652" text-anchor="middle" font-size="11.5" fill="#0D1B2A">Metadata Portal</text>
+</svg>
+      <figcaption>Each role became a layer; the layers became the platform.</figcaption>
+    </figure>
+    <p class="closing">Every layer of NorthStar reflects a different stage in my career. Together, they represent the evolution of how I think about building analytical systems.</p>
+  </section>
+
+</div>
+</main>
+</div>
+
+<footer>
+  NORTHSTAR INTELLIGENCE PLATFORM · METADATA PORTAL · VERSION 1.0 &nbsp;·&nbsp; One source. Trusted data. Better decisions.
+</footer>
+
+</body>
+</html>
