@@ -58,11 +58,32 @@ NorthStar represents the work of a business analyst, data engineer, BI developer
 
 ---
 
+## Platform at a Glance
+
+| | |
+|---|---|
+| **Business domain** | National multifamily housing |
+| **Portfolio** | 120 properties, 35,753 apartment units |
+| **Geography** | 4 regions, 12 markets |
+| **Marketing** | 5 channels, 11 vendors |
+| **Coverage** | Daily snapshots, 2024 through 2027 |
+| **Fact tables** | Leasing, Property Operations, Marketing Spend, Marketing Funnel, Prospect Journey |
+| **Data pipeline** | Azure Functions, Blob Storage, Azure SQL. Bronze → Canonical → Gold |
+| **Semantic layer** | Power BI star schema, 1,289 DAX measures |
+| **Executive framework** | GPI • OPI • VPI • PHI |
+| **Attribution models** | 6, compared side by side |
+| **Documentation** | Interactive metadata portal |
+| **Technologies** | Python • SQL • DAX • Power BI • Azure |
+
+---
+
 ### 1. Business Ecosystem
 
 Everything starts with the business.
 
 NorthStar simulates a national apartment company operating across multiple regions, markets, properties, marketing vendors, and leasing teams. The business behaves like a real organization, generating operational activity that feeds the rest of the platform.
+
+The simulation is not random. Properties carry fixed performance tiers that shape their conversion rates. Markets move through seasonal leasing cycles and migration patterns. Scripted events shift budget between channels the way a real marketing team would. Every prospect journey carries attribution credit that sums correctly, which is what makes the attribution work later in the platform measurable rather than illustrative.
 
 ![NorthStar business ecosystem: regions, markets, properties, marketing channels, vendors, and the fact tables the data generation engine writes](assets/01-business-ecosystem.png)
 
@@ -70,9 +91,11 @@ NorthStar simulates a national apartment company operating across multiple regio
 
 ### 2. Enterprise Data
 
-Business activity is transformed into a dimensional warehouse designed for analytics.
+Every business process in NorthStar eventually becomes analytical data.
 
-The warehouse includes leasing, property operations, marketing spend, marketing funnel activity, prospect journeys, and supporting dimensions. The model follows star schema principles and serves as the foundation for Power BI.
+Leasing activity, property operations, marketing spend, funnel performance, prospect journeys, and industry benchmarks are modeled into a dimensional warehouse built on star schema principles. The warehouse combines shared dimensions, daily fact tables at property grain, and the business rules that support everything from operational reporting to executive scorecards.
+
+Rather than loading a static sample dataset, the warehouse is extended every night by an automated pipeline, so the platform behaves like a living production environment rather than a snapshot.
 
 <!-- Insert data model image -->
 
@@ -80,9 +103,11 @@ The warehouse includes leasing, property operations, marketing spend, marketing 
 
 ### 3. Data Engineering
 
-The platform includes a complete Azure-based data pipeline.
+The engineering layer was built to resemble a production analytics pipeline rather than a classroom ETL exercise.
 
-Data moves through a Bronze → Canonical → Gold architecture with reconciliation, watermarks, idempotent processing, audit logging, and operational monitoring. Rather than focusing only on reporting, this project demonstrates the engineering required to produce trusted analytics.
+Business activity is processed through Azure Functions, landed in Blob Storage, reconciled against a canonical truth store, published into Azure SQL, and monitored through an operations dashboard. Each stage is isolated so that a failure in one does not silently corrupt the next.
+
+Watermarks, idempotent processing, fail-closed guards, reconciliation, and audit logging make every nightly refresh traceable and repeatable. When something does go wrong, the platform is designed to tell you rather than quietly produce a wrong number.
 
 <!-- Insert pipeline image -->
 
@@ -92,7 +117,9 @@ Data moves through a Bronze → Canonical → Gold architecture with reconciliat
 
 The executive reporting layer translates operational data into business decisions.
 
-NorthStar includes four executive indexes: Geographic Performance (GPI), Operations Performance (OPI), Vendor Performance (VPI), and Portfolio Health (PHI), which measure different aspects of organizational performance while providing dynamic insights and recommendations.
+Rather than presenting isolated KPIs, NorthStar organizes performance into four executive indexes: Geographic Performance (GPI), Operations Performance (OPI), Vendor Performance (VPI), and Portfolio Health (PHI). Each one combines multiple business measures into a benchmark-relative score, so a number is always read against comparable peers rather than in isolation.
+
+The indexes are deliberately not interchangeable. Each answers a different executive question, and each uses a normalization approach suited to what it measures. PHI blends the other three into a single portfolio view for the moments when leadership wants one number, without discarding the detail that explains it.
 
 ![NorthStar executive dashboard: Portfolio Health Index, index scorecards, regional performance, and market rankings](assets/04-executive-intelligence.png)
 
@@ -100,9 +127,11 @@ NorthStar includes four executive indexes: Geographic Performance (GPI), Operati
 
 ### 5. Attribution Laboratory
 
-The Attribution Lab was built as an analytical sandbox.
+The Attribution Lab explores a single question: how much does the attribution model itself change the business decision?
 
-Rather than relying on a single attribution methodology, it allows multiple attribution models to be compared side by side, helping demonstrate how different methodologies change marketing performance and investment decisions.
+Six industry attribution models can be compared side by side, evaluating behavioral fit, operational trust, portfolio alignment, and the downstream business impact of switching methodology. The same underlying data, viewed through six different lenses, produces six different vendor rankings and six different budget conclusions.
+
+Rather than declaring one model correct, the lab explains why the models disagree and what those differences mean for marketing investment. Concepts such as Behavioral Fit, Operational Trust, and Overall Fit exist to make an attribution choice defensible rather than arbitrary.
 
 ![NorthStar Attribution Lab: attribution model discovery, portfolio fit scoring, and business impact comparison](assets/05-attribution-lab.png)
 
@@ -110,9 +139,11 @@ Rather than relying on a single attribution methodology, it allows multiple attr
 
 ### 6. Pipeline Operations
 
-The project also includes an operational monitoring portal used to observe the health of the platform itself.
+Every production platform needs operational visibility.
 
-Pipeline execution, reconciliation, audit history, attribution validation, and system health are surfaced through a custom operations dashboard designed for day-to-day platform management.
+NorthStar includes a dedicated operations portal that tracks nightly pipeline execution, reconciliation status, attribution validation, bronze data coverage, audit history, and overall system health. Run duration, row counts, and failures are visible per pipeline, per night.
+
+The point is to demonstrate not only how analytics get built, but how they are maintained once deployed. A dashboard nobody trusts is a dashboard nobody uses, and trust is an operational property, not a design one.
 
 ![NorthStar pipeline operations dashboard: nightly run status, reconciliation workload, and bronze coverage](assets/06-pipeline-operations.png)
 
