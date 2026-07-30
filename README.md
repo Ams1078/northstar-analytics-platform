@@ -64,7 +64,7 @@ Everything starts with the business.
 
 NorthStar simulates a national apartment company operating across multiple regions, markets, properties, marketing vendors, and leasing teams. The business behaves like a real organization, generating operational activity that feeds the rest of the platform.
 
-![NorthStar business ecosystem: regions, markets, properties, marketing channels, vendors, and the fact tables the data generation engine writes](01-business-ecosystem.png)
+![NorthStar business ecosystem: regions, markets, properties, marketing channels, vendors, and the fact tables the data generation engine writes](assets/01-business-ecosystem.png)
 
 ---
 
@@ -94,7 +94,7 @@ The executive reporting layer translates operational data into business decision
 
 NorthStar includes four executive indexes: Geographic Performance (GPI), Operations Performance (OPI), Vendor Performance (VPI), and Portfolio Health (PHI), which measure different aspects of organizational performance while providing dynamic insights and recommendations.
 
-![NorthStar executive dashboard: Portfolio Health Index, index scorecards, regional performance, and market rankings](04-executive-intelligence.png)
+![NorthStar executive dashboard: Portfolio Health Index, index scorecards, regional performance, and market rankings](assets/04-executive-intelligence.png)
 
 ---
 
@@ -104,7 +104,7 @@ The Attribution Lab was built as an analytical sandbox.
 
 Rather than relying on a single attribution methodology, it allows multiple attribution models to be compared side by side, helping demonstrate how different methodologies change marketing performance and investment decisions.
 
-![NorthStar Attribution Lab: attribution model discovery, portfolio fit scoring, and business impact comparison](05-attribution-lab.png)
+![NorthStar Attribution Lab: attribution model discovery, portfolio fit scoring, and business impact comparison](assets/05-attribution-lab.png)
 
 ---
 
@@ -114,7 +114,7 @@ The project also includes an operational monitoring portal used to observe the h
 
 Pipeline execution, reconciliation, audit history, attribution validation, and system health are surfaced through a custom operations dashboard designed for day-to-day platform management.
 
-![NorthStar pipeline operations dashboard: nightly run status, reconciliation workload, and bronze coverage](06-pipeline-operations.png)
+![NorthStar pipeline operations dashboard: nightly run status, reconciliation workload, and bronze coverage](assets/06-pipeline-operations.png)
 
 ---
 
