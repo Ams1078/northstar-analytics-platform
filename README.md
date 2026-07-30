@@ -14,12 +14,12 @@ As AI continues to transform the industry, I believe one thing becomes even more
 
 Every role I've had taught me something different about enterprise data.
 
-- **Dell** introduced me to CRM systems, data quality, and sales operations.
-- **Quest Software** reinforced the importance of data governance and reporting.
-- **Station Digital** gave me experience designing products, defining requirements, and measuring customer behavior.
-- **Hyundai Motor America** exposed me to large-scale enterprise reporting, automation, and executive KPI development.
-- **Mid-America Apartment Communities (MAA)** shifted my focus toward modern business intelligence, semantic modeling, and marketing analytics in Power BI.
-- **Wondros** expanded that experience into healthcare, digital marketing, public-sector analytics, and enterprise measurement strategies.
+- **Dell** introduced me to CRM systems, data quality, marketing and sales operations.
+- **Quest Software** taught me how enterprise data moves between systems, how relational objects connect across applications, and reinforced the importance of data governance, integrity, and reporting.
+- **Station Digital** exposed me to large-scale enterprise reporting, process automation, executive KPI development, and supporting business decisions with data.
+- **Hyundai Motor America**g exposed me to large-scale enterprise reporting, automation, and executive KPI development.
+- **Mid-America Apartment Communities (MAA)** shifted my focus toward modern business intelligence, dimensional modeling, semantic layers, Power BI, and marketing analytics within an enterprise data warehouse.
+- **Wondros** broadened my experience across multiple clients and industries, applying analytics to healthcare, public-sector initiatives, digital marketing, and enterprise measurement strategies while adapting to diverse business environments.
 
 NorthStar combines those experiences into one project that simulates how I would approach building an enterprise analytics platform from the ground up.
 
@@ -48,9 +48,19 @@ NorthStar starts with synthetic business operations, moves through engineering a
 
 ---
 
+## What I Wanted to Learn
+
+NorthStar wasn't designed to replicate work I had already done professionally. It was designed to push past it.
+
+Semantic modeling and executive reporting were familiar ground. What wasn't: generating a behaviorally realistic business from scratch, standing up a cloud pipeline on Azure Functions and owning it through failure and recovery, building an attribution methodology defensible enough to survive a challenge, and publishing the whole thing as documentation someone else could actually navigate.
+
+The project became less about producing a portfolio piece and more about understanding how modern analytics platforms are actually built, including the parts that don't appear in a dashboard.
+
+---
+
 ## NorthStar Intelligence Platform
 
-NorthStar is a synthetic enterprise analytics platform modeled after a national multifamily real estate company. The project simulates the complete lifecycle of enterprise data: from business activity through engineering, warehousing, semantic modeling, executive reporting, attribution analysis, and operational monitoring.
+NorthStar is an enterprise analytics platform built around a national multifamily housing company. The business, the data, and the customer behavior are synthetically generated, which allows the platform to model the complete lifecycle of enterprise analytics: business activity, engineering, warehousing, semantic modeling, executive reporting, attribution analysis, and operational monitoring.
 
 The goal wasn't to build the biggest dashboard. The goal was to demonstrate how business problems become analytics solutions.
 
@@ -69,7 +79,7 @@ NorthStar represents the work of a business analyst, data engineer, BI developer
 | **Coverage** | Daily snapshots, 2024 through 2027 |
 | **Fact tables** | Leasing, Property Operations, Marketing Spend, Marketing Funnel, Prospect Journey |
 | **Data pipeline** | Azure Functions, Blob Storage, Azure SQL. Bronze → Canonical → Gold |
-| **Semantic layer** | Power BI star schema, 1,289 DAX measures |
+| **Semantic layer** | Power BI star schema, calculation groups, field parameters, and 1,289 DAX measures |
 | **Executive framework** | GPI • OPI • VPI • PHI |
 | **Attribution models** | 6, compared side by side |
 | **Documentation** | Interactive metadata portal |
@@ -83,7 +93,7 @@ Everything starts with the business.
 
 NorthStar simulates a national apartment company operating across multiple regions, markets, properties, marketing vendors, and leasing teams. The business behaves like a real organization, generating operational activity that feeds the rest of the platform.
 
-The simulation is not random. Properties carry fixed performance tiers that shape their conversion rates. Markets move through seasonal leasing cycles and migration patterns. Scripted events shift budget between channels the way a real marketing team would. Every prospect journey carries attribution credit that sums correctly, which is what makes the attribution work later in the platform measurable rather than illustrative.
+The simulation is not random. Properties carry fixed performance tiers that shape their conversion rates. Markets move through seasonal leasing cycles and migration patterns. Scripted events shift budget between channels the way a real marketing team would. Every generated event is internally consistent, which means marketing, operations, and executive reporting all resolve to the same underlying business activity rather than to three separate versions of it.
 
 ![NorthStar business ecosystem: regions, markets, properties, marketing channels, vendors, and the fact tables the data generation engine writes](assets/01-business-ecosystem.png)
 
@@ -93,7 +103,7 @@ The simulation is not random. Properties carry fixed performance tiers that shap
 
 Every business process in NorthStar eventually becomes analytical data.
 
-Leasing activity, property operations, marketing spend, funnel performance, prospect journeys, and industry benchmarks are modeled into a dimensional warehouse built on star schema principles. The warehouse combines shared dimensions, daily fact tables at property grain, and the business rules that support everything from operational reporting to executive scorecards.
+Each fact table is generated independently but conforms to a shared dimensional model, so operational, marketing, and financial questions can be answered from a common semantic layer. Leasing activity, property operations, marketing spend, funnel performance, prospect journeys, and industry benchmarks are modeled into a dimensional warehouse built on star schema principles, combining shared dimensions, daily fact tables at property grain, and the business rules that support everything from operational reporting to executive scorecards.
 
 Rather than loading a static sample dataset, the warehouse is extended every night by an automated pipeline, so the platform behaves like a living production environment rather than a snapshot.
 
@@ -127,7 +137,7 @@ The indexes are deliberately not interchangeable. Each answers a different execu
 
 ### 5. Attribution Laboratory
 
-The Attribution Lab explores a single question: how much does the attribution model itself change the business decision?
+The Attribution Lab was built around a single question: how much does the attribution model itself change the business decision?
 
 Six industry attribution models can be compared side by side, evaluating behavioral fit, operational trust, portfolio alignment, and the downstream business impact of switching methodology. The same underlying data, viewed through six different lenses, produces six different vendor rankings and six different budget conclusions.
 
@@ -155,11 +165,15 @@ The point is to demonstrate not only how analytics get built, but how they are m
 ![DAX](https://img.shields.io/badge/DAX-01B8AA?style=for-the-badge&logoColor=white)
 ![SQL](https://img.shields.io/badge/SQL-4479A1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
 ![Azure SQL](https://img.shields.io/badge/Azure_SQL-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)
 ![Azure Functions](https://img.shields.io/badge/Azure_Functions-0062AD?style=for-the-badge&logo=azurefunctions&logoColor=white)
 ![Azure Blob Storage](https://img.shields.io/badge/Azure_Blob_Storage-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)
+![Azure Static Web Apps](https://img.shields.io/badge/Azure_Static_Web_Apps-0062AD?style=for-the-badge&logo=microsoftazure&logoColor=white)
 ![Power Query](https://img.shields.io/badge/Power_Query-376B37?style=for-the-badge&logoColor=white)
 ![Tabular Editor](https://img.shields.io/badge/Tabular_Editor-FF6C00?style=for-the-badge&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-222222?style=for-the-badge&logo=github&logoColor=white)
 ![HTML](https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white)
