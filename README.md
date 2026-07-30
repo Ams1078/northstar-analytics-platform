@@ -25,6 +25,19 @@ NorthStar combines those experiences into one project that simulates how I would
 
 ---
 
+## Certifications
+
+![PL-300](https://img.shields.io/badge/Microsoft%20Certified-PL--300%20Power%20BI%20Data%20Analyst%20Associate-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
+
+Microsoft's certification for semantic modeling, DAX, and report design. The modeling and DAX work throughout NorthStar builds directly on it.
+
+**In progress**
+
+- **AZ-900, Microsoft Azure Fundamentals.** Exam scheduled. NorthStar runs entirely on Azure: SQL Database, Blob Storage, Functions, and Static Web Apps.
+- **Certified Data Management Professional (CDMP), DAMA International.** Data governance, quality, and metadata management, which is the discipline behind the pipeline's reconciliation and audit layers.
+
+---
+
 ## Why I Built NorthStar
 
 One thing I noticed throughout my career was that organizations rarely struggle because they don't have data. They struggle because the data lives in different systems, business definitions aren't consistent, reporting is fragmented, and executives spend more time questioning numbers than making decisions.
@@ -51,7 +64,7 @@ Everything starts with the business.
 
 NorthStar simulates a national apartment company operating across multiple regions, markets, properties, marketing vendors, and leasing teams. The business behaves like a real organization, generating operational activity that feeds the rest of the platform.
 
-<!-- Insert ecosystem image -->
+![NorthStar business ecosystem: regions, markets, properties, marketing channels, vendors, and the fact tables the data generation engine writes](01-business-ecosystem.png)
 
 ---
 
@@ -79,9 +92,9 @@ Data moves through a Bronze → Canonical → Gold architecture with reconciliat
 
 The executive reporting layer translates operational data into business decisions.
 
-NorthStar includes four executive indexes: Growth Performance (GPI), Operations Performance (OPI), Vendor Performance (VPI), and Portfolio Health (PHI), which measure different aspects of organizational performance while providing dynamic insights and recommendations.
+NorthStar includes four executive indexes: Geographic Performance (GPI), Operations Performance (OPI), Vendor Performance (VPI), and Portfolio Health (PHI), which measure different aspects of organizational performance while providing dynamic insights and recommendations.
 
-<!-- Insert Executive Dashboard image -->
+![NorthStar executive dashboard: Portfolio Health Index, index scorecards, regional performance, and market rankings](04-executive-intelligence.png)
 
 ---
 
@@ -91,7 +104,7 @@ The Attribution Lab was built as an analytical sandbox.
 
 Rather than relying on a single attribution methodology, it allows multiple attribution models to be compared side by side, helping demonstrate how different methodologies change marketing performance and investment decisions.
 
-<!-- Insert Attribution Lab image -->
+![NorthStar Attribution Lab: attribution model discovery, portfolio fit scoring, and business impact comparison](05-attribution-lab.png)
 
 ---
 
@@ -101,7 +114,7 @@ The project also includes an operational monitoring portal used to observe the h
 
 Pipeline execution, reconciliation, audit history, attribution validation, and system health are surfaced through a custom operations dashboard designed for day-to-day platform management.
 
-<!-- Insert Operations Dashboard image -->
+![NorthStar pipeline operations dashboard: nightly run status, reconciliation workload, and bronze coverage](06-pipeline-operations.png)
 
 ---
 
@@ -134,11 +147,3 @@ If you'd like to dive deeper into the architecture, data model, engineering pipe
 - [LinkedIn](https://www.linkedin.com/in/YOUR-HANDLE)
 - [Resume](RESUME_LINK)
 - [Email](mailto:YOUR-EMAIL)
-## Certifications
-
-![PL-300](https://img.shields.io/badge/Microsoft%20Certified-PL--300%20Power%20BI%20Data%20Analyst%20Associate-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
-
-Microsoft's certification for semantic modeling, DAX, and report design. The modeling and DAX work throughout NorthStar builds directly on it.
-
-**In progress:** Certified Data Management Professional (CDMP), DAMA International. Covers data governance, quality, and metadata management, which is the discipline behind the pipeline's reconciliation and audit layers.
-![AZ-900](https://img.shields.io/badge/Microsoft%20Certified-AZ--900%20Azure%20Fundamentals-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)
