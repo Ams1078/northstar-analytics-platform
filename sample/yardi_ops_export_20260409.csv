@@ -1,0 +1,13 @@
+Yardi Voyager — Occupancy and Leasing Summary
+Client: NorthStar Residential Group
+Database: NORTHSTAR_PROD
+Report Run: 04/09/2026 12:00:00 AM
+As Of Date: 04/09/2026
+
+PropertyCode,PropertyName,PropertyID,MarketName,RegionName,State,City,AsOfDate,ExtractTimestamp,UnitCount,OccupiedUnits,VacantUnits,AvailableUnits,OccupancyPct,VacancyPct,MoveIns_Today,MoveOuts_Today,NetAbsorption_Today,LeaseExpirations_Today,ScheduledMoveIns_Today,LeaseExpirations_Next60D,ScheduledMoveIns_Next60D,CoverageRatio_60D,NoticeUnits,DownUnits,ModelUnits,EmployeeUnits,Concessions_Active,AvgRent_Occupied,AvgRent_Asking,IsActive
+GRAN001,Grand Walk,1,Northeast Corridor,East,NY,New York,04/09/2026,2026-04-09 00:00:00,250,245,2,1,0.9919,0.0081,3,4,-1,8,4,50.5,54.2,1.0733,0,0,1,1,Y,2511.77,2278.43,1
+GRAN002,Grand Crossing,2,Northeast Corridor,East,NY,New York,04/09/2026,2026-04-09 00:00:00,225,226,2,0,0.9912,0.0088,2,2,0,4,2,45.4,50.4,1.1101,0,0,2,0,Y,2702.77,1966.89,1
+THE003,The Grove at Square,3,Northeast Corridor,East,NY,New York,04/09/2026,2026-04-09 00:00:00,300,298,2,2,0.9933,0.0067,5,5,0,12,6,60.5,66.7,1.1025,0,0,1,1,N,1669.34,1466.02,1
+THE004,The Heights,4,Northeast Corridor,East,NY,New York,04/09/2026,2026-04-09 00:00:00,265,250,9,8,0.9653,0.0347,4,5,-1,10,6,52.0,52.6,1.0115,2,1,2,1,Y,1350.82,1499.34,1
+PARK005,Park Crossing,5,Northeast Corridor,East,NY,New York,04/09/2026,2026-04-09 00:00:00,210,204,7,7,0.9668,0.0332,0,0,0,0,2,41.2,41.3,1.0024,2,1,1,0,Y,2320.65,2617.53,1
+THE006,The District at Commons,6,Northeast Corridor,East,NY,New York,04/09/2026,2026-04-09 00:00:00,210,200,8,7,0.9615,0.0385,4,5,-1,10,5,41.2,42.1,1.0218,2,1,2,1,Y,2113.73,2401.63,1

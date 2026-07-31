@@ -1,0 +1,13 @@
+date,property_name,property_id,street_address,city,state,zip,market,listing_status,pricing_model,profile_views,renter_interest,tour_requests,applications_started,lease_signings_attributed,estimated_spend_usd,cost_per_lease,renter_match_score_avg,response_rate_pct,avg_response_hours,property_key
+2026-04-09,Grand Walk,AL000001,7012 Main St,New York,NY,93810,Northeast Corridor,active,pay_per_lease,2929,4,0,0,0,45.6144,0.00,90.7,0.91,0.7,1
+2026-04-09,Grand Crossing,AL000002,3911 Main Dr,New York,NY,24592,Northeast Corridor,active,pay_per_lease,2424,0,0,0,0,30.5350,0.00,84.2,0.57,6.2,2
+2026-04-09,The Grove at Square,AL000003,3711 River Ln,New York,NY,13278,Northeast Corridor,active,pay_per_lease,657,0,0,0,0,30.7983,0.00,80.1,0.62,3.8,3
+2026-04-09,The Heights,AL000004,7024 Park Ln,New York,NY,46048,Northeast Corridor,active,pay_per_lease,477,11,3,1,0,27.7964,0.00,84.5,0.92,0.6,4
+2026-04-09,Park Crossing,AL000005,5614 Oak Ave,New York,NY,42098,Northeast Corridor,active,pay_per_lease,586,0,0,0,0,41.2326,0.00,86.4,0.64,2.7,5
+2026-04-09,The District at Commons,AL000006,5981 Park Ln,New York,NY,39256,Northeast Corridor,active,pay_per_lease,547,7,1,0,0,27.2863,0.00,88.2,0.68,7.4,6
+2026-04-09,The Pointe,AL000007,8885 Oak Pl,New York,NY,28289,Northeast Corridor,active,pay_per_lease,1731,9,2,1,1,47.6300,47.63,77.9,0.81,4.3,7
+2026-04-09,Grand Landing,AL000008,4903 Park Dr,New York,NY,23434,Northeast Corridor,active,pay_per_lease,393,11,1,1,0,16.8305,0.00,93.5,0.64,6.1,8
+2026-04-09,Grand Terrace,AL000009,3833 Cedar Ave,New York,NY,98696,Northeast Corridor,active,pay_per_lease,550,6,1,0,0,22.2868,0.00,82.0,0.59,4.2,9
+2026-04-09,River Commons,AL000010,6327 Cedar Ct,New York,NY,81482,Northeast Corridor,active,pay_per_lease,238,0,0,0,0,19.5873,0.00,82.9,0.87,3.4,10
+2026-04-09,Grand Walk,AL000011,2903 Elm Blvd,Philadelphia,PA,93320,Mid-Atlantic,active,pay_per_lease,593,8,1,1,0,27.7548,0.00,79.7,0.56,5.1,11
+2026-04-09,Residences at Square,AL000012,4522 Elm Way,Philadelphia,PA,57819,Mid-Atlantic,active,pay_per_lease,726,0,0,0,0,40.6212,0.00,90.2,0.71,3.7,12

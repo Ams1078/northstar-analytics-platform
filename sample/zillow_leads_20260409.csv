@@ -1,0 +1,13 @@
+Zillow Rental Manager — Performance Report
+Generated: April 09, 2026 at 12:00 AM PT
+
+Property,Property ID,Address,City,State,Zip,Report Date,Listing Status,Listing Type,Unique Visitors,Page Views,Total Leads,Email Leads,Phone Calls,Tours Requested,Applications,Monthly Cost,Cost Per Lead,Avg. Price Shown,Units Available,Market,Property_Key
+Grand Walk,ZIL00001,7012 Main St,New York,NY,93810,04/09/2026,Active,For Rent,5,443,10,8,2,1,0,$92.98,$9.30,$1425,5,Northeast Corridor,1
+Grand Crossing,ZIL00002,3911 Main Dr,New York,NY,24592,04/09/2026,Active,For Rent,2,673,0,0,0,0,0,$80.37,$0.00,$2310,5,Northeast Corridor,2
+The Grove at Square,ZIL00003,3711 River Ln,New York,NY,13278,04/09/2026,Active,For Rent,0,239,0,0,0,0,0,$108.54,$0.00,$2508,5,Northeast Corridor,3
+The Heights,ZIL00004,7024 Park Ln,New York,NY,46048,04/09/2026,Active,For Rent,10,168,21,17,4,3,1,$62.83,$2.99,$2438,5,Northeast Corridor,4
+Park Crossing,ZIL00005,5614 Oak Ave,New York,NY,42098,04/09/2026,Active,For Rent,0,95,0,0,0,0,0,$75.58,$0.00,$2374,5,Northeast Corridor,5
+The District at Commons,ZIL00006,5981 Park Ln,New York,NY,39256,04/09/2026,Active,For Rent,19,220,25,20,5,3,1,$77.06,$3.08,$2330,5,Northeast Corridor,6
+The Pointe,ZIL00007,8885 Oak Pl,New York,NY,28289,04/09/2026,Active,For Rent,11,601,12,10,2,1,1,$74.01,$6.17,$2973,5,Northeast Corridor,7
+Grand Landing,ZIL00008,4903 Park Dr,New York,NY,23434,04/09/2026,Active,For Rent,29,109,34,28,6,3,1,$61.14,$1.80,$1635,5,Northeast Corridor,8
+Grand Terrace,ZIL00009,3833 Cedar Ave,New York,NY,98696,04/09/2026,Active,For Rent,9,305,12,10,2,1,0,$44.72,$3.73,$1936,5,Northeast Corridor,9

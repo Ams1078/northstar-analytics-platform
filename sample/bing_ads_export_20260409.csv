@@ -1,0 +1,13 @@
+Report name: Campaign Performance Report
+Report time: 04/09/2026
+Request time: 2026-04-09T00:00:00.000+0000
+Format: Csv
+
+Account name,Account number,Campaign name,Campaign ID,Ad group,Ad group ID,Time period,Impressions,Clicks,CTR (%),Avg. CPC,Spend,Conversions,Revenue,Avg. position,Quality score,Keyword,Match type,Device type,Network,Property_ID
+NorthStar Residential Group,C01-434367,Grand Walk | Search | Brand,741148802,Brand - Exact Match,39396392,04/09/2026,941,12,1.28,4.61,55.33,0,0.00,2.5,7,apartments new york,Exact,Smartphone,Microsoft sites,1
+NorthStar Residential Group,C01-204998,Grand Crossing | Search | Brand,366134484,Brand - Exact Match,98162850,04/09/2026,1848,24,1.30,1.99,47.74,0,0.00,2.0,5,apartments new york,Exact,Tablet,Microsoft sites,2
+NorthStar Residential Group,C01-986278,The Grove at Square | Search | Brand,286521875,Brand - Exact Match,33635791,04/09/2026,1091,12,1.10,4.31,51.73,0,0.00,1.6,7,apartments new york,Broad,Computer,Microsoft sites,3
+NorthStar Residential Group,C01-297377,The Heights | Search | Brand,998396384,Brand - Exact Match,76065552,04/09/2026,1234,14,1.13,3.18,44.51,0,0.00,1.4,5,apartments new york,Exact,Computer,Microsoft sites,4
+NorthStar Residential Group,C01-743966,Park Crossing | Search | Brand,316320731,Brand - Exact Match,27514010,04/09/2026,647,9,1.39,1.92,17.24,0,0.00,1.4,7,apartments new york,Exact,Computer,Microsoft sites,5
+NorthStar Residential Group,C01-651860,The District at Commons | Search | Brand,491797490,Brand - Exact Match,19735027,04/09/2026,1240,14,1.13,2.54,35.53,0,0.00,2.7,8,apartments new york,Broad,Computer,Microsoft sites,6
+NorthStar Residential Group,C01-558089,The Pointe | Search | Brand,950234433,Brand - Exact Match,95800828,04/09/2026,637,13,2.04,2.05,26.66,0,0.00,2.2,6,apartments new york,Broad,Tablet,Microsoft sites,7
