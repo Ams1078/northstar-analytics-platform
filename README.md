@@ -183,6 +183,8 @@ The point is to demonstrate not only how analytics get built, but how they are m
 
 ![NorthStar pipeline operations dashboard: nightly run status, reconciliation workload, and bronze coverage](assets/06-pipeline-operations.png)
 
+**[Open the live Operations Dashboard →](https://maa-canonical-pipeline-gwhucjhgbsb8d6f7.canadacentral-01.azurewebsites.net/api/dashboard)** Reflects the most recent nightly run.
+
 ---
 
 ## Technologies
