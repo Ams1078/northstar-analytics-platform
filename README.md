@@ -14,12 +14,12 @@ As AI continues to transform the industry, I believe one thing becomes even more
 
 Every role I've had taught me something different about enterprise data.
 
-- **Dell** introduced me to CRM systems, data quality, marketing and sales operations.
-- **Quest Software** taught me how enterprise data moves between systems, how relational objects connect across applications, and reinforced the importance of data governance, integrity, and reporting.
-- **Station Digital** exposed me to large-scale enterprise reporting, process automation, executive KPI development, and supporting business decisions with data.
-- **Hyundai Motor America**g exposed me to large-scale enterprise reporting, automation, and executive KPI development.
-- **Mid-America Apartment Communities (MAA)** shifted my focus toward modern business intelligence, dimensional modeling, semantic layers, Power BI, and marketing analytics within an enterprise data warehouse.
-- **Wondros** broadened my experience across multiple clients and industries, applying analytics to healthcare, public-sector initiatives, digital marketing, and enterprise measurement strategies while adapting to diverse business environments.
+- **Dell** introduced me to CRM systems, data quality, and sales operations.
+- **Quest Software** reinforced the importance of data governance and reporting.
+- **Station Digital** gave me experience designing products, defining requirements, and measuring customer behavior.
+- **Hyundai Motor America** exposed me to large-scale enterprise reporting, automation, and executive KPI development.
+- **Mid-America Apartment Communities (MAA)** shifted my focus toward modern business intelligence, semantic modeling, and marketing analytics in Power BI.
+- **Wondros** expanded that experience into healthcare, digital marketing, public-sector analytics, and enterprise measurement strategies.
 
 NorthStar combines those experiences into one project that simulates how I would approach building an enterprise analytics platform from the ground up.
 
@@ -28,8 +28,12 @@ NorthStar combines those experiences into one project that simulates how I would
 ## Certifications
 
 ![PL-300](https://img.shields.io/badge/Microsoft%20Certified-PL--300%20Power%20BI%20Data%20Analyst%20Associate-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
+[![Google Data Analytics](https://img.shields.io/badge/Google%20Certified-Data%20Analytics%20Professional-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://www.credly.com/badges/2c9f81c4-eaca-49d3-be0f-5ca94b38a756/linked_in_profile)
+![MTA Database Administration](https://img.shields.io/badge/Microsoft%20Certified-MTA%20Database%20Administration%20Fundamentals-5E5E5E?style=for-the-badge&logo=microsoft&logoColor=white)
 
-Microsoft's certification for semantic modeling, DAX, and report design. The modeling and DAX work throughout NorthStar builds directly on it.
+- **PL-300, Power BI Data Analyst Associate.** Semantic modeling, DAX, and report design. The modeling work throughout NorthStar builds directly on it.
+- **Google Data Analytics Professional Certificate.** [Verify on Credly →](https://www.credly.com/badges/2c9f81c4-eaca-49d3-be0f-5ca94b38a756/linked_in_profile)
+- **MTA: Database Administration Fundamentals.** Relational database design and administration. Credential ID 84004877.
 
 **In progress**
 
@@ -107,7 +111,7 @@ Each fact table is generated independently but conforms to a shared dimensional 
 
 Rather than loading a static sample dataset, the warehouse is extended every night by an automated pipeline, so the platform behaves like a living production environment rather than a snapshot.
 
-<!-- Insert data model image -->
+![NorthStar enterprise data model: conformed dimension bus matrix across five daily fact tables](assets/02-enterprise-data.png)
 
 ---
 
@@ -119,7 +123,25 @@ Business activity is processed through Azure Functions, landed in Blob Storage, 
 
 Watermarks, idempotent processing, fail-closed guards, reconciliation, and audit logging make every nightly refresh traceable and repeatable. When something does go wrong, the platform is designed to tell you rather than quietly produce a wrong number.
 
-<!-- Insert pipeline image -->
+The hardest part is the front door. Fourteen source files land in bronze each night across seven vendor formats, each imitating the native export of the platform it came from, because that is the problem marketing data integration actually presents. No two vendors agree on anything.
+
+| Source | Vendors | Cost model | Property identified by |
+|---|---|---|---|
+| Google Ads | Search, Display | Cost per click | `Property ID` |
+| Microsoft Advertising | Bing | Cost per click | `Property_ID` |
+| Meta Ads Manager | Facebook, Instagram | CPM | `Property_ID` |
+| Zillow Rental Manager | Zillow | Subscription plus lead fee | `Property_Key` |
+| CoStar / Apartments.com | Apartments.com | Listing package | `Property_Key` |
+| Apartment List | Apartment List | Pay per lease | `property_key` |
+| Programmatic DSP | StackAdapt, TradeDesk | CPM | `Property_Key` |
+
+Google Ads writes four banner lines above its header and formats currency as text. Apartment List uses snake_case while everything else uses title case. One Meta file resolves to two vendor keys. Spend arrives under seven different column names. A Yardi Voyager flat file and six raw Salesforce tables land alongside them, carrying deliberate data quality defects that the reconciliation layer classifies rather than silently repairs.
+
+Rather than write seven bespoke loaders, the pipeline reads bronze through a parser registry. Each source is a single entry: a filename template and a parse function that returns rows in one canonical shape. The orchestration loop never learns anything about a specific vendor. Google Ads is implemented as the reference parser, covering both Search and Display, and the remaining sources are scaffolded against the same contract so that adding one is a parser module and one line rather than a change to the pipeline.
+
+Real samples of all fourteen files are in [`samples/`](samples/).
+
+![NorthStar data engineering pipeline: nightly schedule and the Bronze to Canonical to Gold lifecycle](assets/03-data-engineering.png)
 
 ---
 
@@ -133,6 +155,8 @@ The indexes are deliberately not interchangeable. Each answers a different execu
 
 ![NorthStar executive dashboard: Portfolio Health Index, index scorecards, regional performance, and market rankings](assets/04-executive-intelligence.png)
 
+**[Open the live Executive Report →](https://app.powerbi.com/view?r=eyJrIjoiODJmOTFjY2YtNjM0NS00ZTBhLWExMmQtODgwMDJiZWRjMGIzIiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)** Refreshed daily at 06:00 UTC.
+
 ---
 
 ### 5. Attribution Laboratory
@@ -144,6 +168,8 @@ Six industry attribution models can be compared side by side, evaluating behavio
 Rather than declaring one model correct, the lab explains why the models disagree and what those differences mean for marketing investment. Concepts such as Behavioral Fit, Operational Trust, and Overall Fit exist to make an attribution choice defensible rather than arbitrary.
 
 ![NorthStar Attribution Lab: attribution model discovery, portfolio fit scoring, and business impact comparison](assets/05-attribution-lab.png)
+
+**[Open the live Attribution Lab →](https://app.powerbi.com/view?r=eyJrIjoiOTgzN2U3ODYtMjhmOS00OGU3LWE3ZTMtNWYyMzBjNjdjZDNhIiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)** Refreshed daily at 07:00 UTC.
 
 ---
 
