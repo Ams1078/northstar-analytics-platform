@@ -1,9 +1,0 @@
-// ==========================================================================
-// Visits (Actual)
-// Model folder: 01 - Actual / 1.1 - Base
-// --------------------------------------------------------------------------
-// Purpose: Property visits recorded.
-// Why it exists: Mid-funnel operational volume.
-// ==========================================================================
-
-SUM(fact_leasing_daily[Visits])
