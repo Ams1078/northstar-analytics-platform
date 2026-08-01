@@ -1,0 +1,33 @@
+// ==========================================================================
+// PHI Insight 6 - Velocity Outlook
+// Model folder: 05 - Portfolio Health / 5.2 - KPI
+// --------------------------------------------------------------------------
+// Purpose: Leasing pace outlook.
+// Why it exists: Leading indicator rather than a trend through the score
+// itself.
+// ==========================================================================
+
+VAR StartDate   = MIN(dim_date[Date])
+VAR EndDate     = MAX(dim_date[Date])
+VAR DaysInRange = DATEDIFF(StartDate, EndDate, DAY) + 1
+VAR PrevStart   = StartDate - DaysInRange
+VAR PrevEnd     = EndDate   - DaysInRange
+VAR CurrVel = CALCULATE([Lease Velocity], DATESBETWEEN(dim_date[Date], StartDate, EndDate))
+VAR PrevVel = CALCULATE([Lease Velocity], DATESBETWEEN(dim_date[Date], PrevStart, PrevEnd))
+VAR Delta   = DIVIDE(CurrVel - PrevVel, PrevVel)
+VAR OccRate = [Occupancy Rate %]
+VAR Outlook =
+    SWITCH(
+        TRUE(),
+        Delta >  0.05 && OccRate <  0.88, "📈 Velocity ▲ · Occ likely to recover",
+        Delta >  0.05 && OccRate >= 0.88, "📈 Velocity ▲ · Occ holding strong",
+        Delta < -0.05 && OccRate >= 0.88, "⚡ Velocity ▼ · Monitor occ erosion",
+        Delta < -0.05 && OccRate <  0.88, "🚨 Velocity ▼ · Occ pressure building",
+        "➡ Velocity stable · No occ signal"
+    )
+RETURN
+IF(
+    ISBLANK(Delta), BLANK(),
+    Outlook & UNICHAR(10) &
+    FORMAT(Delta, "+0.0%;-0.0%") & " velocity vs prior period"
+)

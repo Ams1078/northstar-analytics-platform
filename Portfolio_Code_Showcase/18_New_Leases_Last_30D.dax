@@ -1,0 +1,9 @@
+// ==========================================================================
+// Click-to-Visit %
+// Model folder: 02 - Funnel / 2.3 - Conversion Rates
+// --------------------------------------------------------------------------
+// Purpose: Clicks that become visits.
+// Why it exists: Catches vendors that buy clicks which never arrive.
+// ==========================================================================
+
+DIVIDE([Visits (Funnel)], [Clicks])

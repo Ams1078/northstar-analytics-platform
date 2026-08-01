@@ -1,0 +1,92 @@
+// ==========================================================================
+// GPI Score
+// Model folder: 06 - GPI / 6.3 - Score / 6.3.1 - Final Score
+// --------------------------------------------------------------------------
+// Purpose: Geographic Performance Index, 0-100.
+// Why it exists: Blends the two pillars 60/40 and falls back cleanly when
+// either is blank, so a partial period still scores.
+// ==========================================================================
+
+VAR _PropScore =
+    VAR P1 = [GPI Pillar 1 (Absolute)]
+    VAR P2 = [GPI Pillar 2 (Trend)]
+    RETURN
+        IF (
+            ISBLANK ( P1 ) && ISBLANK ( P2 ),
+            BLANK (),
+            IF (
+                ISBLANK ( P1 ),
+                P2,
+                IF (
+                    ISBLANK ( P2 ),
+                    P1,
+                    ( P1 * 0.60 ) + ( P2 * 0.40 )
+                )
+            )
+        )
+
+RETURN
+SWITCH (
+    TRUE (),
+    ISINSCOPE ( dim_property[PropertyKey] ),
+        _PropScore,
+    ISINSCOPE ( dim_market[MarketName] ),
+        AVERAGEX (
+            VALUES ( dim_property[PropertyKey] ),
+            VAR P1 = [GPI Pillar 1 (Absolute)]
+            VAR P2 = [GPI Pillar 2 (Trend)]
+            RETURN
+                IF (
+                    ISBLANK ( P1 ) && ISBLANK ( P2 ),
+                    BLANK (),
+                    IF (
+                        ISBLANK ( P1 ),
+                        P2,
+                        IF (
+                            ISBLANK ( P2 ),
+                            P1,
+                            ( P1 * 0.60 ) + ( P2 * 0.40 )
+                        )
+                    )
+                )
+        ),
+    ISINSCOPE ( dim_region[RegionName] ),
+        AVERAGEX (
+            VALUES ( dim_property[PropertyKey] ),
+            VAR P1 = [GPI Pillar 1 (Absolute)]
+            VAR P2 = [GPI Pillar 2 (Trend)]
+            RETURN
+                IF (
+                    ISBLANK ( P1 ) && ISBLANK ( P2 ),
+                    BLANK (),
+                    IF (
+                        ISBLANK ( P1 ),
+                        P2,
+                        IF (
+                            ISBLANK ( P2 ),
+                            P1,
+                            ( P1 * 0.60 ) + ( P2 * 0.40 )
+                        )
+                    )
+                )
+        ),
+    AVERAGEX (
+        VALUES ( dim_property[PropertyKey] ),
+        VAR P1 = [GPI Pillar 1 (Absolute)]
+        VAR P2 = [GPI Pillar 2 (Trend)]
+        RETURN
+            IF (
+                ISBLANK ( P1 ) && ISBLANK ( P2 ),
+                BLANK (),
+                IF (
+                    ISBLANK ( P1 ),
+                    P2,
+                    IF (
+                        ISBLANK ( P2 ),
+                        P1,
+                        ( P1 * 0.60 ) + ( P2 * 0.40 )
+                    )
+                )
+            )
+    )
+)

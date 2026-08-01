@@ -1,0 +1,39 @@
+// ==========================================================================
+// Awareness_Impressions_Percentile
+// Model folder: 07 - VPI / 7.1 - Components / 7.1.1 - Awareness
+// --------------------------------------------------------------------------
+// Purpose: One vendor's impressions as a percentile.
+// Why it exists: The VPI building block: every input is converted to a peer
+// percentile before scoring, so unlike units become comparable.
+// ==========================================================================
+
+VAR VendorValue = [_Base_Impressions]
+
+VAR BenchmarkStart = MIN(dim_date[Date])
+VAR BenchmarkEnd   = MAX(dim_date[Date])
+
+VAR Benchmark =
+    CALCULATE(
+        AVERAGEX(
+            VALUES(dim_vendor[VendorKey]),
+            CALCULATE([_Base_Impressions])
+        ),
+        DATESBETWEEN(dim_date[Date], BenchmarkStart, BenchmarkEnd),
+        ALL(dim_vendor),
+        ALL(dim_property),
+        ALL(dim_market),
+        ALL(dim_region)
+    )
+
+VAR Ratio = DIVIDE(VendorValue, Benchmark, BLANK())
+
+RETURN
+SWITCH(
+    TRUE(),
+    ISBLANK(Ratio) || ISBLANK(VendorValue), BLANK(),
+    Ratio >= 1.00, 100,
+    Ratio >= 0.75,  75,
+    Ratio >= 0.50,  50,
+    Ratio >= 0.25,  25,
+    0
+)

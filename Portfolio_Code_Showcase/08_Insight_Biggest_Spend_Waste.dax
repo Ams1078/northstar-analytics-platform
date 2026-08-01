@@ -1,0 +1,10 @@
+// ==========================================================================
+// Marketing Spend
+// Model folder: 00 - Core Metrics / 1.2 Marketing Spend
+// --------------------------------------------------------------------------
+// Purpose: Sum of vendor spend at the current grain.
+// Why it exists: The additive base under every cost ratio. Deliberately
+// trivial.
+// ==========================================================================
+
+SUM(fact_marketing_spend_daily[Spend])

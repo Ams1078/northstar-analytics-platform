@@ -1,0 +1,20 @@
+// ==========================================================================
+// Behavioral Fit
+// Model folder: 03 - Attributed / 3.2 - KPI / Model Fit / Matrix
+// --------------------------------------------------------------------------
+// Purpose: Does the model match observed journeys?
+// Why it exists: Dispatches to a per-model implementation through SWITCH, so
+// the public name stays stable while internals vary by model.
+// ==========================================================================
+
+VAR _Model = SELECTEDVALUE(CalculationGroupAttri[Name])
+RETURN
+SWITCH(
+    _Model,
+    "First Touch", [Behavioral Fit - First Touch],
+    "Last Touch",  [Behavioral Fit - Last Touch],
+    "Linear",      [Behavioral Fit - Linear],
+    "Time Decay",  [Behavioral Fit - Time Decay],
+    "U Shape",     [Behavioral Fit - U-Shape],
+    "W Shape",     [Behavioral Fit - W-Shape]
+)

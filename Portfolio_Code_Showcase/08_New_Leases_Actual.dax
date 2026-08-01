@@ -1,0 +1,13 @@
+// ==========================================================================
+// Move-In Coverage Ratio (60D)
+// Model folder: 01 - Actual / 1.3 - Time Series
+// --------------------------------------------------------------------------
+// Purpose: Committed arrivals over known departures.
+// Why it exists: Below 1.0 means occupancy falls without new leasing. The
+// core OPI Future Reality signal.
+// ==========================================================================
+
+DIVIDE(
+    [Scheduled Move-Ins (Next 60D)],
+    [Lease Expirations (Next 60D)]
+)

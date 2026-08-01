@@ -1,0 +1,43 @@
+// ==========================================================================
+// Portfolio Health - Geo Marketing
+// Model folder: 05 - Portfolio Health / 5.2 - KPI
+// --------------------------------------------------------------------------
+// Purpose: Geographic contribution to PHI.
+// Why it exists: Min-max scaling with the reference bands written inline, so
+// a reader can audit the scale without opening another table.
+// ==========================================================================
+
+VAR CPL_A   = [Cost per Lease (Actual)]
+VAR SR      = [Sell Rate]
+VAR L2L_A   = [Lead-to-Lease % (Actual)]
+VAR NL_A    = [New Leases (Actual)]
+VAR SLA_M   = [Properties Within Marketing SLA %]
+
+-- Cost per Lease (Actual): $2,000 → $150 (inverted)
+VAR s_cpl = MIN(MAX((1 - (CPL_A - 150) / (2000 - 150)) * 100, 0), 100)
+
+-- Sell Rate: 2% → 50%
+VAR s_sr  = MIN(MAX((SR - 0.02) / (0.50 - 0.02) * 100, 0), 100)
+
+-- Lead-to-Lease % (Actual): 0% → 15%
+VAR s_l2l = MIN(MAX((L2L_A - 0) / (0.15 - 0) * 100, 0), 100)
+
+-- New Leases (Actual): 200 → 4,000
+VAR s_nl  = MIN(MAX((NL_A - 200) / (4000 - 200) * 100, 0), 100)
+
+-- SLA Marketing %: 0% → 100%
+VAR s_sla = MIN(MAX((SLA_M - 0) / (1.0 - 0) * 100, 0), 100)
+
+VAR Pillar3 =
+    s_cpl * 0.25 +
+    s_sr  * 0.20 +
+    s_l2l * 0.20 +
+    s_nl  * 0.20 +
+    s_sla * 0.15
+
+RETURN
+IF(
+    ISBLANK(CPL_A) || ISBLANK(SR) || ISBLANK(L2L_A),
+    BLANK(),
+    Pillar3
+)

@@ -1,0 +1,12 @@
+// ==========================================================================
+// _DaysInFilter
+// Model folder: 10 - Parameters & Helpers / 10.1 - Date & Period
+// --------------------------------------------------------------------------
+// Purpose: Days in the current selection.
+// Why it exists: Denominator for any per-day rate. Centralised so every rate
+// agrees.
+// ==========================================================================
+
+COUNTROWS(
+    ALLSELECTED(dim_date)
+)

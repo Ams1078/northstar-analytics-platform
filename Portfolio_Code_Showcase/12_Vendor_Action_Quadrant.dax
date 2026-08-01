@@ -1,0 +1,17 @@
+// ==========================================================================
+// Channel Metric (Mode)
+// Model folder: 10 - Parameters & Helpers / 10.2 - Slicer & Parameters
+// --------------------------------------------------------------------------
+// Purpose: Switches between channel and vendor views.
+// Why it exists: The COALESCE dual-source pattern: calculation group first,
+// parameter table second, then a default.
+// ==========================================================================
+
+VAR Mode =
+    SELECTEDVALUE('Parameter Metric View'[Metric], "Volume")
+RETURN
+IF(
+    Mode = "Spend",
+    [Marketing Spend],
+    [Funnel Step Values (Formatted)]
+)

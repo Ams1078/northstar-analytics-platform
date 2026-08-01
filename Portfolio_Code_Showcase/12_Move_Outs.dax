@@ -1,0 +1,9 @@
+// ==========================================================================
+// Cost per Click
+// Model folder: 02 - Funnel / 2.2 - KPI
+// --------------------------------------------------------------------------
+// Purpose: Spend over clicks.
+// Why it exists: Vendor-level acquisition cost at the top of the funnel.
+// ==========================================================================
+
+DIVIDE([Marketing Spend (Funnel)], [Clicks])

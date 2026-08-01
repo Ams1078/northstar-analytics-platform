@@ -1,0 +1,22 @@
+// ==========================================================================
+// Vendor Action Quadrant
+// Model folder: 03 - Attributed / 3.2 - KPI / Recommended Actions / Quadrant Helpers
+// --------------------------------------------------------------------------
+// Purpose: INVEST / OPTIMIZE / CUT / SCALE TEST.
+// Why it exists: Two share comparisons against one fair-share line. No
+// thresholds to tune, and scale cannot buy a better quadrant.
+// ==========================================================================
+
+VAR _ConvShare = [Attributed Conversions Share]
+VAR _TouchShare = [Contributed Touchpoints Share]
+VAR _FairShare = [Fair Share Line]
+RETURN
+SWITCH(
+    TRUE(),
+    ISBLANK(_ConvShare) || ISBLANK(_TouchShare) || ISBLANK(_FairShare), BLANK(),
+    _ConvShare > _FairShare && _TouchShare > _FairShare, "INVEST",
+    _ConvShare <= _FairShare && _TouchShare > _FairShare, "OPTIMIZE",
+    _ConvShare <= _FairShare && _TouchShare <= _FairShare, "CUT",
+    _ConvShare > _FairShare && _TouchShare <= _FairShare, "SCALE TEST",
+    BLANK()
+)

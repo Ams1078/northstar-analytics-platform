@@ -1,0 +1,11 @@
+// ==========================================================================
+// Total Units
+// Model folder: 01 - Actual / 1.1 - Base
+// --------------------------------------------------------------------------
+// Purpose: Physical capacity.
+// Why it exists: Sourced from dim_property so it stays stable when facts are
+// filtered. Using a fact here would make occupancy move for the wrong
+// reason.
+// ==========================================================================
+
+SUM ( dim_property[TotalUnits] )

@@ -1,0 +1,12 @@
+// ==========================================================================
+// Cost per Visit (Actual)
+// Model folder: 02 - Funnel / 2.2 - KPI
+// --------------------------------------------------------------------------
+// Purpose: Spend over visits.
+// Why it exists: Mid-funnel efficiency, used in GPI Efficiency.
+// ==========================================================================
+
+DIVIDE(
+    [Marketing Spend],
+    [Visits (Actual)]
+)

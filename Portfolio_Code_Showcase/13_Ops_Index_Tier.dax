@@ -1,0 +1,37 @@
+// ==========================================================================
+// Portfolio Health - Operations
+// Model folder: 05 - Portfolio Health / 5.2 - KPI
+// --------------------------------------------------------------------------
+// Purpose: Operations contribution to PHI.
+// Why it exists: Normalised so the three PHI inputs share one scale.
+// ==========================================================================
+
+VAR OccRate  = [Occupancy Rate %]
+VAR AbsDays  = [Absorption Days (Est)]
+VAR Velocity = [Lease Velocity]
+VAR NetAbs   = DIVIDE([Net Absorption], [Total Units], 0)
+
+-- Occupancy Rate: 50% → 95%
+VAR s_occ = MIN(MAX((OccRate - 0.50) / (0.95 - 0.50) * 100, 0), 100)
+
+-- Absorption Days: 15 → 90 (inverted)
+VAR s_abs = MIN(MAX((1 - (AbsDays - 15) / (90 - 15)) * 100, 0), 100)
+
+-- Lease Velocity: 0.02 → 0.20
+VAR s_vel = MIN(MAX((Velocity - 0.02) / (0.20 - 0.02) * 100, 0), 100)
+
+-- Net Absorption: -10% → +10% of units
+VAR s_net = MIN(MAX((NetAbs - (-0.10)) / (0.10 - (-0.10)) * 100, 0), 100)
+
+VAR Pillar1 =
+    s_occ * 0.25 +
+    s_abs * 0.25 +
+    s_vel * 0.25 +
+    s_net * 0.25
+
+RETURN
+IF(
+    ISBLANK(OccRate) || ISBLANK(AbsDays) || ISBLANK(Velocity),
+    BLANK(),
+    Pillar1
+)

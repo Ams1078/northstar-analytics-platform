@@ -1,0 +1,14 @@
+// ==========================================================================
+// Lease Expirations
+// Model folder: 01 - Actual / 1.1 - Base
+// --------------------------------------------------------------------------
+// Purpose: Leases ending in the period.
+// Why it exists: Known future vacancy.
+// ==========================================================================
+
+SUMX(
+    VALUES(fact_property_ops_daily[PropertyKey]),
+    CALCULATE(
+        SUM(fact_property_ops_daily[LeaseExpirations])
+    )
+)

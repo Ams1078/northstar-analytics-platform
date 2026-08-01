@@ -1,0 +1,26 @@
+// ==========================================================================
+// PHI Insight 5 - Coverage Risk Signal
+// Model folder: 05 - Portfolio Health / 5.2 - KPI
+// --------------------------------------------------------------------------
+// Purpose: Forward supply risk in words.
+// Why it exists: Translates the coverage ratio into a sentence an executive
+// can act on.
+// ==========================================================================
+
+VAR Coverage = [Coverage Ratio (Next 60D)]
+VAR VacFill  = [Vacancy Fill % (30D)]
+VAR Signal =
+    SWITCH(
+        TRUE(),
+        Coverage < 0.85,
+            "🔴 Coverage Risk: " & FORMAT(Coverage, "0.00") & " — pipeline thin",
+        Coverage < 1.00,
+            "🟡 Coverage Watch: " & FORMAT(Coverage, "0.00") & " — below parity",
+        "🟢 Coverage OK: " & FORMAT(Coverage, "0.00") & " — pipeline healthy"
+    )
+RETURN
+IF(
+    ISBLANK(Coverage), BLANK(),
+    Signal & UNICHAR(10) &
+    "Vacancy Fill: " & FORMAT(VacFill, "0.0%")
+)
