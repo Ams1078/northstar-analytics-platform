@@ -1,0 +1,10 @@
+// ==========================================================================
+// New Leases (Funnel)
+// Model folder: 00 - Core Metrics / 1.1 Funnel Volumes
+// --------------------------------------------------------------------------
+// Purpose: Leases carrying a marketing journey.
+// Why it exists: The marketing-attributable outcome, kept separate from
+// total leases on purpose.
+// ==========================================================================
+
+CALCULATE(SUM(fact_marketing_funnel_daily[MetricValue]), dim_funnel_stage[FunnelStageName] = "New Leases")

@@ -1,0 +1,20 @@
+// ==========================================================================
+// Operational Trust
+// Model folder: 03 - Attributed / 3.2 - KPI / Model Fit / Matrix
+// --------------------------------------------------------------------------
+// Purpose: Would the recommendation survive a model change?
+// Why it exists: The only lens including Robustness, because stability is an
+// operational question rather than a behavioural one.
+// ==========================================================================
+
+VAR _Model = SELECTEDVALUE(CalculationGroupAttri[Name])
+RETURN
+SWITCH(
+    _Model,
+    "First Touch", [Operational Trust - First Touch],
+    "Last Touch",  [Operational Trust - Last Touch],
+    "Linear",      [Operational Trust - Linear],
+    "Time Decay",  [Operational Trust - Time Decay],
+    "U Shape",     [Operational Trust - U-Shape],
+    "W Shape",     [Operational Trust - W-Shape]
+)

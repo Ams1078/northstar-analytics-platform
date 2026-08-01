@@ -1,0 +1,25 @@
+// ==========================================================================
+// Conversion Score
+// Model folder: 07 - VPI / 7.2 - KPI
+// --------------------------------------------------------------------------
+// Purpose: Conversion stage score.
+// Why it exists: Weighted highest in the composite, because a lease is the
+// only outcome that pays.
+// ==========================================================================
+
+VAR s1 = [Conversion_NewLeases_Percentile]
+VAR s2 = [Conversion_CostPerLease_Percentile]
+VAR s4 = [Conversion_SellRate_Percentile]
+
+VAR ValidScores =
+    IF(NOT ISBLANK(s1), 1, 0) +
+    IF(NOT ISBLANK(s2), 1, 0) +
+    IF(NOT ISBLANK(s4), 1, 0)
+
+RETURN
+IF(
+    ValidScores = 0, BLANK(),
+    IF(ISBLANK(s1), 0, s1 * 0.33) +
+    IF(ISBLANK(s2), 0, s2 * 0.34) +
+    IF(ISBLANK(s4), 0, s4 * 0.33)
+)

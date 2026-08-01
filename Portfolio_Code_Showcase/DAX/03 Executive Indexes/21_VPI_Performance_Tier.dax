@@ -1,0 +1,19 @@
+// ==========================================================================
+// VPI Performance Tier
+// Model folder: 07 - VPI / 7.3 - Score / 7.3.2 - Tiers & Labels
+// --------------------------------------------------------------------------
+// Purpose: Tier label for VPI.
+// Why it exists: Completes the tier pattern across all three pillar indexes.
+// ==========================================================================
+
+VAR Score = [Vendor Performance Index]
+RETURN
+SWITCH(
+    TRUE(),
+    ISBLANK(Score), BLANK(),
+    Score >= 75, "Elite",
+    Score >= 60, "Strong",
+    Score >= 48, "Moderate",
+    Score >= 35, "Underperforming",
+    "Critical"
+)

@@ -1,0 +1,20 @@
+// ==========================================================================
+// Bias - Closing
+// Model folder: 09 - Lab / Bias Profile / Scores
+// --------------------------------------------------------------------------
+// Purpose: How far a model favours the closing touch.
+// Why it exists: Fixed constants: a property of the model, not of the data.
+// Declaring bias up front lets a ranking be challenged on the rule rather
+// than the arithmetic.
+// ==========================================================================
+
+SWITCH(
+    SELECTEDVALUE(CalculationGroupAttri[Name]),
+    "First Touch", 0,
+    "Last Touch",  100,
+    "Linear",      33,
+    "Time Decay",  50,
+    "U Shape",     40,
+    "W Shape",     30,
+    BLANK()
+)

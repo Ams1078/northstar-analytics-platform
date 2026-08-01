@@ -1,0 +1,9 @@
+// ==========================================================================
+// Cost per Lead (Actual)
+// Model folder: 01 - Actual / 1.1 - Base
+// --------------------------------------------------------------------------
+// Purpose: Spend over recorded leads.
+// Why it exists: The efficiency primitive.
+// ==========================================================================
+
+DIVIDE([Marketing Spend], [Leads (Actual)])

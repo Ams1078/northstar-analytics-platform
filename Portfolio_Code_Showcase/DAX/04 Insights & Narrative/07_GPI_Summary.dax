@@ -1,0 +1,24 @@
+// ==========================================================================
+// GPI Summary
+// Model folder: 06 - GPI / 6.2 - KPI
+// --------------------------------------------------------------------------
+// Purpose: One-line geographic verdict.
+// Why it exists: Syndrome-based: the combination of weak pillars selects the
+// headline, not the single weakest pillar.
+// ==========================================================================
+
+VAR ScoreVal = [GPI Score]
+VAR P1       = [GPI Pillar 1 (Absolute)]
+VAR P2       = [GPI Pillar 2 (Trend)]
+VAR TierVal  = [GPI Tier]
+VAR VsPort   = [GPI vs Portfolio]
+VAR VsSign   = IF(VsPort >= 0, "+" & FORMAT(VsPort, "0"), FORMAT(VsPort, "0"))
+RETURN
+IF(
+    ISBLANK(ScoreVal), BLANK(),
+    "GPI: " & FORMAT(ScoreVal, "0") &
+    " | " & TierVal &
+    " | Abs: " & FORMAT(P1, "0.0") &
+    " / Trend: " & FORMAT(P2, "0.0") &
+    " | vs Portfolio: " & VsSign & " pts"
+)

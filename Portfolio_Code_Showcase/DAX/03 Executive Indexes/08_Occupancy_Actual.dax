@@ -1,0 +1,9 @@
+// ==========================================================================
+// Occupancy Actual
+// Model folder: 04 - Ops Index / 4.1 - Components
+// --------------------------------------------------------------------------
+// Purpose: Occupancy component of OPI.
+// Why it exists: Normalised to 0-100 against calibrated bands.
+// ==========================================================================
+
+[Occupancy Rate %]

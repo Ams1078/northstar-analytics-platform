@@ -1,0 +1,18 @@
+// ==========================================================================
+// KPI Display Selected
+// Model folder: 10 - Parameters & Helpers / 10.2 - Slicer & Parameters
+// --------------------------------------------------------------------------
+// Purpose: The value behind the selected KPI.
+// Why it exists: Title and value resolved from the same parameter, so they
+// can never disagree.
+// ==========================================================================
+
+VAR vValue = [KPI Value Selected]
+VAR vArrow = [KPI Arrow Selected]
+VAR vDelta = [KPI Delta PM Selected]
+RETURN
+    FORMAT ( vValue, "#,##0.0,,M" )
+        & " "
+        & vArrow
+        & " "
+        & FORMAT ( vDelta, "0.0%" )

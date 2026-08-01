@@ -1,0 +1,10 @@
+// ==========================================================================
+// Leads (Actual)
+// Model folder: 01 - Actual / 1.1 - Base
+// --------------------------------------------------------------------------
+// Purpose: Leads the property recorded.
+// Why it exists: Operational truth. The gap against the funnel figure is the
+// attribution question.
+// ==========================================================================
+
+SUM( fact_leasing_daily[Leads] )

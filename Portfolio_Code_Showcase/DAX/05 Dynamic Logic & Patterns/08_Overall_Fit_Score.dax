@@ -1,0 +1,9 @@
+// ==========================================================================
+// Overall Fit Score
+// --------------------------------------------------------------------------
+// Purpose: Composite attribution model fit.
+// Why it exists: 0.40 Behavioral Fit plus 0.60 Operational Trust.
+// Defensibility weighted above plausibility.
+// ==========================================================================
+
+[Behavioral Fit] * 0.40 + [Operational Trust] * 0.60

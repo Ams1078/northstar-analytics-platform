@@ -1,0 +1,20 @@
+// ==========================================================================
+// GPI Tier
+// Model folder: 06 - GPI / 6.3 - Score / 6.3.2 - Tiers & Labels
+// --------------------------------------------------------------------------
+// Purpose: Excellent through Critical.
+// Why it exists: Fixed cuts. The same score always yields the same tier,
+// with no discretion at the point of reporting.
+// ==========================================================================
+
+VAR Score = [GPI Score]
+RETURN
+SWITCH(
+    TRUE(),
+    ISBLANK(Score),  BLANK(),
+    Score >= 88.5,   "Excellent",
+    Score >= 83.0,   "Good",
+    Score >= 76.7,   "Average",
+    Score >= 73.4,   "Below Average",
+    "Critical"
+)

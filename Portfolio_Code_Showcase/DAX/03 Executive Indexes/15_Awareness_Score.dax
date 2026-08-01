@@ -1,0 +1,31 @@
+// ==========================================================================
+// Awareness Score
+// Model folder: 07 - VPI / 7.2 - KPI
+// --------------------------------------------------------------------------
+// Purpose: Awareness stage score.
+// Why it exists: Averages available percentiles and skips blanks, so a
+// vendor missing one metric is not penalised to zero.
+// ==========================================================================
+
+VAR ImpressionsScore = [Awareness_Impressions_Percentile]
+VAR CTRScore = [Awareness_CTR_Percentile]
+VAR CPCScore = [Awareness_CPC_Percentile]
+VAR C2VScore = [Awareness_ClickToVisit_Percentile]
+
+VAR ValidScores = 
+    IF(NOT(ISBLANK(ImpressionsScore)), 1, 0) +
+    IF(NOT(ISBLANK(CTRScore)), 1, 0) +
+    IF(NOT(ISBLANK(CPCScore)), 1, 0) +
+    IF(NOT(ISBLANK(C2VScore)), 1, 0)
+
+RETURN
+IF(
+    ValidScores = 0,
+    BLANK(),
+    (
+        IF(ISBLANK(ImpressionsScore), 0, ImpressionsScore * 0.25) +
+        IF(ISBLANK(CTRScore), 0, CTRScore * 0.25) +
+        IF(ISBLANK(CPCScore), 0, CPCScore * 0.25) +
+        IF(ISBLANK(C2VScore), 0, C2VScore * 0.25)
+    )
+)

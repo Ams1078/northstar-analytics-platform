@@ -1,0 +1,63 @@
+// ==========================================================================
+// Insight – Biggest Spend Waste
+// Model folder: 02 - Funnel / 2.4 - Insights
+// --------------------------------------------------------------------------
+// Purpose: The largest inefficiency, named.
+// Why it exists: Points at a vendor and a figure rather than reporting a
+// portfolio average.
+// ==========================================================================
+
+VAR _Mode = SELECTEDVALUE('Parameter Chanel Vendor View'[Chanel Vendor View Order], 0)
+-- CHANNEL MODE
+VAR _CT =
+    ADDCOLUMNS(
+        ALLSELECTED('dim_vendor'[ChannelName]),
+        "@Spend", CALCULATE([Marketing Spend]),
+        "@VPI",   CALCULATE([Vendor Performance Index])
+    )
+VAR _VC = FILTER(_CT, NOT ISBLANK([@Spend]) && [@Spend] > 0 && NOT ISBLANK([@VPI]))
+VAR _MaxSC = MAXX(_VC, [@Spend])
+VAR _MinSC = MINX(_VC, [@Spend])
+VAR _MaxVC = MAXX(_VC, [@VPI])
+VAR _MinVC = MINX(_VC, [@VPI])
+VAR _SC =
+    ADDCOLUMNS(_VC, "@W",
+        DIVIDE([@Spend] - _MinSC, _MaxSC - _MinSC + 0.0001) * 0.60 +
+        (1 - DIVIDE([@VPI] - _MinVC, _MaxVC - _MinVC + 0.0001)) * 0.40
+    )
+VAR _TopC  = TOPN(1, FILTER(_SC, NOT ISBLANK([@W])), [@W], DESC)
+VAR _NC    = MAXX(_TopC, 'dim_vendor'[ChannelName])
+VAR _SpC   = MAXX(_TopC, [@Spend])
+VAR _VC2   = MAXX(_TopC, [@VPI])
+VAR _RC    =
+    IF(ISBLANK(_NC), BLANK(),
+        UNICHAR(128308) & " " & _NC &
+        " · $" & FORMAT(_SpC / 1000, "0.0") & "K spend · VPI " & FORMAT(_VC2, "0.0")
+    )
+-- VENDOR MODE
+VAR _VT =
+    ADDCOLUMNS(
+        ALLSELECTED('dim_vendor'[VendorName]),
+        "@Spend", CALCULATE([Marketing Spend]),
+        "@VPI",   CALCULATE([Vendor Performance Index])
+    )
+VAR _VV = FILTER(_VT, NOT ISBLANK([@Spend]) && [@Spend] > 0 && NOT ISBLANK([@VPI]))
+VAR _MaxSV = MAXX(_VV, [@Spend])
+VAR _MinSV = MINX(_VV, [@Spend])
+VAR _MaxVV = MAXX(_VV, [@VPI])
+VAR _MinVV = MINX(_VV, [@VPI])
+VAR _SV =
+    ADDCOLUMNS(_VV, "@W",
+        DIVIDE([@Spend] - _MinSV, _MaxSV - _MinSV + 0.0001) * 0.60 +
+        (1 - DIVIDE([@VPI] - _MinVV, _MaxVV - _MinVV + 0.0001)) * 0.40
+    )
+VAR _TopV  = TOPN(1, FILTER(_SV, NOT ISBLANK([@W])), [@W], DESC)
+VAR _NV    = MAXX(_TopV, 'dim_vendor'[VendorName])
+VAR _SpV   = MAXX(_TopV, [@Spend])
+VAR _VV2   = MAXX(_TopV, [@VPI])
+VAR _RV    =
+    IF(ISBLANK(_NV), BLANK(),
+        UNICHAR(128308) & " " & _NV &
+        " · $" & FORMAT(_SpV / 1000, "0.0") & "K spend · VPI " & FORMAT(_VV2, "0.0")
+    )
+RETURN SWITCH(_Mode, 0, _RC, 1, _RV, _RC)

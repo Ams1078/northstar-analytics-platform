@@ -1,0 +1,11 @@
+// ==========================================================================
+// _MaxDateInFilter
+// Model folder: 10 - Parameters & Helpers / 10.1 - Date & Period
+// --------------------------------------------------------------------------
+// Purpose: Latest date in context.
+// Why it exists: Anchors as-of logic. Note the model-wide caveat: several
+// measures anchor to the calendar max rather than the max fact date, which
+// is why dim_date is pinned to the data horizon.
+// ==========================================================================
+
+MAX(dim_date[Date])

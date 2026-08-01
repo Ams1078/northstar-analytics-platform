@@ -1,0 +1,37 @@
+// ==========================================================================
+// GPI Pillar 1 (Absolute)
+// Model folder: 06 - GPI / 6.1 - Components
+// --------------------------------------------------------------------------
+// Purpose: Where the market stands today.
+// Why it exists: Absolute performance against fixed reference bands.
+// ==========================================================================
+
+VAR p1 = [GPI P1 - Cost per Lease %]
+VAR p2 = [GPI P1 - Cost per Lead %]
+VAR p3 = [GPI P1 - SLA %]
+VAR p4 = [GPI P1 - Vacancy Fill %]
+VAR p5 = [GPI P1 - Sell Rate %]
+VAR p6 = [GPI P1 - Vacant Ready %]
+
+VAR TotalWeight =
+    IF ( NOT ISBLANK ( p1 ), 24, 0 ) +
+    IF ( NOT ISBLANK ( p2 ), 20, 0 ) +
+    IF ( NOT ISBLANK ( p3 ), 16, 0 ) +
+    IF ( NOT ISBLANK ( p4 ), 16, 0 ) +
+    IF ( NOT ISBLANK ( p5 ), 14, 0 ) +
+    IF ( NOT ISBLANK ( p6 ), 10, 0 )
+
+RETURN
+IF (
+    TotalWeight = 0,
+    BLANK (),
+    DIVIDE (
+        IF ( ISBLANK ( p1 ), 0, p1 * 24 ) +
+        IF ( ISBLANK ( p2 ), 0, p2 * 20 ) +
+        IF ( ISBLANK ( p3 ), 0, p3 * 16 ) +
+        IF ( ISBLANK ( p4 ), 0, p4 * 16 ) +
+        IF ( ISBLANK ( p5 ), 0, p5 * 14 ) +
+        IF ( ISBLANK ( p6 ), 0, p6 * 10 ),
+        TotalWeight
+    )
+)

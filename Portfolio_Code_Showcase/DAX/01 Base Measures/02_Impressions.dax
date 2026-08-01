@@ -1,0 +1,9 @@
+// ==========================================================================
+// Impressions
+// Model folder: 00 - Core Metrics / 1.1 Funnel Volumes
+// --------------------------------------------------------------------------
+// Purpose: Awareness volume by vendor.
+// Why it exists: First stage of the funnel and the VPI Awareness input.
+// ==========================================================================
+
+CALCULATE(SUM(fact_marketing_funnel_daily[MetricValue]), dim_funnel_stage[FunnelStageName] = "Impressions")

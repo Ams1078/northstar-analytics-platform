@@ -1,0 +1,16 @@
+// ==========================================================================
+// Geo Level Selected
+// Model folder: 10 - Parameters & Helpers / 10.2 - Slicer & Parameters
+// --------------------------------------------------------------------------
+// Purpose: Resolves the active geography grain.
+// Why it exists: One resolution point instead of the same SELECTEDVALUE
+// repeated downstream.
+// ==========================================================================
+
+SWITCH(
+    TRUE(),
+    ISINSCOPE(dim_property[PropertyKey]), "Property",
+    ISINSCOPE(dim_property[MarketKey]), "Market",
+    ISINSCOPE(dim_property[RegionKey]), "Region",
+    "Region"
+)

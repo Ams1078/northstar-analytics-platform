@@ -1,0 +1,17 @@
+// ==========================================================================
+// Scheduled Move-Ins
+// Model folder: 01 - Actual / 1.1 - Base
+// --------------------------------------------------------------------------
+// Purpose: Committed future arrivals.
+// Why it exists: Contracted supply, distinct from projected pace.
+// ==========================================================================
+
+VAR AsOfDate = MAX(dim_date[Date])
+RETURN
+SUMX(
+    VALUES( dim_property[PropertyKey] ),
+    CALCULATE(
+        MAX( fact_property_ops_daily[ScheduledMoveIns] ),
+        KEEPFILTERS( 'dim_date'[Date] = AsOfDate )
+    )
+)

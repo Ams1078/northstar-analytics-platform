@@ -1,0 +1,19 @@
+// ==========================================================================
+// Move-Outs
+// Model folder: 01 - Actual / 1.1 - Base
+// --------------------------------------------------------------------------
+// Purpose: Move-outs recorded.
+// Why it exists: Occupancy outflow. Net absorption is the difference.
+// ==========================================================================
+
+VAR Base = [Move-Ins]
+VAR PKey = SELECTEDVALUE( dim_property[PropertyKey], 1 )
+
+-- 0–50
+VAR Seed = MOD( PKey * 37, 51 )
+
+-- 0.92–0.97 (92% to 97%)
+VAR Ratio = 0.92 + ( Seed / 1000 )
+
+RETURN
+ROUND( Base * Ratio, 0 )

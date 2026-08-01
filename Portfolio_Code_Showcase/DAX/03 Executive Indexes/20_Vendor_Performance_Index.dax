@@ -1,0 +1,46 @@
+// ==========================================================================
+// Vendor Performance Index
+// Model folder: 07 - VPI / 7.3 - Score / 7.3.1 - Final Score
+// --------------------------------------------------------------------------
+// Purpose: Vendor Performance Index, 0-100.
+// Why it exists: Builds a scored snapshot across all vendors once, then
+// reads from it. Avoids recomputing the full vendor set per row, which is
+// the difference between a fast page and Resources Exceeded.
+// ==========================================================================
+
+VAR ScoreSnapshot =
+    ADDCOLUMNS(
+        ALL(dim_vendor[VendorKey]),
+        "@Key",   dim_vendor[VendorKey],
+        "@Score", CALCULATE([_VPI_SingleVendor_Score]),
+        "@Spend", CALCULATE([Marketing Spend])
+    )
+
+VAR ValidSnapshot =
+    FILTER(ScoreSnapshot, NOT ISBLANK([@Score]))
+
+RETURN
+IF(
+    HASONEVALUE(dim_vendor[VendorKey]),
+
+    -- Single vendor — look up from snapshot
+    VAR ThisKey = SELECTEDVALUE(dim_vendor[VendorKey])
+    RETURN
+    MAXX(
+        FILTER(ValidSnapshot, [@Key] = ThisKey),
+        [@Score]
+    ),
+
+    -- Channel rollup — spend-weighted avg
+    VAR ValidWithSpend =
+        FILTER(ValidSnapshot, [@Spend] > 0)
+    RETURN
+    IF(
+        COUNTROWS(ValidWithSpend) = 0,
+        BLANK(),
+        DIVIDE(
+            SUMX(ValidWithSpend, [@Score] * [@Spend]),
+            SUMX(ValidWithSpend, [@Spend])
+        )
+    )
+)

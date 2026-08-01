@@ -1,0 +1,21 @@
+// ==========================================================================
+// Recommended Model
+// Model folder: 03 - Attributed / 3.2 - KPI / Model Fit
+// --------------------------------------------------------------------------
+// Purpose: Names the best-fitting model.
+// Why it exists: TOPN over all six fit scores. Highest wins outright, with
+// no tie-breaking discretion.
+// ==========================================================================
+
+VAR _Scores =
+    UNION(
+        ROW("Model", "First Touch", "Score", [Fit Score - First Touch]),
+        ROW("Model", "Last Touch",  "Score", [Fit Score - Last Touch]),
+        ROW("Model", "Linear",      "Score", [Fit Score - Linear]),
+        ROW("Model", "Time Decay",  "Score", [Fit Score - Time Decay]),
+        ROW("Model", "U-Shape",     "Score", [Fit Score - U-Shape]),
+        ROW("Model", "W-Shape",     "Score", [Fit Score - W-Shape])
+    )
+VAR _Top = TOPN(1, _Scores, [Score], DESC)
+RETURN
+MAXX(_Top, [Model])

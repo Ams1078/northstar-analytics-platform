@@ -1,0 +1,17 @@
+// ==========================================================================
+// Vacant Units
+// Model folder: 00 - Core Metrics / 1,3 Occupancy
+// --------------------------------------------------------------------------
+// Purpose: Units vacant at the snapshot.
+// Why it exists: Occupancy's complement and an OPI Current Reality input.
+// ==========================================================================
+
+VAR AsOfDate = MAX('dim_date'[Date])
+RETURN
+SUMX(
+    VALUES(dim_property[PropertyKey]),
+    CALCULATE(
+        MAX(fact_property_ops_daily[VacantUnits]),
+        KEEPFILTERS('dim_date'[Date] = AsOfDate)
+    )
+)

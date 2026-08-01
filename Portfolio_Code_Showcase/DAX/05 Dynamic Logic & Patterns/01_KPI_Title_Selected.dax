@@ -1,0 +1,18 @@
+// ==========================================================================
+// KPI Title Selected
+// Model folder: 10 - Parameters & Helpers / 10.2 - Slicer & Parameters
+// --------------------------------------------------------------------------
+// Purpose: Header text following the selection.
+// Why it exists: Keeps a title honest when filters change, rather than a
+// static label that quietly stops being true.
+// ==========================================================================
+
+VAR SelectedMetric =
+    SELECTEDVALUE ( 'Parameter Metric View'[Metric], "Volume" )
+RETURN
+    SWITCH (
+        SelectedMetric,
+        "Volume", "Impressions",
+        "Spend",  "Spend",
+        "Impressions"
+    )

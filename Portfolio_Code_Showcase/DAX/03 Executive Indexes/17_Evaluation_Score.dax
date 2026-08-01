@@ -1,0 +1,27 @@
+// ==========================================================================
+// Evaluation Score
+// Model folder: 07 - VPI / 7.2 - KPI
+// --------------------------------------------------------------------------
+// Purpose: Evaluation stage score.
+// Why it exists: Lead quality rather than lead volume.
+// ==========================================================================
+
+VAR LeadsScore = [Evaluation_Leads_Percentile]
+VAR CPLScore = [Evaluation_CPL_Percentile]
+VAR L2LScore = [Evaluation_LeadToLease_Percentile]
+
+VAR ValidScores = 
+    IF(NOT(ISBLANK(LeadsScore)), 1, 0) +
+    IF(NOT(ISBLANK(CPLScore)), 1, 0) +
+    IF(NOT(ISBLANK(L2LScore)), 1, 0)
+
+RETURN
+IF(
+    ValidScores = 0,
+    BLANK(),
+    (
+        IF(ISBLANK(LeadsScore), 0, LeadsScore * 0.33) +
+        IF(ISBLANK(CPLScore), 0, CPLScore * 0.34) +
+        IF(ISBLANK(L2LScore), 0, L2LScore * 0.33)
+    )
+)
