@@ -50,6 +50,16 @@ Instead of building another dashboard, I wanted to build the entire ecosystem be
 
 NorthStar starts with synthetic business operations, moves through engineering and warehousing, applies business rules and semantic modeling, and finishes with executive reporting and operational monitoring. Every layer was designed to reflect problems I've encountered in real organizations.
 
+### See it running
+
+All three are live, public, and refreshed against the nightly pipeline. No sign-in required.
+
+[![Executive Report](https://img.shields.io/badge/LIVE-Executive%20Report-D4A437?style=for-the-badge&logo=powerbi&logoColor=black)](https://app.powerbi.com/view?r=eyJrIjoiODJmOTFjY2YtNjM0NS00ZTBhLWExMmQtODgwMDJiZWRjMGIzIiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)
+[![Attribution Lab](https://img.shields.io/badge/LIVE-Attribution%20Lab-9B7BC4?style=for-the-badge&logo=powerbi&logoColor=white)](https://app.powerbi.com/view?r=eyJrIjoiOTgzN2U3ODYtMjhmOS00OGU3LWE3ZTMtNWYyMzBjNjdjZDNhIiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)
+[![Operations Dashboard](https://img.shields.io/badge/LIVE-Operations%20Dashboard-5A8FCC?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://maa-canonical-pipeline-gwhucjhgbsb8d6f7.canadacentral-01.azurewebsites.net/api/dashboard)
+
+Executive Report refreshes daily at 06:00 UTC, Attribution Lab at 07:00 UTC, and the Operations Dashboard reflects the most recent nightly run.
+
 ---
 
 ## What I Wanted to Learn
@@ -155,7 +165,13 @@ The indexes are deliberately not interchangeable. Each answers a different execu
 
 ![NorthStar executive dashboard: Portfolio Health Index, index scorecards, regional performance, and market rankings](assets/04-executive-intelligence.png)
 
-**[Open the live Executive Report →](https://app.powerbi.com/view?r=eyJrIjoiODJmOTFjY2YtNjM0NS00ZTBhLWExMmQtODgwMDJiZWRjMGIzIiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)** Refreshed daily at 06:00 UTC.
+[![Executive Report](https://img.shields.io/badge/LIVE-Executive%20Report-D4A437?style=for-the-badge&logo=powerbi&logoColor=black)](https://app.powerbi.com/view?r=eyJrIjoiODJmOTFjY2YtNjM0NS00ZTBhLWExMmQtODgwMDJiZWRjMGIzIiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)
+
+Refreshed daily at 06:00 UTC.
+
+[![Report Logic Deck](https://img.shields.io/badge/DECK-Report%20Logic%20%2840%20slides%29-D24726?style=for-the-badge&logo=microsoftpowerpoint&logoColor=white)](assets/NorthStar_Report_Logic_Deck.pptx)
+
+A 40-slide walkthrough of the visual logic behind all four report pages: what every element on the page does, the conditions it tests, and the arithmetic behind each decision it makes.
 
 ---
 
@@ -169,7 +185,13 @@ Rather than declaring one model correct, the lab explains why the models disagre
 
 ![NorthStar Attribution Lab: attribution model discovery, portfolio fit scoring, and business impact comparison](assets/05-attribution-lab.png)
 
-**[Open the live Attribution Lab →](https://app.powerbi.com/view?r=eyJrIjoiOTgzN2U3ODYtMjhmOS00OGU3LWE3ZTMtNWYyMzBjNjdjZDNhIiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)** Refreshed daily at 07:00 UTC.
+[![Attribution Lab](https://img.shields.io/badge/LIVE-Attribution%20Lab-9B7BC4?style=for-the-badge&logo=powerbi&logoColor=white)](https://app.powerbi.com/view?r=eyJrIjoiOTgzN2U3ODYtMjhmOS00OGU3LWE3ZTMtNWYyMzBjNjdjZDNhIiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)
+
+Refreshed daily at 07:00 UTC.
+
+[![Attribution Lab Logic Deck](https://img.shields.io/badge/DECK-Attribution%20Lab%20Logic%20%2815%20slides%29-D24726?style=for-the-badge&logo=microsoftpowerpoint&logoColor=white)](assets/NorthStar_Attribution_Lab_Logic_Deck.pptx)
+
+A 15-slide walkthrough of how the lab scores a model: the sub-criteria, the two composite lenses, the weights that roll them into Overall Fit, and the arithmetic worked end to end on a single model.
 
 ---
 
@@ -183,7 +205,13 @@ The point is to demonstrate not only how analytics get built, but how they are m
 
 ![NorthStar pipeline operations dashboard: nightly run status, reconciliation workload, and bronze coverage](assets/06-pipeline-operations.png)
 
-**[Open the live Operations Dashboard →](https://maa-canonical-pipeline-gwhucjhgbsb8d6f7.canadacentral-01.azurewebsites.net/api/dashboard)** Reflects the most recent nightly run.
+[![Operations Dashboard](https://img.shields.io/badge/LIVE-Operations%20Dashboard-5A8FCC?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://maa-canonical-pipeline-gwhucjhgbsb8d6f7.canadacentral-01.azurewebsites.net/api/dashboard)
+
+Reflects the most recent nightly run.
+
+[![ETL Operations Logic Deck](https://img.shields.io/badge/DECK-ETL%20Operations%20Logic%20%2810%20slides%29-D24726?style=for-the-badge&logo=microsoftpowerpoint&logoColor=white)](assets/NorthStar_ETL_Operations_Logic_Deck.pptx)
+
+A 10-slide walkthrough of the five tabs: what each one answers, the query behind it, and why every panel is built so that nothing missing looks like nothing wrong.
 
 ---
 
