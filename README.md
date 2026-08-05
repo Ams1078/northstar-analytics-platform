@@ -149,7 +149,7 @@ Google Ads writes four banner lines above its header and formats currency as tex
 
 Rather than write seven bespoke loaders, the pipeline reads bronze through a parser registry. Each source is a single entry: a filename template and a parse function that returns rows in one canonical shape. The orchestration loop never learns anything about a specific vendor. Google Ads is implemented as the reference parser, covering both Search and Display, and the remaining sources are scaffolded against the same contract so that adding one is a parser module and one line rather than a change to the pipeline.
 
-Real samples of all fourteen files are in [`samples/`](samples/).
+Real samples of all fourteen files are in [`sample/`](sample/).
 
 ![NorthStar data engineering pipeline: nightly schedule and the Bronze to Canonical to Gold lifecycle](assets/03-data-engineering.png)
 
