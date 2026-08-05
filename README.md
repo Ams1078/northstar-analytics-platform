@@ -245,6 +245,6 @@ If you'd like to dive deeper into the architecture, data model, engineering pipe
 
 ---
 
-- [LinkedIn](https://www.linkedin.com/in/YOUR-HANDLE)
-- [Resume](RESUME_LINK)
-- [Email](mailto:YOUR-EMAIL)
+- [LinkedIn](https://www.linkedin.com/in/amir-seraj-5234825/)
+- [Resume](N/A)
+- [Email](mailto:ams92690@yahoo.com)
