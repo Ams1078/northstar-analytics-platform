@@ -54,7 +54,7 @@ NorthStar starts with synthetic business operations, moves through engineering a
 
 All three are live, public, and refreshed against the nightly pipeline. No sign-in required.
 
-[![Executive Report](https://img.shields.io/badge/LIVE-Executive%20Report-D4A437?style=for-the-badge&logo=powerbi&logoColor=black)](https://app.powerbi.com/view?r=eyJrIjoiODJmOTFjY2YtNjM0NS00ZTBhLWExMmQtODgwMDJiZWRjMGIzIiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)
+[![Executive Report](https://img.shields.io/badge/LIVE-Executive%20Report-D4A437?style=for-the-badge&logo=powerbi&logoColor=black)](https://app.powerbi.com/view?r=eyJrIjoiNzk3ZDgyYjctZjgzNi00ODI5LWI3NDktZGVlNGEzY2VlNDg1IiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)
 [![Attribution Lab](https://img.shields.io/badge/LIVE-Attribution%20Lab-9B7BC4?style=for-the-badge&logo=powerbi&logoColor=white)](https://app.powerbi.com/view?r=eyJrIjoiOTgzN2U3ODYtMjhmOS00OGU3LWE3ZTMtNWYyMzBjNjdjZDNhIiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)
 [![Operations Dashboard](https://img.shields.io/badge/LIVE-Operations%20Dashboard-5A8FCC?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://maa-canonical-pipeline-gwhucjhgbsb8d6f7.canadacentral-01.azurewebsites.net/api/dashboard)
 
@@ -165,7 +165,7 @@ The indexes are deliberately not interchangeable. Each answers a different execu
 
 ![NorthStar executive dashboard: Portfolio Health Index, index scorecards, regional performance, and market rankings](assets/04-executive-intelligence.png)
 
-[![Executive Report](https://img.shields.io/badge/LIVE-Executive%20Report-D4A437?style=for-the-badge&logo=powerbi&logoColor=black)](https://app.powerbi.com/view?r=eyJrIjoiODJmOTFjY2YtNjM0NS00ZTBhLWExMmQtODgwMDJiZWRjMGIzIiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)
+[![Executive Report](https://img.shields.io/badge/LIVE-Executive%20Report-D4A437?style=for-the-badge&logo=powerbi&logoColor=black)](https://app.powerbi.com/view?r=eyJrIjoiNzk3ZDgyYjctZjgzNi00ODI5LWI3NDktZGVlNGEzY2VlNDg1IiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)
 
 Refreshed daily at 06:00 UTC.
 
