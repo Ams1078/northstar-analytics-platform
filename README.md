@@ -246,5 +246,5 @@ If you'd like to dive deeper into the architecture, data model, engineering pipe
 ---
 
 - [LinkedIn](https://www.linkedin.com/in/amir-seraj-5234825/)
-- [Resume](N/A)
+- [Resume](https://github.com/Ams1078/northstar-analytics-platform/blob/main/assets/Amir_Seraj_Resume.pdf)
 - [Email](mailto:ams92690@yahoo.com)
