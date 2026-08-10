@@ -165,7 +165,7 @@ The indexes are deliberately not interchangeable. Each answers a different execu
 
 ![NorthStar executive dashboard: Portfolio Health Index, index scorecards, regional performance, and market rankings](assets/04-executive-intelligence.png)
 
-[![Executive Report](https://img.shields.io/badge/LIVE-Executive%20Report-D4A437?style=for-the-badge&logo=powerbi&logoColor=black)](https://app.powerbi.com/view?r=eyJrIjoiNzk3ZDgyYjctZjgzNi00ODI5LWI3NDktZGVlNGEzY2VlNDg1IiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)
+[![Executive Report](https://img.shields.io/badge/LIVE-Executive%20Report-D4A437?style=for-the-badge&logo=powerbi&logoColor=black)](https://app.powerbi.com/view?r=eyJrIjoiNzBmMjFkNDktNmZhOS00NDBjLTlkMGItYTVlYWJmYjE0NjgzIiwidCI6IjgwZTBlYWJhLTY4NTQtNDg5Ny04NjgxLTIxYmFlZDk2NWEzMCJ9)
 
 Refreshed daily at 06:00 UTC.
 
