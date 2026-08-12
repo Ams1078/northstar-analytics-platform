@@ -74,11 +74,17 @@ The project became less about producing a portfolio piece and more about underst
 
 ## NorthStar Intelligence Platform
 
-NorthStar is an enterprise analytics platform built around a national multifamily housing company. The business, the data, and the customer behavior are synthetically generated, which allows the platform to model the complete lifecycle of enterprise analytics: business activity, engineering, warehousing, semantic modeling, executive reporting, attribution analysis, and operational monitoring.
+NorthStar is an enterprise analytics platform built around a national multifamily housing company. The business, data, and customer behavior are synthetically generated, allowing the platform to model the complete lifecycle of enterprise analytics: business activity, data engineering, warehousing, semantic modeling, executive reporting, attribution analysis, and operational monitoring.
 
 The goal wasn't to build the biggest dashboard. The goal was to demonstrate how business problems become analytics solutions.
 
 NorthStar represents the work of a business analyst, data engineer, BI developer, semantic modeler, and technical writer working together in a single platform.
+
+The platform was also built with the constraints of a real enterprise environment in mind. The Power BI experience uses Microsoft's out-of-the-box visuals and Microsoft-certified visuals rather than relying on unsupported third-party components. This was intentional: in many organizations, security, governance, licensing, and technology standards determine what can actually be deployed.
+
+NorthStar also does not depend on Microsoft Fabric or generative AI to produce its analytical insights. Scores, diagnostics, recommendations, and narrative insights are generated through governed business rules, DAX logic, semantic-model calculations, and deterministic narrative operators. The result is explainable and reproducible: an insight can be traced back through the logic that produced it and ultimately to the underlying data.
+
+The purpose is to show not only what can be built, but what can realistically be governed, maintained, explained, and deployed.
 
 ---
 
