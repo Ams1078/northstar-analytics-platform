@@ -39,6 +39,8 @@ NorthStar combines those experiences into one project that simulates how I would
 
 **In progress**
 
+- **CDMP Practitioner — Business Intelligence & Data Warehousing.** Specialist exam in progress toward CDMP Practitioner certification.
+- **CDMP Practitioner — Data Modeling & Design.** Specialist exam in progress toward CDMP Practitioner certification.
 - **AZ-900, Microsoft Azure Fundamentals.** Exam scheduled. NorthStar runs entirely on Azure: SQL Database, Blob Storage, Functions, and Static Web Apps.
 
 ---
