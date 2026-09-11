@@ -30,15 +30,16 @@ NorthStar combines those experiences into one project that simulates how I would
 ![PL-300](https://img.shields.io/badge/Microsoft%20Certified-PL--300%20Power%20BI%20Data%20Analyst%20Associate-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
 [![Google Data Analytics](https://img.shields.io/badge/Google%20Certified-Data%20Analytics%20Professional-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://www.credly.com/badges/2c9f81c4-eaca-49d3-be0f-5ca94b38a756/linked_in_profile)
 ![MTA Database Administration](https://img.shields.io/badge/Microsoft%20Certified-MTA%20Database%20Administration%20Fundamentals-5E5E5E?style=for-the-badge&logo=microsoft&logoColor=white)
+[![DAMA CDMP](https://img.shields.io/badge/DAMA-CDMP%20Data%20Management%20Fundamentals-2F6B4F?style=for-the-badge)](https://cdmp.info/)
 
 - **PL-300, Power BI Data Analyst Associate.** Semantic modeling, DAX, and report design. The modeling work throughout NorthStar builds directly on it.
 - **Google Data Analytics Professional Certificate.** [Verify on Credly →](https://www.credly.com/badges/2c9f81c4-eaca-49d3-be0f-5ca94b38a756/linked_in_profile)
 - **MTA: Database Administration Fundamentals.** Relational database design and administration. Credential ID 84004877.
+- **DAMA CDMP — Data Management Fundamentals.** Completed the Data Management Fundamentals exam. [View CDMP Certification Program →](https://cdmp.info/)
 
 **In progress**
 
 - **AZ-900, Microsoft Azure Fundamentals.** Exam scheduled. NorthStar runs entirely on Azure: SQL Database, Blob Storage, Functions, and Static Web Apps.
-- **Certified Data Management Professional (CDMP), DAMA International — Practitioner track.** Passed the Data Management Fundamentals exam with a score of **76%** and continuing with the specialist exams toward Practitioner certification. [CDMP Certification Program →](https://cdmp.info/)
 
 ---
 
