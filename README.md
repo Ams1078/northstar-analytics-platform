@@ -38,7 +38,7 @@ NorthStar combines those experiences into one project that simulates how I would
 **In progress**
 
 - **AZ-900, Microsoft Azure Fundamentals.** Exam scheduled. NorthStar runs entirely on Azure: SQL Database, Blob Storage, Functions, and Static Web Apps.
-- **Certified Data Management Professional (CDMP), DAMA International.** Data governance, quality, and metadata management, which is the discipline behind the pipeline's reconciliation and audit layers.
+- **Certified Data Management Professional (CDMP), DAMA International — Practitioner track.** Passed the Data Management Fundamentals exam with a score of **76%** and continuing with the specialist exams toward Practitioner certification. [CDMP Certification Program →](https://cdmp.info/)
 
 ---
 
